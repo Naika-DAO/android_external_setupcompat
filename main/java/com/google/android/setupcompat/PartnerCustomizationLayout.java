@@ -85,21 +85,14 @@ public class PartnerCustomizationLayout extends TemplateLayout {
             attrs,
             defStyleAttr,
             /* applyPartnerResources= */ isSetupFlow));
+    registerMixin(
+        ButtonFooterMixin.class,
+        new ButtonFooterMixin(this, attrs, defStyleAttr, /* applyPartnerResources= */ isSetupFlow));
 
     TypedArray a =
         getContext()
             .obtainStyledAttributes(
                 attrs, R.styleable.SucPartnerCustomizationLayout, defStyleAttr, 0);
-
-    final int primaryBtn =
-        a.getResourceId(R.styleable.SucPartnerCustomizationLayout_sucPrimaryFooterButton, 0);
-    final int secondaryBtn =
-        a.getResourceId(R.styleable.SucPartnerCustomizationLayout_sucSecondaryFooterButton, 0);
-
-    registerMixin(
-        ButtonFooterMixin.class,
-        new ButtonFooterMixin(
-            this, primaryBtn, secondaryBtn, /* applyPartnerResources= */ isSetupFlow));
 
     final int footer = a.getResourceId(R.styleable.SucPartnerCustomizationLayout_sucFooter, 0);
     if (footer != 0) {

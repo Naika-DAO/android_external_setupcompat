@@ -46,6 +46,9 @@ public interface SetupMetricsLoggingConstants {
      * int)}.
      */
     int COUNTER_EVENT = 2;
+
+    /** MetricType constant used for internal logging purposes. */
+    int INTERNAL = 100;
   }
 
   /** Keys of the bundle used while logging data to SetupWizard. */

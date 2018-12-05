@@ -18,6 +18,7 @@ package com.google.android.setupcompat.item;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
@@ -28,58 +29,154 @@ import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.template.ButtonFooterMixin;
 
 /**
- * Definition of a footer button. Clients can use this class to customize attributes like text and
- * click listener, and ButtonFooterMixin will inflate a corresponding Button view.
+ * Definition of a footer button. Clients can use this class to customize attributes like text,
+ * button type and click listener, and ButtonFooterMixin will inflate a corresponding Button view.
  */
 public class FooterButton {
+  private static final int BUTTON_TYPE_NONE = 0;
+
   private final String text;
-  private final OnClickListener listener;
+  private final ButtonType buttonType;
   private int theme;
+  @IdRes private int id;
+  private OnClickListener onClickListener;
+  private OnButtonEventListener buttonListener;
 
   public FooterButton(Context context, AttributeSet attrs) {
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SucFooterButton);
-    this.text = a.getString(R.styleable.SucFooterButton_android_text);
-    this.listener = null;
-    this.theme = a.getResourceId(R.styleable.SucFooterButton_android_theme, 0);
+    text = a.getString(R.styleable.SucFooterButton_android_text);
+    onClickListener = null;
+    buttonType =
+        ButtonType.values()[a.getInt(R.styleable.SucFooterButton_sucButtonType, BUTTON_TYPE_NONE)];
+    theme = a.getResourceId(R.styleable.SucFooterButton_android_theme, 0);
     a.recycle();
   }
 
   /**
-   * Allows client customize text, click listener and theme for footer button
-   * before Button has been created. The {@link ButtonFooterMixin} will inflate a corresponding
-   * Button view.
+   * Allows client customize text, click listener and theme for footer button before Button has been
+   * created. The {@link ButtonFooterMixin} will inflate a corresponding Button view.
    *
    * @param context The context of application.
    * @param text The text for button.
    * @param listener The listener for button.
+   * @param buttonType The type of button.
    * @param theme The theme for button.
    */
   public FooterButton(
       Context context,
       @StringRes int text,
       @Nullable OnClickListener listener,
+      @Nullable ButtonType buttonType,
       @StyleRes int theme) {
-    this(context.getString(text), listener, theme);
+    this(context.getString(text), listener, buttonType, theme);
   }
 
   public FooterButton(
-      String text, @Nullable OnClickListener listener, @StyleRes int theme) {
+      Context context,
+      @StringRes int text,
+      @Nullable OnClickListener listener,
+      @StyleRes int theme) {
+    this(context.getString(text), listener, ButtonType.NONE, theme);
+  }
+
+  public FooterButton(String text, @Nullable OnClickListener listener, @StyleRes int theme) {
+    this(text, listener, ButtonType.NONE, theme);
+  }
+
+  public FooterButton(
+      String text,
+      @Nullable OnClickListener listener,
+      @Nullable ButtonType buttonType,
+      @StyleRes int theme) {
     this.text = text;
-    this.listener = listener;
+    onClickListener = listener;
+    this.buttonType = buttonType;
     this.theme = theme;
   }
 
+  /** Sets the resource id of footer button. */
+  @VisibleForTesting
+  public void setId(@IdRes int id) {
+    this.id = id;
+  }
+
+  /** Returns the text that this footer button is displaying. */
   public String getText() {
     return text;
   }
 
-  public OnClickListener getListener() {
-    return listener;
+  /** Returns an {@link OnClickListener} of this footer button. */
+  @VisibleForTesting
+  public OnClickListener getOnClickListener() {
+    return onClickListener;
   }
 
+  /**
+   * Registers a callback to be invoked when this view of footer button is clicked.
+   *
+   * @param listener The callback that will run
+   */
+  public void setOnClickListener(@Nullable OnClickListener listener) {
+    onClickListener = listener;
+    if (buttonListener != null && id != 0) {
+      buttonListener.onClickListenerChanged(listener, id);
+    }
+  }
+
+  /** Returns the type of this footer button icon. */
+  public ButtonType getButtonType() {
+    return buttonType;
+  }
+
+  /** Returns the theme of this footer button. */
   @StyleRes
   public int getTheme() {
     return theme;
+  }
+
+  /**
+   * Sets the enabled state of this footer button.
+   *
+   * @param enabled True if this view is enabled, false otherwise.
+   */
+  public void setEnabled(boolean enabled) {
+    if (buttonListener != null && id != 0) {
+      buttonListener.onEnabledChanged(enabled, id);
+    }
+  }
+
+  /**
+   * Sets the visibility state of this footer button.
+   *
+   * @param visibility one of {@link #VISIBLE}, {@link #INVISIBLE}, or {@link #GONE}.
+   */
+  public void setVisibility(int visibility) {
+    if (buttonListener != null && id != 0) {
+      buttonListener.onVisibilityChanged(visibility, id);
+    }
+  }
+
+  /**
+   * Registers a callback to be invoked when footer button API has set.
+   *
+   * @param listener The callback that will run
+   */
+  @VisibleForTesting
+  public void setOnButtonEventListener(@Nullable OnButtonEventListener listener) {
+    if (listener != null) {
+      buttonListener = listener;
+    }
+  }
+
+  /** Interface definition for a callback to be invoked when footer button API has set. */
+  @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+  public interface OnButtonEventListener {
+
+    void onClickListenerChanged(@Nullable OnClickListener listener, @IdRes int id);
+
+    void onEnabledChanged(boolean enabled, @IdRes int id);
+
+    void onVisibilityChanged(int visibility, @IdRes int id);
   }
 
   /**
@@ -91,5 +188,15 @@ public class FooterButton {
   @VisibleForTesting
   public void setTheme(@StyleRes int theme) {
     this.theme = theme;
+  }
+
+  /** Types for footer button. The button appearance and behavior may change based on its type. */
+  public enum ButtonType {
+    /** A type of button that doesn't fit into any other categories. */
+    NONE,
+    /** A type of button that will go to the next screen, or next step in the flow when clicked. */
+    NEXT,
+    /** A type of button that will skip the current step when clicked. */
+    SKIP
   }
 }

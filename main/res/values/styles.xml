@@ -29,12 +29,16 @@
     <item name="android:gravity">center_vertical</item>
     <item name="android:minHeight">@dimen/suc_customization_footer_min_height</item>
     <item name="android:orientation">horizontal</item>
-    <item name="android:paddingTop">@dimen/suc_customization_footer_padding_vertical</item>
-    <item name="android:paddingBottom">@dimen/suc_customization_footer_padding_vertical</item>
+    <item name="android:paddingTop">?attr/sucFooterBarPaddingTop</item>
+    <item name="android:paddingBottom">?attr/sucFooterBarPaddingBottom</item>
     <item name="android:paddingEnd" tools:ignore="NewApi">@dimen/suc_customization_button_margin_end</item>
     <item name="android:paddingLeft">@dimen/suc_customization_button_margin_start</item>
     <item name="android:paddingRight">@dimen/suc_customization_button_margin_end</item>
     <item name="android:paddingStart" tools:ignore="NewApi">@dimen/suc_customization_button_margin_start</item>
+
+    <!-- Default value -->
+    <item name="sucFooterBarPaddingTop">@dimen/suc_customization_footer_padding_vertical</item>
+    <item name="sucFooterBarPaddingBottom">@dimen/suc_customization_footer_padding_vertical</item>
   </style>
 
   <style name="SucPartnerCustomizationButton.Primary" parent="android:Widget.Material.Button.Colored">
@@ -45,18 +49,18 @@
     <item name="android:theme">@style/SucPartnerCustomizationButton.Primary</item>
 
     <!-- Values used in styles -->
-    <item name="android:fontFamily">?attr/sucPartnerCustomizationButtonFontFamily</item>
+    <item name="android:fontFamily">?attr/sucFooterBarButtonFontFamily</item>
     <item name="android:paddingLeft">@dimen/suc_customization_button_padding</item>
     <item name="android:paddingRight">@dimen/suc_customization_button_padding</item>
-    <item name="android:textAllCaps">?attr/sucPartnerCustomizationButtonAllCaps</item>
+    <item name="android:textAllCaps">?attr/sucFooterBarButtonAllCaps</item>
 
     <!-- Values used in themes -->
-    <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucPartnerCustomizationButtonCornerRadius</item>
+    <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucFooterBarButtonCornerRadius</item>
 
     <!-- Default value -->
-    <item name="sucPartnerCustomizationButtonFontFamily">@string/suc_customization_button_font_family</item>
-    <item name="sucPartnerCustomizationButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
-    <item name="sucPartnerCustomizationButtonAllCaps">false</item>
+    <item name="sucFooterBarButtonFontFamily">@string/suc_customization_button_font_family</item>
+    <item name="sucFooterBarButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
+    <item name="sucFooterBarButtonAllCaps">false</item>
   </style>
 
   <style name="SucPartnerCustomizationButton.Secondary" parent="android:Widget.Material.Button.Borderless.Colored">
@@ -67,20 +71,23 @@
     <item name="android:theme">@style/SucPartnerCustomizationButton.Secondary</item>
 
     <!-- Values used in styles -->
-    <item name="android:fontFamily">?attr/sucPartnerCustomizationButtonFontFamily</item>
+    <item name="android:fontFamily">?attr/sucFooterBarButtonFontFamily</item>
     <item name="android:minWidth">0dp</item>
     <item name="android:paddingLeft">@dimen/suc_customization_button_padding</item>
     <item name="android:paddingRight">@dimen/suc_customization_button_padding</item>
-    <item name="android:textAllCaps">?attr/sucPartnerCustomizationButtonAllCaps</item>
+    <item name="android:textAllCaps">?attr/sucFooterBarButtonAllCaps</item>
 
     <!-- Values used in themes -->
-    <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucPartnerCustomizationButtonCornerRadius</item>
-    <item name="android:colorControlHighlight" tools:targetApi="lollipop">@color/suc_customization_button_highlight</item>
+    <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucFooterBarButtonCornerRadius</item>
+    <item name="android:colorControlHighlight" tools:targetApi="lollipop">@color/suc_customization_button_highlight_ripple</item>
+    <item name="sucFooterBarButtonColorControlHighlight">@color/suc_customization_button_highlight_ripple</item>
+    <item name="sucFooterBarButtonHighlightAlpha">@dimen/suc_customization_button_ripple_alpha</item>
 
     <!-- Default value -->
-    <item name="sucPartnerCustomizationButtonFontFamily">@string/suc_customization_button_font_family</item>
-    <item name="sucPartnerCustomizationButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
-    <item name="sucPartnerCustomizationButtonAllCaps">false</item>
+    <item name="sucFooterBarButtonFontFamily">@string/suc_customization_button_font_family</item>
+    <item name="sucFooterBarButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
+    <item name="sucFooterBarButtonAllCaps">false</item>
+    <item name="sucFooterBarButtonColorControlHighlightRipple">@color/suc_customization_button_highlight_default</item>
   </style>
 
 </resources>

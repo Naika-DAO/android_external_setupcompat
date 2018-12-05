@@ -30,8 +30,6 @@
   <declare-styleable name="SucPartnerCustomizationLayout">
     <attr name="sucFooter" format="reference" />
     <attr name="sucLayoutFullscreen" format="boolean" />
-    <attr name="sucPrimaryFooterButton" format="reference" />
-    <attr name="sucSecondaryFooterButton" format="reference" />
   </declare-styleable>
 
   <!-- Status bar attributes -->
@@ -58,11 +56,24 @@
   <declare-styleable name="SucFooterButton">
     <attr name="android:text" />
     <attr name="android:theme" />
+    <attr name="sucButtonType">
+      <enum name="none" value="0" />
+      <enum name="next" value="1" />
+      <enum name="skip" value="2" />
+    </attr>
   </declare-styleable>
 
   <!-- Button of footer attributes -->
-  <attr name="sucPartnerCustomizationButtonAllCaps" format="boolean" />
-  <attr name="sucPartnerCustomizationButtonCornerRadius" format="dimension" />
-  <attr name="sucPartnerCustomizationButtonFontFamily" format="string|reference" />
-
+  <declare-styleable name="SucFooterBar">
+    <attr name="sucFooterBarButtonAllCaps" format="boolean" />
+    <attr name="sucFooterBarButtonCornerRadius" format="dimension" />
+    <attr name="sucFooterBarButtonFontFamily" format="string|reference" />
+    <attr name="sucFooterBarPaddingTop" format="dimension" />
+    <attr name="sucFooterBarPaddingBottom" format="dimension" />
+    <attr name="sucFooterBarPrimaryFooterButton" format="reference" />
+    <attr name="sucFooterBarSecondaryFooterButton" format="reference" />
+    <attr name="sucFooterBarButtonHighlightAlpha" format="dimension" />
+    <attr name="sucFooterBarButtonColorControlHighlight" format="color" />
+    <attr name="sucFooterBarButtonColorControlHighlightRipple" format="color" />
+  </declare-styleable>
 </resources>

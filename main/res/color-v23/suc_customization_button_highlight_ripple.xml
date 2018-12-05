@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2018 The Android Open Source Project
+    Copyright (C) 2017 The Android Open Source Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,12 +15,8 @@
     limitations under the License.
 -->
 
-<resources>
-
-  <!-- ID used with View#setTag to store the original weight on a ButtonBar -->
-  <item name="suc_customization_original_weight" type="id" />
-
-  <!-- Footer button typeface -->
-  <string name="suc_customization_button_font_family" translatable="false">google-sans-medium</string>
-
-</resources>
+<!-- TODO(b/120391478): Gets ripple color and alpha from partner if client sets the values -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:color="?attr/sucFooterBarButtonColorControlHighlightRipple"
+      android:alpha="?attr/sucFooterBarButtonHighlightAlpha" />
+</selector>

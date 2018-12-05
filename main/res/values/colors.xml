@@ -19,6 +19,8 @@
 
   <!-- On versions < 23, we cannot reference other theme values in a color resource. Default to
          the framework default of 12% black -->
-  <color name="suc_customization_button_highlight">#1f000000</color>
+  <color name="suc_customization_button_highlight_ripple">#1f000000</color>
+
+  <color name="suc_customization_button_highlight_default">#ff1a73e8</color>
 
 </resources>

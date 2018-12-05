@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -123,7 +124,9 @@ public class PartnerConfigHelper {
         result = resource.getDrawable(resourceEntry.getResourceId());
       }
       partnerResourceCache.put(resourceConfig, result);
-    } catch (PackageManager.NameNotFoundException | NullPointerException exception) {
+    } catch (PackageManager.NameNotFoundException
+        | NullPointerException
+        | NotFoundException exception) {
       // fall through
     }
     return result;
