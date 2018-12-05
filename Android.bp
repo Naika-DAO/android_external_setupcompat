@@ -3,7 +3,7 @@
 //
 
 android_library {
-    name: "setup-compat",
+    name: "setupcompat",
     manifest: "AndroidManifest.xml",
     resource_dirs: [
         "main/res",
