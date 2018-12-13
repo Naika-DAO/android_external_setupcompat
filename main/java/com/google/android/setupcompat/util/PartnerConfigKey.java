@@ -65,6 +65,12 @@ public @interface PartnerConfigKey {
   // The icon for "skip" action. Can be "@null" for no icon.
   String KEY_FOOTER_BUTTON_ICON_SKIP = "setup_compat_footer_button_icon_skip";
 
+  // The icon for "skip" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_CANCEL = "setup_compat_footer_button_icon_cancel";
+
+  // The icon for "skip" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_STOP = "setup_compat_footer_button_icon_stop";
+
   // Top padding of the footer buttons
   String KEY_FOOTER_BUTTON_PADDING_TOP = "setup_compat_footer_button_padding_top";
 

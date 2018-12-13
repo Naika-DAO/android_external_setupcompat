@@ -15,6 +15,8 @@
  */
 package com.google.android.setupcompat;
 
+import android.os.Bundle;
+
 /**
  * Declares the interface for compat related service methods.
  */

@@ -47,6 +47,14 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_ICON_SKIP(
       PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_SKIP, ResourceType.DRAWABLE),
 
+  // The icon for "cancel" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_CANCEL(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL, ResourceType.DRAWABLE),
+
+  // The icon for "stop" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_STOP(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_STOP, ResourceType.DRAWABLE),
+
   // Top padding of the footer buttons
   CONFIG_FOOTER_BUTTON_PADDING_TOP(
       PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_TOP, ResourceType.DIMENSION),

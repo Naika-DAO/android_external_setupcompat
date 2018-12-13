@@ -35,8 +35,10 @@ import com.google.android.setupcompat.template.ButtonFooterMixin;
 public class FooterButton {
   private static final int BUTTON_TYPE_NONE = 0;
 
-  private final String text;
   private final ButtonType buttonType;
+  private CharSequence text;
+  private boolean enabled;
+  private int visibility;
   private int theme;
   @IdRes private int id;
   private OnClickListener onClickListener;
@@ -76,11 +78,11 @@ public class FooterButton {
       @StringRes int text,
       @Nullable OnClickListener listener,
       @StyleRes int theme) {
-    this(context.getString(text), listener, ButtonType.NONE, theme);
+    this(context.getString(text), listener, ButtonType.OTHER, theme);
   }
 
   public FooterButton(String text, @Nullable OnClickListener listener, @StyleRes int theme) {
-    this(text, listener, ButtonType.NONE, theme);
+    this(text, listener, ButtonType.OTHER, theme);
   }
 
   public FooterButton(
@@ -101,7 +103,7 @@ public class FooterButton {
   }
 
   /** Returns the text that this footer button is displaying. */
-  public String getText() {
+  public CharSequence getText() {
     return text;
   }
 
@@ -145,14 +147,38 @@ public class FooterButton {
     }
   }
 
+  /** Returns the enabled status for this footer button. */
+  public boolean isEnabled() {
+    return enabled;
+  }
+
   /**
    * Sets the visibility state of this footer button.
    *
    * @param visibility one of {@link #VISIBLE}, {@link #INVISIBLE}, or {@link #GONE}.
    */
   public void setVisibility(int visibility) {
+    this.visibility = visibility;
     if (buttonListener != null && id != 0) {
       buttonListener.onVisibilityChanged(visibility, id);
+    }
+  }
+
+  /** Returns the visibility status for this footer button. */
+  public int getVisibility() {
+    return visibility;
+  }
+
+  /** Sets the text to be displayed using a string resource identifier. */
+  public void setText(Context context, @IdRes int resid) {
+    setText(context.getText(resid));
+  }
+
+  /** Sets the text to be displayed on footer button. */
+  public void setText(CharSequence text) {
+    this.text = text;
+    if (buttonListener != null && id != 0) {
+      buttonListener.onTextChanged(text, id);
     }
   }
 
@@ -177,6 +203,8 @@ public class FooterButton {
     void onEnabledChanged(boolean enabled, @IdRes int id);
 
     void onVisibilityChanged(int visibility, @IdRes int id);
+
+    void onTextChanged(CharSequence text, @IdRes int id);
   }
 
   /**
@@ -193,10 +221,14 @@ public class FooterButton {
   /** Types for footer button. The button appearance and behavior may change based on its type. */
   public enum ButtonType {
     /** A type of button that doesn't fit into any other categories. */
-    NONE,
+    OTHER,
     /** A type of button that will go to the next screen, or next step in the flow when clicked. */
     NEXT,
     /** A type of button that will skip the current step when clicked. */
-    SKIP
+    SKIP,
+    /** A type of button that will cancel the ongoing setup step(s) and exit setup when clicked. */
+    CANCEL,
+    /** A type of button that will stop the ongoing setup step(s) and skip forward when clicked. */
+    STOP
   }
 }

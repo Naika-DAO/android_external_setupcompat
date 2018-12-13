@@ -34,18 +34,18 @@ public interface SetupMetricsLoggingConstants {
      * MetricType constant used when logging {@link
      * com.google.android.setupcompat.logging.CustomEvent}.
      */
-    int CUSTOM_EVENT = 0;
+    int CUSTOM_EVENT = 1;
     /**
      * MetricType constant used when logging {@link com.google.android.setupcompat.logging.Timer}.
      */
-    int DURATION_EVENT = 1;
+    int DURATION_EVENT = 2;
 
     /**
      * MetricType constant used when logging counter value using {@link
      * com.google.android.setupcompat.logging.SetupMetricsLogger#logCounter(Context, MetricKey,
      * int)}.
      */
-    int COUNTER_EVENT = 2;
+    int COUNTER_EVENT = 3;
 
     /** MetricType constant used for internal logging purposes. */
     int INTERNAL = 100;

@@ -23,6 +23,7 @@ import android.content.ContextWrapper;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
+import android.os.PersistableBundle;
 import androidx.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -31,6 +32,9 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import com.google.android.setupcompat.lifecycle.LifecycleFragment;
+import com.google.android.setupcompat.logging.CustomEvent;
+import com.google.android.setupcompat.logging.MetricKey;
+import com.google.android.setupcompat.logging.SetupMetricsLogger;
 import com.google.android.setupcompat.template.ButtonFooterMixin;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
@@ -39,6 +43,8 @@ import com.google.android.setupcompat.util.WizardManagerHelper;
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
 public class PartnerCustomizationLayout extends TemplateLayout {
 
+  private final boolean suwVersionSupportPartnerResource =
+      Build.VERSION.SDK_INT > VERSION_CODES.P;
   private Activity activity;
 
   public PartnerCustomizationLayout(Context context) {
@@ -69,25 +75,17 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     activity = lookupActivityFromContext(getContext());
 
     boolean isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
+    boolean applyPartnerResources = suwVersionSupportPartnerResource && isSetupFlow;
     registerMixin(
         StatusBarMixin.class,
-        new StatusBarMixin(
-            this,
-            activity.getWindow(),
-            attrs,
-            defStyleAttr,
-            /* applyPartnerResources= */ isSetupFlow));
+        new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResources));
     registerMixin(
         SystemNavBarMixin.class,
         new SystemNavBarMixin(
-            this,
-            activity.getWindow(),
-            attrs,
-            defStyleAttr,
-            /* applyPartnerResources= */ isSetupFlow));
+            this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResources));
     registerMixin(
         ButtonFooterMixin.class,
-        new ButtonFooterMixin(this, attrs, defStyleAttr, /* applyPartnerResources= */ isSetupFlow));
+        new ButtonFooterMixin(this, attrs, defStyleAttr, applyPartnerResources));
 
     TypedArray a =
         getContext()
@@ -134,7 +132,25 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    LifecycleFragment.attachNow(lookupActivityFromContext(getContext()));
+    LifecycleFragment.attachNow(activity);
+    getMixin(ButtonFooterMixin.class).onAttachedToWindow();
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    if (WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
+      ButtonFooterMixin buttonFooterMixin = getMixin(ButtonFooterMixin.class);
+      buttonFooterMixin.onDetachedFromWindow();
+      PersistableBundle persistableBundle = new PersistableBundle();
+      persistableBundle.putPersistableBundle(
+          "FooterButtonVisibilityMetrics", buttonFooterMixin.getLoggingMetrics());
+      SetupMetricsLogger.logCustomEvent(
+          getContext(),
+          CustomEvent.create(
+              MetricKey.get("SetupCompatMetrics", activity.getClass().getSimpleName()),
+              persistableBundle));
+    }
   }
 
   private static Activity lookupActivityFromContext(Context context) {

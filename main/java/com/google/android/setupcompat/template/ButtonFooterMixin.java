@@ -18,7 +18,6 @@ package com.google.android.setupcompat.template;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
@@ -30,6 +29,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
+import android.os.PersistableBundle;
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.IdRes;
@@ -54,6 +54,7 @@ import com.google.android.setupcompat.item.FooterButton;
 import com.google.android.setupcompat.item.FooterButton.ButtonType;
 import com.google.android.setupcompat.item.FooterButton.OnButtonEventListener;
 import com.google.android.setupcompat.item.FooterButtonInflater;
+import com.google.android.setupcompat.logging.internal.ButtonFooterMixinMetrics;
 import com.google.android.setupcompat.util.PartnerConfig;
 import com.google.android.setupcompat.util.PartnerConfigHelper;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,18 +70,20 @@ public class ButtonFooterMixin implements Mixin {
 
   @Nullable private final ViewStub footerStub;
 
+  @VisibleForTesting final boolean applyPartnerResources;
+
   private LinearLayout buttonContainer;
   private FooterButton primaryButton;
   private FooterButton secondaryButton;
   @IdRes private int primaryButtonId;
   @IdRes private int secondaryButtonId;
 
-  @VisibleForTesting final boolean applyPartnerResources;
-
   private int footerBarPaddingTop;
   private int footerBarPaddingBottom;
 
   private static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
+
+  @VisibleForTesting public final ButtonFooterMixinMetrics metrics = new ButtonFooterMixinMetrics();
 
   private final OnButtonEventListener onButtonEventListener =
       new OnButtonEventListener() {
@@ -110,6 +113,16 @@ public class ButtonFooterMixin implements Mixin {
             Button button = buttonContainer.findViewById(id);
             if (button != null) {
               button.setVisibility(visibility);
+            }
+          }
+        }
+
+        @Override
+        public void onTextChanged(CharSequence text, @IdRes int id) {
+          if (buttonContainer != null && id != 0) {
+            Button button = buttonContainer.findViewById(id);
+            if (button != null) {
+              button.setText(text);
             }
           }
         }
@@ -149,18 +162,18 @@ public class ButtonFooterMixin implements Mixin {
 
     FooterButtonInflater inflater = new FooterButtonInflater(context);
 
-    // If there are both PrimaryButton & SecondaryButton; setSecondaryButton() need to be called
-    // first. The button will be added from left to right in LTR, right to left in RTL.
     if (secondaryBtn != 0) {
       setSecondaryButton(inflater.inflate(secondaryBtn));
+      metrics.logPrimaryButtonInitialStateVisibility(/* isVisible= */ true, /* isUsingXml= */ true);
     }
 
     if (primaryBtn != 0) {
       setPrimaryButton(inflater.inflate(primaryBtn));
+      metrics.logSecondaryButtonInitialStateVisibility(
+          /* isVisible= */ true, /* isUsingXml= */ true);
     }
   }
 
-  // TODO(b/119537553): The button position abnormal due to set button order different.
   private View addSpace() {
     LinearLayout buttonContainer = ensureFooterInflated();
     View space = new View(buttonContainer.getContext());
@@ -221,6 +234,12 @@ public class ButtonFooterMixin implements Mixin {
     footerButton.setId(primaryButtonId);
     footerButton.setOnButtonEventListener(onButtonEventListener);
     primaryButton = footerButton;
+
+    // Check secondary button has been set before primary button or not. If set, will re-populate
+    // buttons to make sure the position of buttons are correctly.
+    if (getSecondaryButton() != null) {
+      repopulateButtons();
+    }
   }
 
   /** Returns the {@link FooterButton} of primary button. */
@@ -230,7 +249,12 @@ public class ButtonFooterMixin implements Mixin {
 
   @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
   public Button getPrimaryButtonView() {
-    return buttonContainer.findViewById(primaryButtonId);
+    return buttonContainer == null ? null : buttonContainer.findViewById(primaryButtonId);
+  }
+
+  @VisibleForTesting
+  boolean isPrimaryButtonVisible() {
+    return getPrimaryButtonView() != null && getPrimaryButtonView().getVisibility() == View.VISIBLE;
   }
 
   /** Sets secondary button for footer. */
@@ -264,6 +288,27 @@ public class ButtonFooterMixin implements Mixin {
     footerButton.setOnButtonEventListener(onButtonEventListener);
     secondaryButton = footerButton;
     addSpace();
+
+    // Check primary button has been set before secondary button or not. If set, will re-populate
+    // buttons to make sure the position of buttons are correctly.
+    if (getPrimaryButton() != null) {
+      repopulateButtons();
+    }
+  }
+
+  public void repopulateButtons() {
+    LinearLayout buttonContainer = ensureFooterInflated();
+    Button tempPrimaryButton = getPrimaryButtonView();
+    Button tempSecondaryButton = getSecondaryButtonView();
+    buttonContainer.removeAllViews();
+    buttonContainer.addView(tempSecondaryButton);
+    addSpace();
+    buttonContainer.addView(tempPrimaryButton);
+  }
+
+  @VisibleForTesting
+  LinearLayout getButtonContainer() {
+    return buttonContainer;
   }
 
   /** Returns the {@link FooterButton} of secondary button. */
@@ -273,7 +318,13 @@ public class ButtonFooterMixin implements Mixin {
 
   @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
   public Button getSecondaryButtonView() {
-    return buttonContainer.findViewById(secondaryButtonId);
+    return buttonContainer == null ? null : buttonContainer.findViewById(secondaryButtonId);
+  }
+
+  @VisibleForTesting
+  boolean isSecondaryButtonVisible() {
+    return getSecondaryButtonView() != null
+        && getSecondaryButtonView().getVisibility() == View.VISIBLE;
   }
 
   private static int generateViewId() {
@@ -402,7 +453,17 @@ public class ButtonFooterMixin implements Mixin {
             PartnerConfigHelper.get(context)
                 .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_SKIP);
         break;
-      case NONE:
+      case CANCEL:
+        icon =
+            PartnerConfigHelper.get(context)
+                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_CANCEL);
+        break;
+      case STOP:
+        icon =
+            PartnerConfigHelper.get(context)
+                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_STOP);
+        break;
+      case OTHER:
       default:
         icon = null;
         break;
@@ -411,32 +472,28 @@ public class ButtonFooterMixin implements Mixin {
   }
 
   private void setButtonIcon(Button button, Drawable icon) {
-    if (button == null || icon == null) {
+    if (button == null) {
       return;
     }
-    int h = icon.getIntrinsicHeight();
-    int w = icon.getIntrinsicWidth();
-    icon.setBounds(0, 0, w, h);
 
-    boolean isRtl = false;
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-      Configuration config = context.getResources().getConfiguration();
-      isRtl = config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    if (icon != null) {
+      // TODO(b/120488979): restrict the icons to a reasonable size
+      int h = icon.getIntrinsicHeight();
+      int w = icon.getIntrinsicWidth();
+      icon.setBounds(0, 0, w, h);
     }
 
-    Drawable iconLeft = null;
-    Drawable iconRight = null;
+    Drawable iconStart = null;
+    Drawable iconEnd = null;
     if (button.getId() == primaryButtonId) {
-      iconRight = icon;
+      iconEnd = icon;
     } else if (button.getId() == secondaryButtonId) {
-      iconLeft = icon;
+      iconStart = icon;
     }
     if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-      button.setCompoundDrawablesRelative(
-          isRtl ? iconRight : iconLeft, null, isRtl ? iconLeft : iconRight, null);
+      button.setCompoundDrawablesRelative(iconStart, null, iconEnd, null);
     } else {
-      button.setCompoundDrawables(
-          isRtl ? iconRight : iconLeft, null, isRtl ? iconLeft : iconRight, null);
+      button.setCompoundDrawables(iconStart, null, iconEnd, null);
     }
   }
 
@@ -498,5 +555,25 @@ public class ButtonFooterMixin implements Mixin {
     return (buttonContainer != null)
         ? buttonContainer.getPaddingBottom()
         : footerStub.getPaddingBottom();
+  }
+
+  /** Uses for notify mixin the view already attached to window. */
+  public void onAttachedToWindow() {
+    metrics.logPrimaryButtonInitialStateVisibility(
+        /* isVisible= */ isPrimaryButtonVisible(), /* isUsingXml= */ false);
+    metrics.logSecondaryButtonInitialStateVisibility(
+        /* isVisible= */ isSecondaryButtonVisible(), /* isUsingXml= */ false);
+  }
+
+  /** Uses for notify mixin the view already detached from window. */
+  public void onDetachedFromWindow() {
+    metrics.updateButtonVisibility(isPrimaryButtonVisible(), isSecondaryButtonVisible());
+  }
+
+  /**
+   * Assigns logging metrics to bundle for PartnerCustomizationLayout to log metrics to SetupWizard.
+   */
+  public PersistableBundle getLoggingMetrics() {
+    return metrics.getMetrics();
   }
 }

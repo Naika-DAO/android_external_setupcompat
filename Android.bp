@@ -8,12 +8,13 @@ android_library {
     resource_dirs: [
         "main/res",
     ],
-    sdk_version: "current",
     srcs: [
         "main/java/**/*.java",
+        "main/aidl/**/*.aidl",
     ],
     static_libs: [
         "androidx.annotation_annotation",
+        "androidx.core_core",
         "guava",
     ],
     min_sdk_version: "14",
