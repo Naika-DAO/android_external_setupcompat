@@ -44,6 +44,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -98,6 +99,16 @@ public class ButtonFooterMixin implements Mixin {
         }
 
         @Override
+        public void onTouchListenerChanged(@Nullable OnTouchListener listener, @IdRes int id) {
+          if (buttonContainer != null && id != 0) {
+            Button button = buttonContainer.findViewById(id);
+            if (button != null) {
+              button.setOnTouchListener(listener);
+            }
+          }
+        }
+
+        @Override
         public void onEnabledChanged(boolean enabled, @IdRes int id) {
           if (buttonContainer != null && id != 0) {
             Button button = buttonContainer.findViewById(id);
@@ -113,6 +124,7 @@ public class ButtonFooterMixin implements Mixin {
             Button button = buttonContainer.findViewById(id);
             if (button != null) {
               button.setVisibility(visibility);
+              autoSetButtonBarVisibility();
             }
           }
         }
@@ -190,6 +202,11 @@ public class ButtonFooterMixin implements Mixin {
         throw new IllegalStateException("Footer stub is not found in this template");
       }
       buttonContainer = (LinearLayout) inflateFooter(R.layout.suc_footer_button_bar);
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+        buttonContainer.setId(View.generateViewId());
+      } else {
+        buttonContainer.setId(generateViewId());
+      }
       updateBottomBarPadding();
     }
     return buttonContainer;
@@ -205,7 +222,6 @@ public class ButtonFooterMixin implements Mixin {
 
   /** Sets primary button for footer. */
   public void setPrimaryButton(FooterButton footerButton) {
-    addSpace();
     LinearLayout buttonContainer = ensureFooterInflated();
 
     // Set the default theme if theme is not set, or when running in setup flow.
@@ -225,6 +241,7 @@ public class ButtonFooterMixin implements Mixin {
     Button button = inflateButton(footerButton);
     primaryButtonId = button.getId();
     buttonContainer.addView(button);
+    autoSetButtonBarVisibility();
 
     if (applyPartnerResources) {
       // This API should only be called after primaryButtonId is set.
@@ -235,11 +252,9 @@ public class ButtonFooterMixin implements Mixin {
     footerButton.setOnButtonEventListener(onButtonEventListener);
     primaryButton = footerButton;
 
-    // Check secondary button has been set before primary button or not. If set, will re-populate
-    // buttons to make sure the position of buttons are correctly.
-    if (getSecondaryButton() != null) {
-      repopulateButtons();
-    }
+    // Make sure the position of buttons are correctly and prevent primary button create twice or
+    // more.
+    repopulateButtons();
   }
 
   /** Returns the {@link FooterButton} of primary button. */
@@ -287,13 +302,10 @@ public class ButtonFooterMixin implements Mixin {
     footerButton.setId(secondaryButtonId);
     footerButton.setOnButtonEventListener(onButtonEventListener);
     secondaryButton = footerButton;
-    addSpace();
 
-    // Check primary button has been set before secondary button or not. If set, will re-populate
-    // buttons to make sure the position of buttons are correctly.
-    if (getPrimaryButton() != null) {
-      repopulateButtons();
-    }
+    // Make sure the position of buttons are correctly and prevent secondary button create twice or
+    // more.
+    repopulateButtons();
   }
 
   public void repopulateButtons() {
@@ -301,9 +313,14 @@ public class ButtonFooterMixin implements Mixin {
     Button tempPrimaryButton = getPrimaryButtonView();
     Button tempSecondaryButton = getSecondaryButtonView();
     buttonContainer.removeAllViews();
-    buttonContainer.addView(tempSecondaryButton);
+
+    if (tempSecondaryButton != null) {
+      buttonContainer.addView(tempSecondaryButton);
+    }
     addSpace();
-    buttonContainer.addView(tempPrimaryButton);
+    if (tempPrimaryButton != null) {
+      buttonContainer.addView(tempPrimaryButton);
+    }
   }
 
   @VisibleForTesting
@@ -314,6 +331,26 @@ public class ButtonFooterMixin implements Mixin {
   /** Returns the {@link FooterButton} of secondary button. */
   public FooterButton getSecondaryButton() {
     return secondaryButton;
+  }
+
+  /**
+   * Checks the visibility state of footer buttons to set the visibility state of this footer bar
+   * automatically.
+   */
+  private void autoSetButtonBarVisibility() {
+    Button primaryButton = getPrimaryButtonView();
+    Button secondaryButton = getSecondaryButtonView();
+    boolean primaryVisible = primaryButton != null && primaryButton.getVisibility() == View.VISIBLE;
+    boolean secondaryVisible =
+        secondaryButton != null && secondaryButton.getVisibility() == View.VISIBLE;
+
+    buttonContainer.setVisibility(primaryVisible || secondaryVisible ? View.VISIBLE : View.GONE);
+  }
+
+  /** Returns the visibility status for this footer bar. */
+  @VisibleForTesting
+  public int getVisibility() {
+    return buttonContainer.getVisibility();
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -425,11 +462,9 @@ public class ButtonFooterMixin implements Mixin {
 
   private void updateButtonRadiusWithPartnerConfig(Button button) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
-      float defaultRadius =
-          context.getResources().getDimension(R.dimen.suc_customization_button_corner_radius);
       float radius =
           PartnerConfigHelper.get(context)
-              .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS, defaultRadius);
+              .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS);
       GradientDrawable gradientDrawable = getGradientDrawable(button);
       if (gradientDrawable != null) {
         gradientDrawable.setCornerRadius(radius);

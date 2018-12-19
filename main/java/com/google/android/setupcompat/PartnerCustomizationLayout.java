@@ -75,17 +75,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     activity = lookupActivityFromContext(getContext());
 
     boolean isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
-    boolean applyPartnerResources = suwVersionSupportPartnerResource && isSetupFlow;
-    registerMixin(
-        StatusBarMixin.class,
-        new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResources));
-    registerMixin(
-        SystemNavBarMixin.class,
-        new SystemNavBarMixin(
-            this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResources));
-    registerMixin(
-        ButtonFooterMixin.class,
-        new ButtonFooterMixin(this, attrs, defStyleAttr, applyPartnerResources));
 
     TypedArray a =
         getContext()
@@ -99,11 +88,27 @@ public class PartnerCustomizationLayout extends TemplateLayout {
 
     boolean layoutFullscreen =
         a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucLayoutFullscreen, true);
+
+    boolean usePartnerResource =
+        a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
     a.recycle();
 
     if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && layoutFullscreen) {
       setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
+
+    boolean applyPartnerResource =
+        suwVersionSupportPartnerResource && (isSetupFlow || usePartnerResource);
+    registerMixin(
+        StatusBarMixin.class,
+        new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
+    registerMixin(
+        SystemNavBarMixin.class,
+        new SystemNavBarMixin(
+            this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
+    registerMixin(
+        ButtonFooterMixin.class,
+        new ButtonFooterMixin(this, attrs, defStyleAttr, applyPartnerResource));
 
     // Override the FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS, FLAG_TRANSLUCENT_STATUS,
     // FLAG_TRANSLUCENT_NAVIGATION and SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN attributes of window forces

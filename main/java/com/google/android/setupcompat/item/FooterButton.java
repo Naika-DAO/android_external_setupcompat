@@ -19,12 +19,14 @@ package com.google.android.setupcompat.item;
 import android.content.Context;
 import android.content.res.TypedArray;
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.template.ButtonFooterMixin;
 
@@ -32,7 +34,7 @@ import com.google.android.setupcompat.template.ButtonFooterMixin;
  * Definition of a footer button. Clients can use this class to customize attributes like text,
  * button type and click listener, and ButtonFooterMixin will inflate a corresponding Button view.
  */
-public class FooterButton {
+public final class FooterButton {
   private static final int BUTTON_TYPE_NONE = 0;
 
   private final ButtonType buttonType;
@@ -49,8 +51,9 @@ public class FooterButton {
     text = a.getString(R.styleable.SucFooterButton_android_text);
     onClickListener = null;
     buttonType =
-        ButtonType.values()[a.getInt(R.styleable.SucFooterButton_sucButtonType, BUTTON_TYPE_NONE)];
-    theme = a.getResourceId(R.styleable.SucFooterButton_android_theme, 0);
+        ButtonType.valueOf(
+            a.getInt(R.styleable.SucFooterButton_sucButtonType, /* defValue= */ BUTTON_TYPE_NONE));
+    theme = a.getResourceId(R.styleable.SucFooterButton_android_theme, /* defValue= */ 0);
     a.recycle();
   }
 
@@ -63,7 +66,9 @@ public class FooterButton {
    * @param listener The listener for button.
    * @param buttonType The type of button.
    * @param theme The theme for button.
+   * @deprecated use {@link #FooterButton.Builder(Context)} instead.
    */
+  @Deprecated
   public FooterButton(
       Context context,
       @StringRes int text,
@@ -73,6 +78,8 @@ public class FooterButton {
     this(context.getString(text), listener, buttonType, theme);
   }
 
+  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
+  @Deprecated
   public FooterButton(
       Context context,
       @StringRes int text,
@@ -81,12 +88,16 @@ public class FooterButton {
     this(context.getString(text), listener, ButtonType.OTHER, theme);
   }
 
+  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
+  @Deprecated
   public FooterButton(String text, @Nullable OnClickListener listener, @StyleRes int theme) {
     this(text, listener, ButtonType.OTHER, theme);
   }
 
+  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
+  @Deprecated
   public FooterButton(
-      String text,
+      CharSequence text,
       @Nullable OnClickListener listener,
       @Nullable ButtonType buttonType,
       @StyleRes int theme) {
@@ -122,6 +133,17 @@ public class FooterButton {
     onClickListener = listener;
     if (buttonListener != null && id != 0) {
       buttonListener.onClickListenerChanged(listener, id);
+    }
+  }
+
+  /**
+   * Registers a callback to be invoked when touch event footer button has reacted.
+   *
+   * @param listener The callback that will run
+   */
+  public void setOnTouchListener(@Nullable OnTouchListener listener) {
+    if (buttonListener != null && id != 0) {
+      buttonListener.onTouchListenerChanged(listener, id);
     }
   }
 
@@ -200,6 +222,8 @@ public class FooterButton {
 
     void onClickListenerChanged(@Nullable OnClickListener listener, @IdRes int id);
 
+    void onTouchListenerChanged(@Nullable OnTouchListener listener, @IdRes int id);
+
     void onEnabledChanged(boolean enabled, @IdRes int id);
 
     void onVisibilityChanged(int visibility, @IdRes int id);
@@ -229,6 +253,78 @@ public class FooterButton {
     /** A type of button that will cancel the ongoing setup step(s) and exit setup when clicked. */
     CANCEL,
     /** A type of button that will stop the ongoing setup step(s) and skip forward when clicked. */
-    STOP
+    STOP;
+
+    public static ButtonType valueOf(int value) {
+      if (value >= 0 && value < ButtonType.values().length) {
+        return ButtonType.values()[value];
+      } else {
+        return OTHER;
+      }
+    }
+  }
+
+  /**
+   * Builder class for constructing {@code FooterButton} objects.
+   *
+   * <p>Allows client customize text, click listener and theme for footer button before Button has
+   * been created. The {@link ButtonFooterMixin} will inflate a corresponding Button view.
+   *
+   * <p>Example:
+   *
+   * <pre class="prettyprint">
+   * FooterButton primaryButton =
+   *     new FooterButton.Builder(mContext)
+   *         .setText(R.string.primary_button_label)
+   *         .setListener(primaryButton)
+   *         .setButtonType(ButtonType.NEXT)
+   *         .setTheme(R.style.SuwGlifButton_Primary)
+   *         .build();
+   * </pre>
+   */
+  public static class Builder {
+    private final Context context;
+    private String text = "";
+    private OnClickListener onClickListener = null;
+    private ButtonType buttonType = ButtonType.OTHER;
+    private int theme = 0;
+
+    public Builder(@NonNull Context context) {
+      this.context = context;
+    }
+
+    /** Sets the {@code text} of FooterButton. */
+    public Builder setText(String text) {
+      this.text = text;
+      return this;
+    }
+
+    /** Sets the {@code text} of FooterButton by resource. */
+    public Builder setText(@StringRes int text) {
+      this.text = context.getString(text);
+      return this;
+    }
+
+    /** Sets the {@code listener} of FooterButton. */
+    public Builder setListener(@Nullable OnClickListener listener) {
+      onClickListener = listener;
+      return this;
+    }
+
+    /** Sets the {@code buttonType} of FooterButton. */
+    public Builder setButtonType(ButtonType buttonType) {
+      this.buttonType = buttonType;
+      return this;
+    }
+
+    /** Sets the {@code theme} for applying FooterButton. */
+    public Builder setTheme(@StyleRes int theme) {
+      this.theme = theme;
+      return this;
+    }
+
+    public FooterButton build() {
+      return new FooterButton(text, onClickListener, buttonType, theme);
+    }
   }
 }

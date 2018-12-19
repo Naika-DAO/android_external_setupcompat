@@ -56,11 +56,6 @@
 
     <!-- Values used in themes -->
     <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucFooterBarButtonCornerRadius</item>
-
-    <!-- Default value -->
-    <item name="sucFooterBarButtonFontFamily">@string/suc_customization_button_font_family</item>
-    <item name="sucFooterBarButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
-    <item name="sucFooterBarButtonAllCaps">false</item>
   </style>
 
   <style name="SucPartnerCustomizationButton.Secondary" parent="android:Widget.Material.Button.Borderless.Colored">
@@ -81,13 +76,6 @@
     <item name="android:buttonCornerRadius" tools:ignore="NewApi">?attr/sucFooterBarButtonCornerRadius</item>
     <item name="android:colorControlHighlight" tools:targetApi="lollipop">@color/suc_customization_button_highlight_ripple</item>
     <item name="sucFooterBarButtonColorControlHighlight">@color/suc_customization_button_highlight_ripple</item>
-    <item name="sucFooterBarButtonHighlightAlpha">@dimen/suc_customization_button_ripple_alpha</item>
-
-    <!-- Default value -->
-    <item name="sucFooterBarButtonFontFamily">@string/suc_customization_button_font_family</item>
-    <item name="sucFooterBarButtonCornerRadius">@dimen/suc_customization_button_corner_radius</item>
-    <item name="sucFooterBarButtonAllCaps">false</item>
-    <item name="sucFooterBarButtonColorControlHighlightRipple">@color/suc_customization_button_highlight_default</item>
   </style>
 
 </resources>

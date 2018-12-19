@@ -17,6 +17,7 @@
 
 <resources>
 
+   <!-- TODO(b/121025996): Remove default values from setup compat, use from theme -->
   <!-- Footer button bar style padding attributes-->
   <dimen name="suc_customization_footer_padding_vertical">8dp</dimen>
   <dimen name="suc_customization_footer_min_height">72dp</dimen>
@@ -25,11 +26,4 @@
 
   <!-- Footer button style padding attributes -->
   <dimen name="suc_customization_button_padding">16dp</dimen>
-
-  <!-- Footer button style radius attributes -->
-  <dimen name="suc_customization_button_corner_radius">4dp</dimen>
-
-  <!-- Footer button style ripple alpha attributes -->
-  <item name="suc_customization_button_ripple_alpha" format="float" type="dimen">0.12</item>
-
 </resources>

@@ -217,8 +217,13 @@ public class SetupCompatServiceProvider {
       new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder binder) {
+          State state = State.CONNECTED;
+          if (binder == null) {
+            state = State.DISCONNECTED;
+            Log.w(TAG, "Binder is null when onServiceConnected was called!");
+          }
           swapServiceContextAndNotify(
-              new ServiceContext(State.CONNECTED, ISetupCompatService.Stub.asInterface(binder)));
+              new ServiceContext(state, ISetupCompatService.Stub.asInterface(binder)));
         }
 
         @Override

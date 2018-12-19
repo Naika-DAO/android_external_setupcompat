@@ -24,12 +24,14 @@
     <attr name="sucContainer" format="reference" />
   </declare-styleable>
 
-  <!-- Whether style customization values are loaded from OEM partner APKs or not. -->
-  <attr name="sucEnablePartnerStyle" format="boolean" />
-
   <declare-styleable name="SucPartnerCustomizationLayout">
     <attr name="sucFooter" format="reference" />
     <attr name="sucLayoutFullscreen" format="boolean" />
+    <!-- When set to false, prevents the layout applying partner resource. This attribute is
+         particularly useful when the layout would like to apply their customized attributes.
+         This attribute will be ignored and use partner resource when inside setup wizard flow.
+         The default value is true. -->
+    <attr name="sucUsePartnerResource" format="boolean" />
   </declare-styleable>
 
   <!-- Status bar attributes -->
@@ -74,7 +76,7 @@
     <attr name="sucFooterBarPaddingBottom" format="dimension" />
     <attr name="sucFooterBarPrimaryFooterButton" format="reference" />
     <attr name="sucFooterBarSecondaryFooterButton" format="reference" />
-    <attr name="sucFooterBarButtonHighlightAlpha" format="dimension" />
+    <attr name="sucFooterBarButtonHighlightAlpha" format="float" />
     <attr name="sucFooterBarButtonColorControlHighlight" format="color" />
     <attr name="sucFooterBarButtonColorControlHighlightRipple" format="color" />
   </declare-styleable>
