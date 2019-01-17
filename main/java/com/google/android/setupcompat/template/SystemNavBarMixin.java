@@ -32,8 +32,6 @@ import android.view.View;
 import android.view.Window;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.util.PartnerConfig;
-import com.google.android.setupcompat.util.PartnerConfigHelper;
 
 /**
  * A {@link Mixin} for setting and getting background color and window compatible with light theme
@@ -73,10 +71,8 @@ public class SystemNavBarMixin implements Mixin {
     int navigationBarBackground =
         a.getColor(R.styleable.SucSystemNavBarMixin_sucSystemNavBarBackgroundColor, 0);
     setSystemNavBarBackground(navigationBarBackground);
-    setSystemNavBarWindowLight(
-        a.getBoolean(
-            R.styleable.SucSystemNavBarMixin_sucSystemNavBarWindowLight,
-            isSystemNavBarWindowLight()));
+    setLightSystemNavBar(
+        a.getBoolean(R.styleable.SucSystemNavBarMixin_sucLightSystemNavBar, isLightSystemNavBar()));
     a.recycle();
   }
 
@@ -114,13 +110,13 @@ public class SystemNavBarMixin implements Mixin {
    *
    * @param isLight true means compatible with light theme, otherwise compatible with dark theme
    */
-  public void setSystemNavBarWindowLight(boolean isLight) {
+  public void setLightSystemNavBar(boolean isLight) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       if (applyPartnerResources) {
         Context context = partnerCustomizationLayout.getContext();
         isLight =
             PartnerConfigHelper.get(context)
-                .getBoolean(context, PartnerConfig.CONFIG_WINDOW_LIGHT_NAVIGATION_BAR, false);
+                .getBoolean(context, PartnerConfig.CONFIG_LIGHT_NAVIGATION_BAR, false);
       }
 
       if (isLight) {
@@ -137,7 +133,7 @@ public class SystemNavBarMixin implements Mixin {
    * Returns true if the navigation bar icon should be drawn on light background, false if the icons
    * should be drawn light-on-dark.
    */
-  public boolean isSystemNavBarWindowLight() {
+  public boolean isLightSystemNavBar() {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       return (decorView.getSystemUiVisibility() & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
           == SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;

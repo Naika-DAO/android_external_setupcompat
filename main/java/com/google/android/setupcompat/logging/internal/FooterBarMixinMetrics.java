@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2018 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.android.setupcompat.logging.internal;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -8,7 +24,7 @@ import androidx.annotation.VisibleForTesting;
 import java.lang.annotation.Retention;
 
 /** Uses to log internal event footer button metric */
-public class ButtonFooterMixinMetrics {
+public class FooterBarMixinMetrics {
   @VisibleForTesting
   public static final String EXTRA_PRIMARY_BUTTON_VISIBILITY = "PrimaryButtonVisibility";
 
@@ -17,7 +33,7 @@ public class ButtonFooterMixinMetrics {
 
   @Retention(SOURCE)
   @StringDef({
-    FooterButtonVisibility.UNKNOW,
+    FooterButtonVisibility.UNKNOWN,
     FooterButtonVisibility.VISIBLE_USING_XML,
     FooterButtonVisibility.VISIBLE,
     FooterButtonVisibility.VISIBLE_USING_XML_TO_INVISIBLE,
@@ -27,7 +43,7 @@ public class ButtonFooterMixinMetrics {
   })
   @VisibleForTesting
   public @interface FooterButtonVisibility {
-    String UNKNOW = "Unknow";
+    String UNKNOWN = "Unknown";
     String VISIBLE_USING_XML = "VisibileUsingXml";
     String VISIBLE = "Visible";
     String VISIBLE_USING_XML_TO_INVISIBLE = "VisibileUsingXml_to_Invisible";
@@ -36,12 +52,12 @@ public class ButtonFooterMixinMetrics {
     String INVISIBLE = "Invisible";
   }
 
-  @FooterButtonVisibility String primaryButtonVisibility = FooterButtonVisibility.UNKNOW;
+  @FooterButtonVisibility String primaryButtonVisibility = FooterButtonVisibility.UNKNOWN;
 
-  @FooterButtonVisibility String secondaryButtonVisibility = FooterButtonVisibility.UNKNOW;
+  @FooterButtonVisibility String secondaryButtonVisibility = FooterButtonVisibility.UNKNOWN;
 
   /** Creates a metric object for metric logging */
-  public ButtonFooterMixinMetrics() {}
+  public FooterBarMixinMetrics() {}
 
   /** Gets initial state visibility */
   @FooterButtonVisibility
@@ -61,7 +77,7 @@ public class ButtonFooterMixinMetrics {
   /** Saves primary footer button visibility when initial state */
   public void logPrimaryButtonInitialStateVisibility(boolean isVisible, boolean isUsingXml) {
     primaryButtonVisibility =
-        primaryButtonVisibility.equals(FooterButtonVisibility.UNKNOW)
+        primaryButtonVisibility.equals(FooterButtonVisibility.UNKNOWN)
             ? getInitialStateVisibility(isVisible, isUsingXml)
             : primaryButtonVisibility;
   }
@@ -69,7 +85,7 @@ public class ButtonFooterMixinMetrics {
   /** Saves secondary footer button visibility when initial state */
   public void logSecondaryButtonInitialStateVisibility(boolean isVisible, boolean isUsingXml) {
     secondaryButtonVisibility =
-        secondaryButtonVisibility.equals(FooterButtonVisibility.UNKNOW)
+        secondaryButtonVisibility.equals(FooterButtonVisibility.UNKNOWN)
             ? getInitialStateVisibility(isVisible, isUsingXml)
             : secondaryButtonVisibility;
   }

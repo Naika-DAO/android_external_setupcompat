@@ -24,6 +24,8 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import com.google.android.setupcompat.internal.ClockProvider;
+import com.google.android.setupcompat.internal.LayoutBindBackHelper;
+import com.google.android.setupcompat.internal.SetupCompatServiceInvoker;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
 import com.google.android.setupcompat.util.WizardManagerHelper;
@@ -49,6 +51,11 @@ public class LifecycleFragment extends Fragment {
    */
   public static LifecycleFragment attachNow(Activity activity) {
     if (WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
+      SetupCompatServiceInvoker.get(activity.getApplicationContext())
+          .bindBack(
+              LayoutBindBackHelper.getScreenName(activity),
+              LayoutBindBackHelper.getExtraBundle(activity));
+
       if (VERSION.SDK_INT > VERSION_CODES.M) {
         FragmentManager fragmentManager = activity.getFragmentManager();
         Fragment fragment = activity.getFragmentManager().findFragmentByTag(FRAGMENT_ID);

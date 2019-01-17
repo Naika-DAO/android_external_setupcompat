@@ -26,6 +26,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import androidx.annotation.LayoutRes;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +37,16 @@ import com.google.android.setupcompat.lifecycle.LifecycleFragment;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
-import com.google.android.setupcompat.template.ButtonFooterMixin;
+import com.google.android.setupcompat.template.FooterBarMixin;
+import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
 public class PartnerCustomizationLayout extends TemplateLayout {
+  // Log tags can have at most 23 characters on N or before.
+  private static final String TAG = "PartnerCustomizedLayout";
 
   private final boolean suwVersionSupportPartnerResource = Build.VERSION.SDK_INT > VERSION_CODES.P;
   private Activity activity;
@@ -97,8 +101,26 @@ public class PartnerCustomizationLayout extends TemplateLayout {
       setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
+    Log.i(
+        TAG,
+        "isSetupFlow="
+            + isSetupFlow
+            + ", applyPartnerResource="
+            + applyPartnerResource()
+            + ", usePartnerResource="
+            + usePartnerResource);
+
+    if (suwVersionSupportPartnerResource && isSetupFlow && !applyPartnerResource()) {
+      Log.w(
+          TAG,
+          "This is inavlid usage that applyPartnerResource() should returns true"
+              + " during setup wizard flow");
+    }
+
     boolean applyPartnerResource =
-        suwVersionSupportPartnerResource && (isSetupFlow || usePartnerResource);
+        suwVersionSupportPartnerResource
+            && applyPartnerResource()
+            && (isSetupFlow || usePartnerResource);
     registerMixin(
         StatusBarMixin.class,
         new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
@@ -107,8 +129,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
         new SystemNavBarMixin(
             this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
     registerMixin(
-        ButtonFooterMixin.class,
-        new ButtonFooterMixin(this, attrs, defStyleAttr, applyPartnerResource));
+        FooterBarMixin.class, new FooterBarMixin(this, attrs, defStyleAttr, applyPartnerResource));
 
     // Override the FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS, FLAG_TRANSLUCENT_STATUS,
     // FLAG_TRANSLUCENT_NAVIGATION and SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN attributes of window forces
@@ -138,18 +159,30 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     LifecycleFragment.attachNow(activity);
-    getMixin(ButtonFooterMixin.class).onAttachedToWindow();
+    getMixin(FooterBarMixin.class).onAttachedToWindow();
   }
 
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
     if (WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
-      ButtonFooterMixin buttonFooterMixin = getMixin(ButtonFooterMixin.class);
-      buttonFooterMixin.onDetachedFromWindow();
+      FooterBarMixin footerBarMixin = getMixin(FooterBarMixin.class);
+      footerBarMixin.onDetachedFromWindow();
+      FooterButton primaryButton = footerBarMixin.getPrimaryButton();
+      FooterButton secondaryButton = footerBarMixin.getSecondaryButton();
+      PersistableBundle primaryButtonMetrics =
+          primaryButton != null
+              ? primaryButton.getMetrics("PrimaryFooterButton")
+              : PersistableBundle.EMPTY;
+      PersistableBundle secondaryButtonMetrics =
+          secondaryButton != null
+              ? secondaryButton.getMetrics("SecondaryFooterButton")
+              : PersistableBundle.EMPTY;
+
       PersistableBundle persistableBundle =
           PersistableBundles.mergeBundles(
-              new PersistableBundle(), buttonFooterMixin.getLoggingMetrics());
+              footerBarMixin.getLoggingMetrics(), primaryButtonMetrics, secondaryButtonMetrics);
+
       SetupMetricsLogger.logCustomEvent(
           getContext(),
           CustomEvent.create(
@@ -166,6 +199,16 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     } else {
       throw new IllegalArgumentException("Cannot find instance of Activity in parent tree");
     }
+  }
+
+  /**
+   * This method determines applying the partner resource regardless inside setup wizard flow or
+   * not. It always returns true indicating applying partner resource inside setup wizard flow and
+   * applying customized attributes outside setup wizard flow. Subclasses can override this method
+   * to change applying flow. If Returns false, the layout forces applying customized attributes.
+   */
+  protected boolean applyPartnerResource() {
+    return true;
   }
 
   /**

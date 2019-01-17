@@ -15,7 +15,6 @@
     limitations under the License.
 -->
 
-<!-- TODO(b/120391478): Gets ripple color and alpha from partner if client sets the values -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:color="?attr/sucFooterBarButtonColorControlHighlightRipple"
       android:alpha="?attr/sucFooterBarButtonHighlightAlpha" />

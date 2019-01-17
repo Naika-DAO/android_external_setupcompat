@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.template;
 
 import androidx.annotation.StringDef;
+import androidx.annotation.VisibleForTesting;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -24,9 +25,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({
   PartnerConfigKey.KEY_STATUS_BAR_BACKGROUND,
-  PartnerConfigKey.KEY_WINDOW_LIGHT_STATUS_BAR,
+  PartnerConfigKey.KEY_LIGHT_STATUS_BAR,
   PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR,
-  PartnerConfigKey.KEY_WINDOW_LIGHT_NAVIGATION_BAR,
+  PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR,
   PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL,
@@ -39,6 +40,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_TOP,
   PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_BOTTOM,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_SIZE,
@@ -47,20 +49,21 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_SIZE,
 })
 // TODO(121371322): can be removed and always reference PartnerConfig.getResourceName()?
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public @interface PartnerConfigKey {
   // Status bar background color or illustration.
   String KEY_STATUS_BAR_BACKGROUND = "setup_compat_status_bar_background";
 
   // The same as "WindowLightStatusBar". If set true, the status bar icons will be drawn such
   // that it is compatible with a light status bar background
-  String KEY_WINDOW_LIGHT_STATUS_BAR = "setup_compat_window_light_status_bar";
+  String KEY_LIGHT_STATUS_BAR = "setup_compat_light_status_bar";
 
   // Navigation bar background color
   String KEY_NAVIGATION_BAR_BG_COLOR = "setup_compat_navigation_bar_bg_color";
 
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
-  String KEY_WINDOW_LIGHT_NAVIGATION_BAR = "setup_compat_window_light_navigation_bar";
+  String KEY_LIGHT_NAVIGATION_BAR = "setup_compat_light_navigation_bar";
 
   // The font face used in footer buttons. This must be a string reference to a font that is
   // available in the system. Font references (@font or @xml) are not allowed.
@@ -98,6 +101,9 @@ public @interface PartnerConfigKey {
 
   // Corner radius of the footer buttons
   String KEY_FOOTER_BUTTON_RADIUS = "setup_compat_footer_button_radius";
+
+  // Ripple color alpha of the footer button
+  String KEY_FOOTER_BUTTON_RIPPLE_ALPHA = "setup_compat_footer_button_ripple_alpha";
 
   // Background color of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR = "setup_compat_footer_primary_button_bg_color";

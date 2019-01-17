@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat;
+package com.google.android.setupcompat.internal;
 
+import android.app.Activity;
 import android.os.Bundle;
 
-/**
- * Declares the interface for compat related service methods.
- */
-interface ISetupCompatService {
-  /** Notifies SetupWizard that the screen is using PartnerCustomizationLayout */
-  oneway void validateActivity(String screenName, in Bundle arguments);
+public final class LayoutBindBackHelper {
 
-  oneway void logMetric(int metricType, in Bundle arguments, in Bundle extras);
+  private LayoutBindBackHelper() {}
+
+  public static final String getScreenName(Activity activity) {
+    return activity.getComponentName().toString();
+  }
+
+  public static final Bundle getExtraBundle(Activity activity) {
+    Bundle bundle = new Bundle();
+
+    bundle.putString("screenName", getScreenName(activity));
+    bundle.putString("intentAction", activity.getIntent().getAction());
+
+    return bundle;
+  }
 }

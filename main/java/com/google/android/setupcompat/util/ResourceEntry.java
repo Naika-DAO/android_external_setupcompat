@@ -53,7 +53,7 @@ public final class ResourceEntry {
     return new ResourceEntry(packageName, resourceName, resourceId);
   }
 
-  public ResourceEntry(String packageName, @PartnerConfigKey String resourceName, int resourceId) {
+  public ResourceEntry(String packageName, String resourceName, int resourceId) {
     this.packageName = packageName;
     this.resourceName = resourceName;
     this.resourceId = resourceId;

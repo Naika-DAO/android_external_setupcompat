@@ -19,7 +19,7 @@ package com.google.android.setupcompat.logging;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import com.google.android.setupcompat.logging.internal.DefaultSetupMetricsLogger;
+import com.google.android.setupcompat.internal.SetupCompatServiceInvoker;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricBundleKeys;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricType;
 import com.google.common.base.Preconditions;
@@ -34,7 +34,7 @@ public class SetupMetricsLogger {
     Preconditions.checkNotNull(customEvent, "CustomEvent cannot be null.");
     Bundle bundle = new Bundle();
     bundle.putParcelable(MetricBundleKeys.CUSTOM_EVENT, customEvent);
-    DefaultSetupMetricsLogger.get(context).logEventSafely(MetricType.CUSTOM_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.CUSTOM_EVENT, bundle);
   }
 
   /** Increments the counter value with the name {@code counterName} by {@code times}. */
@@ -46,7 +46,7 @@ public class SetupMetricsLogger {
     Bundle bundle = new Bundle();
     bundle.putParcelable(MetricBundleKeys.METRIC_KEY, counterName);
     bundle.putInt(MetricBundleKeys.COUNTER_INT, times);
-    DefaultSetupMetricsLogger.get(context).logEventSafely(MetricType.COUNTER_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.COUNTER_EVENT, bundle);
   }
 
   /**
@@ -70,6 +70,6 @@ public class SetupMetricsLogger {
     Bundle bundle = new Bundle();
     bundle.putParcelable(MetricBundleKeys.METRIC_KEY, timerName);
     bundle.putLong(MetricBundleKeys.TIME_MILLIS_LONG, timeInMillis);
-    DefaultSetupMetricsLogger.get(context).logEventSafely(MetricType.DURATION_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.DURATION_EVENT, bundle);
   }
 }

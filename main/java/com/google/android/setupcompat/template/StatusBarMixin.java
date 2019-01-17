@@ -32,10 +32,9 @@ import androidx.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.util.PartnerConfig;
-import com.google.android.setupcompat.util.PartnerConfigHelper;
 import com.google.android.setupcompat.view.StatusBarBackgroundLayout;
 
 /**
@@ -45,33 +44,42 @@ import com.google.android.setupcompat.view.StatusBarBackgroundLayout;
 public class StatusBarMixin implements Mixin {
 
   private final PartnerCustomizationLayout partnerCustomizationLayout;
-  private final StatusBarBackgroundLayout statusBarLayout;
+  private StatusBarBackgroundLayout statusBarLayout;
+  private LinearLayout linearLayout;
   private final View decorView;
-  @VisibleForTesting final boolean applyPartnerResources;
+  @VisibleForTesting boolean applyPartnerResources;
 
   /**
    * Creates a mixin for managing status bar.
    *
-   * @param layout The layout this Mixin belongs to.
+   * @param partnerCustomizationLayout The layout this Mixin belongs to.
    * @param window The window this activity of Mixin belongs to.
    * @param attrs XML attributes given to the layout.
    * @param defStyleAttr The default style attribute as given to the constructor of the layout.
    * @param applyPartnerResources determine applies partner resources or not.
    */
   public StatusBarMixin(
-      @NonNull PartnerCustomizationLayout layout,
+      @NonNull PartnerCustomizationLayout partnerCustomizationLayout,
       @NonNull Window window,
       @Nullable AttributeSet attrs,
       @AttrRes int defStyleAttr,
       boolean applyPartnerResources) {
-    partnerCustomizationLayout = layout;
-    statusBarLayout = partnerCustomizationLayout.findManagedViewById(R.id.suc_layout_status);
+
+    this.partnerCustomizationLayout = partnerCustomizationLayout;
+
+    View sucLayoutStatus = partnerCustomizationLayout.findManagedViewById(R.id.suc_layout_status);
+    if (sucLayoutStatus == null) {
+      throw new NullPointerException("sucLayoutStatus cannot be null in StatusBarMixin");
+    }
+
+    if (sucLayoutStatus instanceof StatusBarBackgroundLayout) {
+      statusBarLayout = (StatusBarBackgroundLayout) sucLayoutStatus;
+    } else {
+      linearLayout = (LinearLayout) sucLayoutStatus;
+    }
+
     decorView = window.getDecorView();
     this.applyPartnerResources = applyPartnerResources;
-
-    if (statusBarLayout == null) {
-      throw new NullPointerException("StatusBarBackgroundLayout cannot be null in StatusBarMixin");
-    }
 
     // Override the color of status bar to transparent such that the color of
     // StatusBarBackgroundLayout can be seen.
@@ -80,12 +88,11 @@ public class StatusBarMixin implements Mixin {
     }
 
     TypedArray a =
-        layout
+        partnerCustomizationLayout
             .getContext()
             .obtainStyledAttributes(attrs, R.styleable.SucStatusBarMixin, defStyleAttr, 0);
-    setStatusBarWindowLight(
-        a.getBoolean(
-            R.styleable.SucStatusBarMixin_sucStatusBarWindowLight, isStatusBarWindowLight()));
+    setLightStatusBar(
+        a.getBoolean(R.styleable.SucStatusBarMixin_sucLightStatusBar, isLightStatusBar()));
     setStatusBarBackground(a.getDrawable(R.styleable.SucStatusBarMixin_sucStatusBarBackground));
     a.recycle();
   }
@@ -114,12 +121,20 @@ public class StatusBarMixin implements Mixin {
               .getDrawable(context, PartnerConfig.CONFIG_STATUS_BAR_BACKGROUND);
     }
 
-    statusBarLayout.setStatusBarBackground(background);
+    if (statusBarLayout == null) {
+      linearLayout.setBackground(background);
+    } else {
+      statusBarLayout.setStatusBarBackground(background);
+    }
   }
 
   /** Returns the background of status bar. */
   public Drawable getStatusBarBackground() {
-    return statusBarLayout.getStatusBarBackground();
+    if (statusBarLayout == null) {
+      return linearLayout.getBackground();
+    } else {
+      return statusBarLayout.getStatusBarBackground();
+    }
   }
 
   /**
@@ -129,13 +144,13 @@ public class StatusBarMixin implements Mixin {
    *
    * @param isLight true means compatible with light theme, otherwise compatible with dark theme
    */
-  public void setStatusBarWindowLight(boolean isLight) {
+  public void setLightStatusBar(boolean isLight) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
       if (applyPartnerResources) {
         Context context = partnerCustomizationLayout.getContext();
         isLight =
             PartnerConfigHelper.get(context)
-                .getBoolean(context, PartnerConfig.CONFIG_WINDOW_LIGHT_STATUS_BAR, false);
+                .getBoolean(context, PartnerConfig.CONFIG_LIGHT_STATUS_BAR, false);
       }
 
       if (isLight) {
@@ -152,7 +167,7 @@ public class StatusBarMixin implements Mixin {
    * Returns true if status bar icons should be drawn on light background, false if the icons should
    * be light-on-dark.
    */
-  public boolean isStatusBarWindowLight() {
+  public boolean isLightStatusBar() {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
       return (decorView.getSystemUiVisibility() & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
           == SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;

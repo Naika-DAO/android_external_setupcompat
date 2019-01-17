@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.template;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,10 +32,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.TypedValue;
-import com.google.android.setupcompat.util.PartnerConfig.ResourceType;
+import com.google.android.setupcompat.template.PartnerConfig.ResourceType;
+import com.google.android.setupcompat.util.ResourceEntry;
 import java.util.EnumMap;
 
 /** The helper reads and caches the partner configurations from SUW. */
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public class PartnerConfigHelper {
 
   private static final String TAG = PartnerConfigHelper.class.getSimpleName();
@@ -236,6 +238,47 @@ public class PartnerConfigHelper {
       ResourceEntry resourceEntry = getResourceEntryFromKey(resourceConfig.getResourceName());
       Resources resource = getResourcesByPackageName(context, resourceEntry.getPackageName());
       result = resource.getDimension(resourceEntry.getResourceId());
+      partnerResourceCache.put(resourceConfig, result);
+    } catch (PackageManager.NameNotFoundException | NullPointerException exception) {
+      // fall through
+    }
+    return result;
+  }
+
+  /**
+   * Returns the float of given {@code resourceConfig}. The default return value is 0.
+   *
+   * @param context The context of client activity
+   * @param resourceConfig The {@code PartnerConfig} of target resource
+   */
+  public float getFraction(@NonNull Context context, PartnerConfig resourceConfig) {
+    return getFraction(context, resourceConfig, 0.0f);
+  }
+
+  /**
+   * Returns the float of given {@code resourceConfig}. If the given {@code resourceConfig} not
+   * found, will return {@code defaultValue}. If the {@code ResourceType} of given {@code
+   * resourceConfig} is not fraction, will throw IllegalArgumentException.
+   *
+   * @param context The context of client activity
+   * @param resourceConfig The {@code PartnerConfig} of target resource
+   * @param defaultValue The default value
+   */
+  public float getFraction(
+      @NonNull Context context, PartnerConfig resourceConfig, float defaultValue) {
+    if (resourceConfig.getResourceType() != ResourceType.FRACTION) {
+      throw new IllegalArgumentException("Not a fraction resource");
+    }
+
+    if (partnerResourceCache.containsKey(resourceConfig)) {
+      return (float) partnerResourceCache.get(resourceConfig);
+    }
+
+    float result = defaultValue;
+    try {
+      ResourceEntry resourceEntry = getResourceEntryFromKey(resourceConfig.getResourceName());
+      Resources resource = getResourcesByPackageName(context, resourceEntry.getPackageName());
+      result = resource.getFraction(resourceEntry.getResourceId(), 1, 1);
       partnerResourceCache.put(resourceConfig, result);
     } catch (PackageManager.NameNotFoundException | NullPointerException exception) {
       // fall through

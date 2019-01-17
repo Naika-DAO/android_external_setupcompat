@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.logging.internal;
+package com.google.android.setupcompat.internal;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,8 +22,6 @@ import android.os.RemoteException;
 import androidx.annotation.VisibleForTesting;
 import android.util.Log;
 import com.google.android.setupcompat.ISetupCompatService;
-import com.google.android.setupcompat.internal.ExecutorProvider;
-import com.google.android.setupcompat.internal.SetupCompatServiceProvider;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricType;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
@@ -31,26 +29,36 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * This class is responsible for safely publishing log events to SetupWizard. To avoid memory issues
- * due to backed up queues, an upper bound of {@link
- * ExecutorProvider#SETUP_METRICS_LOGGER_MAX_QUEUED} is set on the executor service's queue. Once
- * the upper bound is reached, metrics published after this event are dropped silently.
+ * This class is responsible for safely executing methods on SetupCompatService. To avoid memory
+ * issues due to backed up queues, an upper bound of {@link
+ * ExecutorProvider#SETUP_METRICS_LOGGER_MAX_QUEUED} is set on the logging executor service's queue
+ * and {@link ExecutorProvider#SETUP_COMPAT_BINDBACK_MAX_QUEUED} on the overall executor service.
+ * Once the upper bound is reached, metrics published after this event are dropped silently.
  *
  * <p>NOTE: This class is not meant to be used directly. Please use {@link
  * com.google.android.setupcompat.logging.SetupMetricsLogger} for publishing metric events.
  */
-public class DefaultSetupMetricsLogger {
+public class SetupCompatServiceInvoker {
 
   @SuppressWarnings("FutureReturnValueIgnored")
-  public void logEventSafely(@MetricType int metricType, Bundle args) {
+  public void logMetricEvent(@MetricType int metricType, Bundle args) {
     try {
-      executorService.submit(() -> invokeService(metricType, args));
+      loggingExecutor.submit(() -> invokeLogMetric(metricType, args));
     } catch (RejectedExecutionException e) {
       Log.e(TAG, String.format("Metric of type %d dropped since queue is full.", metricType), e);
     }
   }
 
-  private void invokeService(@MetricType int metricType, @SuppressWarnings("unused") Bundle args) {
+  public void bindBack(String screenName, Bundle bundle) {
+    try {
+      setupCompatExecutor.execute(() -> invokeBindBack(screenName, bundle));
+    } catch (RejectedExecutionException e) {
+      Log.e(TAG, String.format("Screen %s bind back fail.", screenName), e);
+    }
+  }
+
+  private void invokeLogMetric(
+      @MetricType int metricType, @SuppressWarnings("unused") Bundle args) {
     try {
       ISetupCompatService setupCompatService =
           SetupCompatServiceProvider.get(
@@ -65,32 +73,51 @@ public class DefaultSetupMetricsLogger {
     }
   }
 
-  private DefaultSetupMetricsLogger(Context context) {
+  private void invokeBindBack(String screenName, Bundle bundle) {
+    try {
+      ISetupCompatService setupCompatService =
+          SetupCompatServiceProvider.get(
+              context, waitTimeInMillisForServiceConnection, TimeUnit.MILLISECONDS);
+      if (setupCompatService != null) {
+        setupCompatService.validateActivity(screenName, bundle);
+      } else {
+        Log.w(TAG, "BindBack failed since service reference is null. Are the permissions valid?");
+      }
+    } catch (InterruptedException | TimeoutException | RemoteException e) {
+      Log.e(
+          TAG,
+          String.format("Exception occurred while %s trying bind back to SetupWizard.", screenName),
+          e);
+    }
+  }
+
+  private SetupCompatServiceInvoker(Context context) {
     this.context = context;
-    this.executorService = ExecutorProvider.setupMetricsLoggerExecutor.get();
+    this.loggingExecutor = ExecutorProvider.setupCompatServiceInvoker.get();
+    this.setupCompatExecutor = ExecutorProvider.setupCompatExecutor.get();
     this.waitTimeInMillisForServiceConnection = MAX_WAIT_TIME_FOR_CONNECTION_MS;
   }
 
-  @SuppressWarnings("unused")
   private final Context context;
 
-  private final ExecutorService executorService;
+  private final ExecutorService loggingExecutor;
+  private final ExecutorService setupCompatExecutor;
   private final long waitTimeInMillisForServiceConnection;
 
-  public static synchronized DefaultSetupMetricsLogger get(Context context) {
+  public static synchronized SetupCompatServiceInvoker get(Context context) {
     if (instance == null) {
-      instance = new DefaultSetupMetricsLogger(context);
+      instance = new SetupCompatServiceInvoker(context);
     }
 
     return instance;
   }
 
   @VisibleForTesting
-  static void setInstanceForTesting(DefaultSetupMetricsLogger testInstance) {
+  static void setInstanceForTesting(SetupCompatServiceInvoker testInstance) {
     instance = testInstance;
   }
 
-  private static DefaultSetupMetricsLogger instance;
+  private static SetupCompatServiceInvoker instance;
   private static final long MAX_WAIT_TIME_FOR_CONNECTION_MS = TimeUnit.SECONDS.toMillis(10);
-  private static final String TAG = "SetupCompat.SetupMetricsLogger";
+  private static final String TAG = "SetupCompat.SetupCompatServiceInvoker";
 }

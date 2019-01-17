@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.item;
+package com.google.android.setupcompat.template;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class FooterButtonInflater {
+class FooterButtonInflater {
   protected final Context context;
 
   /**

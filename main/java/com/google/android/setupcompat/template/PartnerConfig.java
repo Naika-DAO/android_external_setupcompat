@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.template;
 
 // TODO(b/121371322): optimize the enum
 /** Resources that can be customized by partner overlay APK. */
-public enum PartnerConfig {
+enum PartnerConfig {
 
   // Status bar background color or illustration.
   CONFIG_STATUS_BAR_BACKGROUND(PartnerConfigKey.KEY_STATUS_BAR_BACKGROUND, ResourceType.DRAWABLE),
 
   // The same as "WindowLightStatusBar". If set true, the status bar icons will be drawn such
   // that it is compatible with a light status bar background
-  CONFIG_WINDOW_LIGHT_STATUS_BAR(PartnerConfigKey.KEY_WINDOW_LIGHT_STATUS_BAR, ResourceType.BOOL),
+  CONFIG_LIGHT_STATUS_BAR(PartnerConfigKey.KEY_LIGHT_STATUS_BAR, ResourceType.BOOL),
 
   // Navigation bar background color
   CONFIG_NAVIGATION_BAR_BG_COLOR(PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR, ResourceType.COLOR),
 
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
-  CONFIG_WINDOW_LIGHT_NAVIGATION_BAR(
-      PartnerConfigKey.KEY_WINDOW_LIGHT_NAVIGATION_BAR, ResourceType.BOOL),
+  CONFIG_LIGHT_NAVIGATION_BAR(PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR, ResourceType.BOOL),
 
   // The font face used in footer buttons. This must be a string reference to a font that is
   // available in the system. Font references (@font or @xml) are not allowed.
@@ -83,6 +82,10 @@ public enum PartnerConfig {
   // Corner radius of the footer buttons
   CONFIG_FOOTER_BUTTON_RADIUS(PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS, ResourceType.DIMENSION),
 
+  // Ripple color alpha the footer buttons
+  CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA, ResourceType.FRACTION),
+
   // Background color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR, ResourceType.COLOR),
@@ -112,7 +115,8 @@ public enum PartnerConfig {
     COLOR,
     DRAWABLE,
     STRING,
-    DIMENSION;
+    DIMENSION,
+    FRACTION;
   }
 
   private final String resourceName;

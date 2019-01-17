@@ -16,6 +16,7 @@
 
 package com.google.android.setupcompat.template;
 
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
@@ -50,6 +51,12 @@ public class HeaderMixin implements Mixin {
     final CharSequence headerText = a.getText(R.styleable.SucHeaderMixin_sucHeaderText);
     if (headerText != null) {
       setText(headerText);
+    }
+    // Set the header text color
+    final ColorStateList headerTextColor =
+        a.getColorStateList(R.styleable.SucHeaderMixin_sucHeaderTextColor);
+    if (headerTextColor != null) {
+      setTextColor(headerTextColor);
     }
 
     a.recycle();
@@ -88,5 +95,24 @@ public class HeaderMixin implements Mixin {
   public CharSequence getText() {
     final TextView titleView = getTextView();
     return titleView != null ? titleView.getText() : null;
+  }
+
+  /**
+   * Sets the color of the header text. This can also be set via XML using {@code
+   * app:sucHeaderTextColor}.
+   *
+   * @param color The text color of the header.
+   */
+  public void setTextColor(ColorStateList color) {
+    final TextView titleView = getTextView();
+    if (titleView != null) {
+      titleView.setTextColor(color);
+    }
+  }
+
+  /** Returns the current text color of the header. */
+  public ColorStateList getTextColor() {
+    final TextView titleView = getTextView();
+    return titleView != null ? titleView.getTextColors() : null;
   }
 }
