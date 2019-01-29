@@ -58,18 +58,27 @@ public class LifecycleFragment extends Fragment {
 
       if (VERSION.SDK_INT > VERSION_CODES.M) {
         FragmentManager fragmentManager = activity.getFragmentManager();
-        Fragment fragment = activity.getFragmentManager().findFragmentByTag(FRAGMENT_ID);
-        if (fragment == null) {
-          LifecycleFragment lifeCycleFragment = new LifecycleFragment();
-          fragmentManager.beginTransaction().add(lifeCycleFragment, FRAGMENT_ID).commitNow();
-          fragment = lifeCycleFragment;
-        } else if (!(fragment instanceof LifecycleFragment)) {
-          Log.wtf(
-              LOG_TAG,
-              activity.getClass().getSimpleName() + " Incorrect instance on lifecycle fragment.");
+        if (fragmentManager != null && !fragmentManager.isDestroyed()) {
+          Fragment fragment = fragmentManager.findFragmentByTag(FRAGMENT_ID);
+          if (fragment == null) {
+            LifecycleFragment lifeCycleFragment = new LifecycleFragment();
+            try {
+              fragmentManager.beginTransaction().add(lifeCycleFragment, FRAGMENT_ID).commitNow();
+              fragment = lifeCycleFragment;
+            } catch (IllegalStateException e) {
+              Log.e(
+                  LOG_TAG,
+                  "Error occurred when attach to Activity:" + activity.getComponentName(),
+                  e);
+            }
+          } else if (!(fragment instanceof LifecycleFragment)) {
+            Log.wtf(
+                LOG_TAG,
+                activity.getClass().getSimpleName() + " Incorrect instance on lifecycle fragment.");
+            return null;
+          }
+          return (LifecycleFragment) fragment;
         }
-
-        return (LifecycleFragment) fragment;
       }
     }
 
