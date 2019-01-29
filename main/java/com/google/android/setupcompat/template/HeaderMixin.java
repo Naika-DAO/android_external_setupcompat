@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.TemplateLayout;
+import com.google.android.setupcompat.internal.TemplateLayout;
 
 /**
  * A {@link com.google.android.setupcompat.template.Mixin} for setting and getting the header text.

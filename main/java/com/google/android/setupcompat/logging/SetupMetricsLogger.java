@@ -19,10 +19,10 @@ package com.google.android.setupcompat.logging;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.internal.SetupCompatServiceInvoker;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricBundleKeys;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricType;
-import com.google.common.base.Preconditions;
 import java.util.concurrent.TimeUnit;
 
 /** SetupMetricsLogger provides an easy way to log custom metrics to SetupWizard. */

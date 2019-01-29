@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.TemplateLayout;
+import com.google.android.setupcompat.internal.TemplateLayout;
 
 /**
  * A {@link com.google.android.setupcompat.template.Mixin} for setting an icon on the template

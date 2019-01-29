@@ -50,7 +50,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.TemplateLayout;
+import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.logging.internal.FooterBarMixinMetrics;
 import com.google.android.setupcompat.template.FooterButton.ButtonType;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +79,7 @@ public class FooterBarMixin implements Mixin {
   @VisibleForTesting int defaultPadding;
   @ColorInt private final int footerBarPrimaryBackgroundColor;
   @ColorInt private final int footerBarSecondaryBackgroundColor;
+  private boolean removeFooterBarWhenEmpty = true;
 
   private static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
 
@@ -334,6 +335,16 @@ public class FooterBarMixin implements Mixin {
   }
 
   /**
+   * Sets whether the footer bar should be removed when there are no footer buttons in the bar.
+   *
+   * @param value True if footer bar is gone, false otherwise.
+   */
+  public void setRemoveFooterBarWhenEmpty(boolean value) {
+    removeFooterBarWhenEmpty = value;
+    autoSetButtonBarVisibility();
+  }
+
+  /**
    * Checks the visibility state of footer buttons to set the visibility state of this footer bar
    * automatically.
    */
@@ -344,7 +355,12 @@ public class FooterBarMixin implements Mixin {
     boolean secondaryVisible =
         secondaryButton != null && secondaryButton.getVisibility() == View.VISIBLE;
 
-    buttonContainer.setVisibility(primaryVisible || secondaryVisible ? View.VISIBLE : View.GONE);
+    if (buttonContainer != null) {
+      buttonContainer.setVisibility(
+          primaryVisible || secondaryVisible
+              ? View.VISIBLE
+              : removeFooterBarWhenEmpty ? View.GONE : View.INVISIBLE);
+    }
   }
 
   /** Returns the visibility status for this footer bar. */
