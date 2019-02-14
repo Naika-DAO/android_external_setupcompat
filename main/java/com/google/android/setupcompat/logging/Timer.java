@@ -18,7 +18,7 @@ package com.google.android.setupcompat.logging;
 
 import android.util.Log;
 import com.google.android.setupcompat.internal.ClockProvider;
-import com.google.common.base.Preconditions;
+import com.google.android.setupcompat.internal.Preconditions;
 
 /** Convenience utility to log duration events. Please note that this class is not thread-safe. */
 public final class Timer {

@@ -17,7 +17,7 @@
 
 <resources>
 
-  <!-- ID used with View#setTag to store the original weight on a ButtonBar -->
-  <item name="suc_customization_original_weight" type="id" />
+    <!-- ID used with View#setTag to store the original weight on a ButtonBar -->
+    <item name="suc_customization_original_weight" type="id" />
 
 </resources>

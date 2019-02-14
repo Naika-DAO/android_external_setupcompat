@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import com.google.android.setupcompat.internal.PersistableBundles;
+import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.lifecycle.LifecycleFragment;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
@@ -85,11 +86,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
             .obtainStyledAttributes(
                 attrs, R.styleable.SucPartnerCustomizationLayout, defStyleAttr, 0);
 
-    final int footer = a.getResourceId(R.styleable.SucPartnerCustomizationLayout_sucFooter, 0);
-    if (footer != 0) {
-      inflateFooter(footer);
-    }
-
     boolean layoutFullscreen =
         a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucLayoutFullscreen, true);
 
@@ -103,7 +99,9 @@ public class PartnerCustomizationLayout extends TemplateLayout {
 
     Log.i(
         TAG,
-        "isSetupFlow="
+        "activity="
+            + activity.getClass().getSimpleName()
+            + ", isSetupFlow="
             + isSetupFlow
             + ", applyPartnerResource="
             + applyPartnerResource()
@@ -165,7 +163,8 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    if (WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
+    if (suwVersionSupportPartnerResource
+        && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
       FooterBarMixin footerBarMixin = getMixin(FooterBarMixin.class);
       footerBarMixin.onDetachedFromWindow();
       FooterButton primaryButton = footerBarMixin.getPrimaryButton();
