@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.template;
+package com.google.android.setupcompat.internal;
 
 /**
- * Marker interface to indicate Mixin classes.
+ * A time source; returns a time value representing the number of nanoseconds elapsed since some
+ * fixed but arbitrary point in time.
  *
- * @see com.google.android.setupcompat.internal.TemplateLayout#registerMixin(Class, Mixin)
- * @see com.google.android.setupcompat.internal.TemplateLayout#getMixin(Class)
+ * <p><b>Warning:</b> this interface can only be used to measure elapsed time, not wall time.
  */
-public interface Mixin {}
+public interface Ticker {
+
+  /** Returns the number of nanoseconds elapsed since this ticker's fixed point of reference. */
+  long read();
+}

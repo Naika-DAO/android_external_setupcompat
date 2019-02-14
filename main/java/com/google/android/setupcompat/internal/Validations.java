@@ -16,8 +16,6 @@
 
 package com.google.android.setupcompat.internal;
 
-import com.google.common.base.Preconditions;
-
 /** Commonly used validations and preconditions. */
 public final class Validations {
 
@@ -30,10 +28,7 @@ public final class Validations {
   public static void assertLengthInRange(int length, String name, int minLength, int maxLength) {
     Preconditions.checkArgument(
         length <= maxLength && length >= minLength,
-        "Length of %s should be in the range [%s-%s]",
-        name,
-        minLength,
-        maxLength);
+        String.format("Length of %s should be in the range [%s-%s]", name, minLength, maxLength));
   }
 
   /**
@@ -44,7 +39,7 @@ public final class Validations {
    *     greather than {@code maxLength}.
    */
   public static void assertLengthInRange(String input, String name, int minLength, int maxLength) {
-    Preconditions.checkNotNull(input, "%s cannot be null.", name);
+    Preconditions.checkNotNull(input, String.format("%s cannot be null.", name));
     assertLengthInRange(input.length(), name, minLength, maxLength);
   }
 
