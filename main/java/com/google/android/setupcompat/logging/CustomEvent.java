@@ -23,7 +23,7 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.setupcompat.internal.ClockProvider;
-import com.google.android.setupcompat.internal.Preconditions;
+import com.google.common.base.Preconditions;
 import java.util.Objects;
 
 /**
@@ -131,8 +131,8 @@ public final class CustomEvent implements Parcelable {
     assertPersistableBundleIsValid(bundle);
     this.timestampMillis = timestampMillis;
     this.metricKey = metricKey;
-    this.persistableBundle = new PersistableBundle(bundle);
-    this.piiValues = new PersistableBundle(piiValues);
+    this.persistableBundle = bundle.deepCopy();
+    this.piiValues = piiValues.deepCopy();
   }
 
   private final long timestampMillis;
@@ -153,16 +153,17 @@ public final class CustomEvent implements Parcelable {
       }
       Preconditions.checkArgument(
           valid,
-          String.format(
-              "Invalid data type for key='%s'. Expected values of type %s, but found [%s].",
-              key, CUSTOM_EVENT_ALLOWED_DATA_TYPES, value));
+          "Invalid data type for key='%s'. Expected values of type %s, but found [%s].",
+          key,
+          CUSTOM_EVENT_ALLOWED_DATA_TYPES,
+          value);
 
       if (value instanceof String) {
         Preconditions.checkArgument(
             ((String) value).length() <= MAX_STR_LENGTH,
-            String.format(
-                "Maximum length of string value for key='%s' cannot exceed %s.",
-                key, MAX_STR_LENGTH));
+            "Maximum length of string value for key='%s' cannot exceed %s.",
+            key,
+            MAX_STR_LENGTH);
       }
     }
   }

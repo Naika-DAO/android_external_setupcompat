@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.internal;
+package com.google.android.setupcompat;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.template.Mixin;
 import com.google.android.setupcompat.util.FallbackThemeWrapper;
 import java.util.HashMap;
@@ -40,8 +39,6 @@ import java.util.Map;
  * android:layout} through XML, and adds its children to a "container" in the template. When
  * inflating this layout from XML, the {@code android:layout} and {@code suwContainer} attributes
  * are required.
- *
- * <p>This class is designed to use inside the library; it is not suitable for external use.
  */
 public class TemplateLayout extends FrameLayout {
 
