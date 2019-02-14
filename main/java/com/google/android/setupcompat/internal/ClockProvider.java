@@ -17,10 +17,12 @@
 package com.google.android.setupcompat.internal;
 
 import androidx.annotation.VisibleForTesting;
+import com.google.common.base.Supplier;
+import com.google.common.base.Ticker;
 import java.util.concurrent.TimeUnit;
 
 /** Provider for time in nanos and millis. Allows overriding time during tests. */
-public class ClockProvider {
+public class ClockProvider extends Ticker {
 
   public static long timeInNanos() {
     return ticker.read();
@@ -32,23 +34,24 @@ public class ClockProvider {
 
   @VisibleForTesting
   public static void resetInstance() {
-    ticker = SYSTEM_TICKER;
+    ticker = Ticker.systemTicker();
   }
 
   @VisibleForTesting
   public static void setInstance(Supplier<Long> nanoSecondSupplier) {
-    ticker = () -> nanoSecondSupplier.get();
+    ticker =
+        new Ticker() {
+          @Override
+          public long read() {
+            return nanoSecondSupplier.get();
+          }
+        };
   }
 
+  @Override
   public long read() {
     return ticker.read();
   }
 
-  private static final Ticker SYSTEM_TICKER = () -> System.nanoTime();
-  private static Ticker ticker = SYSTEM_TICKER;
-
-  @VisibleForTesting
-  public interface Supplier<T> {
-    T get();
-  }
+  private static Ticker ticker = Ticker.systemTicker();
 }

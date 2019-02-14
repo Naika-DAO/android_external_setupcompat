@@ -19,7 +19,7 @@ package com.google.android.setupcompat.template;
 /**
  * Marker interface to indicate Mixin classes.
  *
- * @see com.google.android.setupcompat.internal.TemplateLayout#registerMixin(Class, Mixin)
- * @see com.google.android.setupcompat.internal.TemplateLayout#getMixin(Class)
+ * @see com.google.android.setupcompat.TemplateLayout#registerMixin(Class, Mixin)
+ * @see com.google.android.setupcompat.TemplateLayout#getMixin(Class)
  */
 public interface Mixin {}
