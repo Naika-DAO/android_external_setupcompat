@@ -17,7 +17,6 @@
 package com.google.android.setupcompat.internal;
 
 import android.os.PersistableBundle;
-import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,8 +43,7 @@ public final class PersistableBundles {
       for (String key : bundle.keySet()) {
         Preconditions.checkArgument(
             !result.containsKey(key),
-            "Found duplicate key [%s] while attempting to merge bundles.",
-            key);
+            String.format("Found duplicate key [%s] while attempting to merge bundles.", key));
       }
       result.putAll(bundle);
     }

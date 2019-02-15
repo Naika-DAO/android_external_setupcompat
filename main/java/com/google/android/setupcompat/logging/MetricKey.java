@@ -21,7 +21,7 @@ import static com.google.android.setupcompat.internal.Validations.assertLengthIn
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
-import com.google.common.base.Preconditions;
+import com.google.android.setupcompat.internal.Preconditions;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
