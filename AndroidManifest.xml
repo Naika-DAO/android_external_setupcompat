@@ -15,10 +15,5 @@
     limitations under the License.
 -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.setupcompat">
+<manifest package="com.google.android.setupcompat"/>
 
-  <uses-sdk
-      android:minSdkVersion="14"
-      android:targetSdkVersion="28" />
-</manifest>
