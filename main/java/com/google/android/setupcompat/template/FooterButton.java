@@ -18,8 +18,10 @@ package com.google.android.setupcompat.template;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -320,6 +322,7 @@ public final class FooterButton implements OnClickListener {
    * Returns footer button related metrics bundle for PartnerCustomizationLayout to log to
    * SetupWizard.
    */
+  @TargetApi(VERSION_CODES.Q)
   public PersistableBundle getMetrics(String buttonName) {
     PersistableBundle bundle = new PersistableBundle();
     bundle.putString(buttonName + KEY_BUTTON_TEXT, getText().toString());

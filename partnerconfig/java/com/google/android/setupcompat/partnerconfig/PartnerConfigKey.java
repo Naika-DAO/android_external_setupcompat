@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.template;
+package com.google.android.setupcompat.partnerconfig;
 
 import androidx.annotation.StringDef;
 import androidx.annotation.VisibleForTesting;
@@ -28,6 +28,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LIGHT_STATUS_BAR,
   PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR,
   PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR,
+  PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL,
@@ -41,14 +42,23 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_BOTTOM,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR,
-  PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_SIZE,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
-  PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_SIZE,
+  PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR,
+  PartnerConfigKey.KEY_HEADER_TEXT_SIZE,
+  PartnerConfigKey.KEY_HEADER_TEXT_COLOR,
+  PartnerConfigKey.KEY_HEADER_FONT_FAMILY,
+  PartnerConfigKey.KEY_HEADER_AREA_BACKGROUND_COLOR,
+  PartnerConfigKey.KEY_LAYOUT_GRAVITY,
+  PartnerConfigKey.KEY_DESCRIPTION_TEXT_SIZE,
+  PartnerConfigKey.KEY_DESCRIPTION_TEXT_COLOR,
+  PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR,
+  PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY,
 })
-// TODO(121371322): can be removed and always reference PartnerConfig.getResourceName()?
+// TODO(b/121371322): can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public @interface PartnerConfigKey {
   // Status bar background color or illustration.
@@ -64,6 +74,9 @@ public @interface PartnerConfigKey {
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
   String KEY_LIGHT_NAVIGATION_BAR = "setup_compat_light_navigation_bar";
+
+  // Background color of the footer bar.
+  String KEY_FOOTER_BAR_BG_COLOR = "setup_compat_footer_bar_bg_color";
 
   // The font face used in footer buttons. This must be a string reference to a font that is
   // available in the system. Font references (@font or @xml) are not allowed.
@@ -105,14 +118,14 @@ public @interface PartnerConfigKey {
   // Ripple color alpha of the footer button
   String KEY_FOOTER_BUTTON_RIPPLE_ALPHA = "setup_compat_footer_button_ripple_alpha";
 
+  // Text size of the footer button
+  String KEY_FOOTER_BUTTON_TEXT_SIZE = "setup_compat_footer_button_text_size";
+
   // Background color of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR = "setup_compat_footer_primary_button_bg_color";
 
   // Text color of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR = "setup_compat_footer_primary_button_text_color";
-
-  // Text size of the primary footer button
-  String KEY_FOOTER_PRIMARY_BUTTON_TEXT_SIZE = "setup_compat_footer_primary_button_text_size";
 
   // Background color of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR = "setup_compat_footer_secondary_button_bg_color";
@@ -120,6 +133,33 @@ public @interface PartnerConfigKey {
   // Text color of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR = "setup_compat_footer_secondary_button_text_color";
 
-  // Text size of the secondary footer button
-  String KEY_FOOTER_SECONDARY_BUTTON_TEXT_SIZE = "setup_compat_footer_secondary_button_text_size";
+  // Background color of layout
+  String KEY_LAYOUT_BACKGROUND_COLOR = "setup_compat_layout_bg_color";
+
+  // Text size of the header
+  String KEY_HEADER_TEXT_SIZE = "setup_design_header_text_size";
+
+  // Text color of the header
+  String KEY_HEADER_TEXT_COLOR = "setup_design_header_text_color";
+
+  // Font family of the header
+  String KEY_HEADER_FONT_FAMILY = "setup_design_header_font_family";
+
+  // Gravity of the header, icon and description
+  String KEY_LAYOUT_GRAVITY = "setup_design_layout_gravity";
+
+  // Background color of the header area
+  String KEY_HEADER_AREA_BACKGROUND_COLOR = "setup_design_header_area_background_color";
+
+  // Text size of the description
+  String KEY_DESCRIPTION_TEXT_SIZE = "setup_design_description_text_size";
+
+  // Text color of the description
+  String KEY_DESCRIPTION_TEXT_COLOR = "setup_design_description_text_color";
+
+  // Link text color of the description
+  String KEY_DESCRIPTION_LINK_TEXT_COLOR = "setup_design_description_link_text_color";
+
+  // Font family of the description
+  String KEY_DESCRIPTION_FONT_FAMILY = "setup_design_description_font_family";
 }

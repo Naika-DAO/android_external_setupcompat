@@ -17,6 +17,7 @@
 package com.google.android.setupcompat.template;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -52,6 +53,8 @@ import android.widget.LinearLayout.LayoutParams;
 import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.logging.internal.FooterBarMixinMetrics;
+import com.google.android.setupcompat.partnerconfig.PartnerConfig;
+import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 import com.google.android.setupcompat.template.FooterButton.ButtonType;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -88,7 +91,6 @@ public class FooterBarMixin implements Mixin {
   private FooterButton.OnButtonEventListener createButtonEventListener(@IdRes int id) {
 
     return new FooterButton.OnButtonEventListener() {
-
 
       @Override
       public void onEnabledChanged(boolean enabled) {
@@ -196,7 +198,14 @@ public class FooterBarMixin implements Mixin {
       } else {
         buttonContainer.setId(generateViewId());
       }
-      updateBottomBarPadding();
+      updateFooterBarPadding();
+      if (applyPartnerResources) {
+        @ColorInt
+        int color =
+            PartnerConfigHelper.get(context)
+                .getColor(context, PartnerConfig.CONFIG_FOOTER_BAR_BG_COLOR);
+        buttonContainer.setBackgroundColor(color);
+      }
     }
     return buttonContainer;
   }
@@ -416,7 +425,7 @@ public class FooterBarMixin implements Mixin {
   private void updateButtonAttrsWithPartnerConfig(
       Button button, boolean isPrimaryButton, @ButtonType int buttonType) {
     updateButtonTextColorWithPartnerConfig(button, isPrimaryButton);
-    updateButtonTextSizeWithPartnerConfig(button, isPrimaryButton);
+    updateButtonTextSizeWithPartnerConfig(button);
     updateButtonTypeFaceWithPartnerConfig(button);
     updateButtonBackgroundWithPartnerConfig(button, isPrimaryButton);
     updateButtonRadiusWithPartnerConfig(button);
@@ -438,18 +447,13 @@ public class FooterBarMixin implements Mixin {
     button.setTextColor(color);
   }
 
-  private void updateButtonTextSizeWithPartnerConfig(Button button, boolean isPrimaryButton) {
-    float size;
-    if (isPrimaryButton) {
-      size =
-          PartnerConfigHelper.get(context)
-              .getDimension(context, PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_SIZE);
-    } else {
-      size =
-          PartnerConfigHelper.get(context)
-              .getDimension(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_SIZE);
+  private void updateButtonTextSizeWithPartnerConfig(Button button) {
+    float size =
+        PartnerConfigHelper.get(context)
+            .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE);
+    if (size > 0) {
+      button.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
-    button.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
   }
 
   private void updateButtonTypeFaceWithPartnerConfig(Button button) {
@@ -639,7 +643,7 @@ public class FooterBarMixin implements Mixin {
     return footerStub.inflate();
   }
 
-  private void updateBottomBarPadding() {
+  private void updateFooterBarPadding() {
     if (buttonContainer == null) {
       // Ignore action since buttonContainer is null
       return;
@@ -692,6 +696,7 @@ public class FooterBarMixin implements Mixin {
   /**
    * Assigns logging metrics to bundle for PartnerCustomizationLayout to log metrics to SetupWizard.
    */
+  @TargetApi(VERSION_CODES.Q)
   public PersistableBundle getLoggingMetrics() {
     return metrics.getMetrics();
   }

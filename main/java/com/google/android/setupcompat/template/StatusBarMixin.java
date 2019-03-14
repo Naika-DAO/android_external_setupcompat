@@ -35,6 +35,8 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
+import com.google.android.setupcompat.partnerconfig.PartnerConfig;
+import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 import com.google.android.setupcompat.view.StatusBarBackgroundLayout;
 
 /**

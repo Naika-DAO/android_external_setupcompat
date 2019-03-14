@@ -21,9 +21,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.TypedArray;
-import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
+import androidx.annotation.ColorInt;
 import androidx.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.google.android.setupcompat.lifecycle.LifecycleFragment;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
+import com.google.android.setupcompat.partnerconfig.PartnerConfig;
+import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 import com.google.android.setupcompat.template.FooterBarMixin;
 import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
@@ -49,7 +52,9 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   // Log tags can have at most 23 characters on N or before.
   private static final String TAG = "PartnerCustomizedLayout";
 
-  private final boolean suwVersionSupportPartnerResource = Build.VERSION.SDK_INT > VERSION_CODES.P;
+  private final boolean suwVersionSupportPartnerResource = isAtLeastQ();
+
+  private boolean applyPartnerResource;
   private Activity activity;
 
   public PartnerCustomizationLayout(Context context) {
@@ -93,7 +98,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
         a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
     a.recycle();
 
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && layoutFullscreen) {
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && layoutFullscreen) {
       setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
@@ -109,13 +114,10 @@ public class PartnerCustomizationLayout extends TemplateLayout {
             + usePartnerResource);
 
     if (suwVersionSupportPartnerResource && isSetupFlow && !applyPartnerResource()) {
-      Log.w(
-          TAG,
-          "This is inavlid usage that applyPartnerResource() should returns true"
-              + " during setup wizard flow");
+      Log.w(TAG, "applyPartnerResource() should return true during setup wizard flow");
     }
 
-    boolean applyPartnerResource =
+    applyPartnerResource =
         suwVersionSupportPartnerResource
             && applyPartnerResource()
             && (isSetupFlow || usePartnerResource);
@@ -124,10 +126,11 @@ public class PartnerCustomizationLayout extends TemplateLayout {
         new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
     registerMixin(
         SystemNavBarMixin.class,
-        new SystemNavBarMixin(
-            this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
+        new SystemNavBarMixin(this, activity.getWindow(), applyPartnerResource));
     registerMixin(
         FooterBarMixin.class, new FooterBarMixin(this, attrs, defStyleAttr, applyPartnerResource));
+
+    getMixin(SystemNavBarMixin.class).applyPartnerCustomizations(attrs, defStyleAttr);
 
     // Override the FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS, FLAG_TRANSLUCENT_STATUS,
     // FLAG_TRANSLUCENT_NAVIGATION and SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN attributes of window forces
@@ -135,6 +138,10 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+    if (applyPartnerResource) {
+      updateContentBackgroundColorWithPartnerConfig();
+    }
   }
 
   @Override
@@ -200,6 +207,14 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     }
   }
 
+  // TODO(b/127925696): remove the code for pre-release version of Android Q
+  private static boolean isAtLeastQ() {
+    return (VERSION.SDK_INT > VERSION_CODES.P)
+        || (VERSION.CODENAME.length() == 1
+            && VERSION.CODENAME.charAt(0) >= 'Q'
+            && VERSION.CODENAME.charAt(0) <= 'Z');
+  }
+
   /**
    * This method determines applying the partner resource regardless inside setup wizard flow or
    * not. It always returns true indicating applying partner resource inside setup wizard flow and
@@ -221,5 +236,19 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     ViewStub footerStub = findManagedViewById(R.id.suc_layout_footer);
     footerStub.setLayoutResource(footer);
     return footerStub.inflate();
+  }
+
+  /** Returns if the current layout/activity applies partner customized configurations or not. */
+  protected boolean shouldApplyPartnerResource() {
+    return applyPartnerResource;
+  }
+
+  /** Updates the background color of this layout with the partner-customizable background color. */
+  private void updateContentBackgroundColorWithPartnerConfig() {
+    @ColorInt
+    int color =
+        PartnerConfigHelper.get(getContext())
+            .getColor(getContext(), PartnerConfig.CONFIG_LAYOUT_BACKGROUND_COLOR);
+    this.getRootView().setBackgroundColor(color);
   }
 }

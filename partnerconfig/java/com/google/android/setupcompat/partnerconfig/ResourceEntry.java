@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.partnerconfig;
 
 import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;

@@ -18,6 +18,8 @@ package com.google.android.setupcompat.logging.internal;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import android.annotation.TargetApi;
+import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import androidx.annotation.StringDef;
 import androidx.annotation.VisibleForTesting;
@@ -44,9 +46,9 @@ public class FooterBarMixinMetrics {
   @VisibleForTesting
   public @interface FooterButtonVisibility {
     String UNKNOWN = "Unknown";
-    String VISIBLE_USING_XML = "VisibileUsingXml";
+    String VISIBLE_USING_XML = "VisibleUsingXml";
     String VISIBLE = "Visible";
-    String VISIBLE_USING_XML_TO_INVISIBLE = "VisibileUsingXml_to_Invisible";
+    String VISIBLE_USING_XML_TO_INVISIBLE = "VisibleUsingXml_to_Invisible";
     String VISIBLE_TO_INVISIBLE = "Visible_to_Invisible";
     String INVISIBLE_TO_VISIBLE = "Invisible_to_Visible";
     String INVISIBLE = "Invisible";
@@ -92,35 +94,36 @@ public class FooterBarMixinMetrics {
 
   /** Saves footer button visibility when finish state */
   public void updateButtonVisibility(
-      boolean isPrimaryButtonVisiable, boolean isSecondaryButtonVisible) {
+      boolean isPrimaryButtonVisible, boolean isSecondaryButtonVisible) {
     primaryButtonVisibility =
-        updateButtonVisibilityState(primaryButtonVisibility, isPrimaryButtonVisiable);
+        updateButtonVisibilityState(primaryButtonVisibility, isPrimaryButtonVisible);
     secondaryButtonVisibility =
         updateButtonVisibilityState(secondaryButtonVisibility, isSecondaryButtonVisible);
   }
 
   @FooterButtonVisibility
   static String updateButtonVisibilityState(
-      @FooterButtonVisibility String origionalVisibility, boolean isVisible) {
-    if (!origionalVisibility.equals(FooterButtonVisibility.VISIBLE_USING_XML)
-        && !origionalVisibility.equals(FooterButtonVisibility.VISIBLE)
-        && !origionalVisibility.equals(FooterButtonVisibility.INVISIBLE)) {
-      throw new IllegalStateException("Illegal visibility state:" + origionalVisibility);
+      @FooterButtonVisibility String originalVisibility, boolean isVisible) {
+    if (!FooterButtonVisibility.VISIBLE_USING_XML.equals(originalVisibility)
+        && !FooterButtonVisibility.VISIBLE.equals(originalVisibility)
+        && !FooterButtonVisibility.INVISIBLE.equals(originalVisibility)) {
+      throw new IllegalStateException("Illegal visibility state: " + originalVisibility);
     }
 
-    if (isVisible && origionalVisibility.equals(FooterButtonVisibility.INVISIBLE)) {
+    if (isVisible && FooterButtonVisibility.INVISIBLE.equals(originalVisibility)) {
       return FooterButtonVisibility.INVISIBLE_TO_VISIBLE;
     } else if (!isVisible) {
-      if (origionalVisibility.equals(FooterButtonVisibility.VISIBLE_USING_XML)) {
+      if (FooterButtonVisibility.VISIBLE_USING_XML.equals(originalVisibility)) {
         return FooterButtonVisibility.VISIBLE_USING_XML_TO_INVISIBLE;
-      } else if (origionalVisibility.equals(FooterButtonVisibility.VISIBLE)) {
+      } else if (FooterButtonVisibility.VISIBLE.equals(originalVisibility)) {
         return FooterButtonVisibility.VISIBLE_TO_INVISIBLE;
       }
     }
-    return origionalVisibility;
+    return originalVisibility;
   }
 
   /** Returns metrics data for logging */
+  @TargetApi(VERSION_CODES.Q)
   public PersistableBundle getMetrics() {
     PersistableBundle persistableBundle = new PersistableBundle();
     persistableBundle.putString(EXTRA_PRIMARY_BUTTON_VISIBILITY, primaryButtonVisibility);

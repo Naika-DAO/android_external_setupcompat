@@ -16,6 +16,8 @@
 
 package com.google.android.setupcompat.lifecycle;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -94,7 +96,7 @@ public class LifecycleFragment extends Fragment {
   @Override
   public void onDetach() {
     super.onDetach();
-    SetupMetricsLogger.logDuration(getContext(), metricKey, durationInNanos);
+    SetupMetricsLogger.logDuration(getContext(), metricKey, NANOSECONDS.toMillis(durationInNanos));
   }
 
   @Override

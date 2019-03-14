@@ -89,10 +89,6 @@
         <attr name="sucFooterBarPaddingVertical" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="SucIconMixin">
-        <attr name="android:icon" />
-    </declare-styleable>
-
     <declare-styleable name="SucHeaderMixin">
         <attr name="sucHeaderText" format="string" localization="suggested" />
         <attr name="sucHeaderTextColor" format="reference|color" />

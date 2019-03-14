@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.template;
+package com.google.android.setupcompat.partnerconfig;
 
 // TODO(b/121371322): optimize the enum
 /** Resources that can be customized by partner overlay APK. */
-enum PartnerConfig {
+public enum PartnerConfig {
 
   // Status bar background color or illustration.
   CONFIG_STATUS_BAR_BACKGROUND(PartnerConfigKey.KEY_STATUS_BAR_BACKGROUND, ResourceType.DRAWABLE),
@@ -29,6 +29,9 @@ enum PartnerConfig {
 
   // Navigation bar background color
   CONFIG_NAVIGATION_BAR_BG_COLOR(PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR, ResourceType.COLOR),
+
+  // Background color of the footer bar.
+  CONFIG_FOOTER_BAR_BG_COLOR(PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR, ResourceType.COLOR),
 
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
@@ -86,6 +89,10 @@ enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA(
       PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA, ResourceType.FRACTION),
 
+  // Text size of the primary footer button
+  CONFIG_FOOTER_BUTTON_TEXT_SIZE(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE, ResourceType.DIMENSION),
+
   // Background color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR, ResourceType.COLOR),
@@ -93,10 +100,6 @@ enum PartnerConfig {
   // Text color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
-
-  // Text size of the primary footer button
-  CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_SIZE(
-      PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_SIZE, ResourceType.DIMENSION),
 
   // Background color of the secondary footer button
   CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR(
@@ -106,9 +109,37 @@ enum PartnerConfig {
   CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
 
-  // Text size of the secondary footer button
-  CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_SIZE(
-      PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_SIZE, ResourceType.DIMENSION);
+  // Background color of layout
+  CONFIG_LAYOUT_BACKGROUND_COLOR(PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR, ResourceType.COLOR),
+
+  // Text color of the header
+  CONFIG_HEADER_TEXT_COLOR(PartnerConfigKey.KEY_HEADER_TEXT_COLOR, ResourceType.COLOR),
+
+  // Text size of the header
+  CONFIG_HEADER_TEXT_SIZE(PartnerConfigKey.KEY_HEADER_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // Font family of the header
+  CONFIG_HEADER_FONT_FAMILY(PartnerConfigKey.KEY_HEADER_FONT_FAMILY, ResourceType.STRING),
+
+  // Gravity of the header, icon and description
+  CONFIG_LAYOUT_GRAVITY(PartnerConfigKey.KEY_LAYOUT_GRAVITY, ResourceType.STRING),
+
+  // Background color of the header area
+  CONFIG_HEADER_AREA_BACKGROUND_COLOR(
+      PartnerConfigKey.KEY_HEADER_AREA_BACKGROUND_COLOR, ResourceType.COLOR),
+
+  // Text size of the description
+  CONFIG_DESCRIPTION_TEXT_SIZE(PartnerConfigKey.KEY_DESCRIPTION_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // Text color of the description
+  CONFIG_DESCRIPTION_TEXT_COLOR(PartnerConfigKey.KEY_DESCRIPTION_TEXT_COLOR, ResourceType.COLOR),
+
+  // Link text color of the description
+  CONFIG_DESCRIPTION_LINK_TEXT_COLOR(
+      PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR, ResourceType.COLOR),
+
+  // Font family of the description
+  CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING);
 
   public enum ResourceType {
     BOOL,

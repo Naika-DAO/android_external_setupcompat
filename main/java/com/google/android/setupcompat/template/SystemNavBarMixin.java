@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
@@ -32,6 +33,10 @@ import android.view.View;
 import android.view.Window;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
+import com.google.android.setupcompat.internal.TemplateLayout;
+import com.google.android.setupcompat.partnerconfig.PartnerConfig;
+import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
+import com.google.android.setupcompat.util.SystemBarBaseHelper;
 
 /**
  * A {@link Mixin} for setting and getting background color and window compatible with light theme
@@ -39,38 +44,39 @@ import com.google.android.setupcompat.R;
  */
 public class SystemNavBarMixin implements Mixin {
 
-  private final PartnerCustomizationLayout partnerCustomizationLayout;
-  private final Window windowOfActivity;
-  private final View decorView;
+  private final TemplateLayout templateLayout;
+  @Nullable private final Window windowOfActivity;
   @VisibleForTesting final boolean applyPartnerResources;
+  private int sucSystemNavBarBackgroundColor = 0;
 
   /**
-   * Creates a mixin for managing system navigation bar.
+   * Creates a mixin for managing the system navigation bar.
    *
    * @param layout The layout this Mixin belongs to.
-   * @param window The window this activity of Mixin belongs to.
-   * @param attrs XML attributes given to the layout.
-   * @param defStyleAttr The default style attribute as given to the constructor of the layout.
-   * @param applyPartnerResources determine applies partner resources or not.
+   * @param window The window this activity of Mixin belongs to.*
+   * @param applyPartnerResources whether to apply partner resources or not.
    */
   public SystemNavBarMixin(
-      @NonNull PartnerCustomizationLayout layout,
-      @NonNull Window window,
-      @Nullable AttributeSet attrs,
-      @AttrRes int defStyleAttr,
-      boolean applyPartnerResources) {
-    partnerCustomizationLayout = layout;
-    windowOfActivity = window;
-    decorView = window.getDecorView();
+      @NonNull TemplateLayout layout, @Nullable Window window, boolean applyPartnerResources) {
+    this.templateLayout = layout;
+    this.windowOfActivity = window;
     this.applyPartnerResources = applyPartnerResources;
+  }
 
+  /**
+   * Creates a mixin for managing the system navigation bar.
+   *
+   * @param attrs XML attributes given to the layout.
+   * @param defStyleAttr The default style attribute as given to the constructor of the layout.
+   */
+  public void applyPartnerCustomizations(@Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
     TypedArray a =
-        partnerCustomizationLayout
+        templateLayout
             .getContext()
             .obtainStyledAttributes(attrs, R.styleable.SucSystemNavBarMixin, defStyleAttr, 0);
-    int navigationBarBackground =
+    sucSystemNavBarBackgroundColor =
         a.getColor(R.styleable.SucSystemNavBarMixin_sucSystemNavBarBackgroundColor, 0);
-    setSystemNavBarBackground(navigationBarBackground);
+    setSystemNavBarBackground(sucSystemNavBarBackgroundColor);
     setLightSystemNavBar(
         a.getBoolean(R.styleable.SucSystemNavBarMixin_sucLightSystemNavBar, isLightSystemNavBar()));
     a.recycle();
@@ -83,21 +89,20 @@ public class SystemNavBarMixin implements Mixin {
    * @param color The background color of navigation bar.
    */
   public void setSystemNavBarBackground(int color) {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && windowOfActivity != null) {
       if (applyPartnerResources) {
-        Context context = partnerCustomizationLayout.getContext();
+        Context context = templateLayout.getContext();
         color =
             PartnerConfigHelper.get(context)
                 .getColor(context, PartnerConfig.CONFIG_NAVIGATION_BAR_BG_COLOR);
       }
-
       windowOfActivity.setNavigationBarColor(color);
     }
   }
 
   /** Returns the background color of navigation bar. */
   public int getSystemNavBarBackground() {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && windowOfActivity != null) {
       return windowOfActivity.getNavigationBarColor();
     }
     return Color.BLACK;
@@ -111,20 +116,25 @@ public class SystemNavBarMixin implements Mixin {
    * @param isLight true means compatible with light theme, otherwise compatible with dark theme
    */
   public void setLightSystemNavBar(boolean isLight) {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O && windowOfActivity != null) {
       if (applyPartnerResources) {
-        Context context = partnerCustomizationLayout.getContext();
+        Context context = templateLayout.getContext();
         isLight =
             PartnerConfigHelper.get(context)
                 .getBoolean(context, PartnerConfig.CONFIG_LIGHT_NAVIGATION_BAR, false);
       }
-
       if (isLight) {
-        decorView.setSystemUiVisibility(
-            decorView.getSystemUiVisibility() | SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        windowOfActivity
+            .getDecorView()
+            .setSystemUiVisibility(
+                windowOfActivity.getDecorView().getSystemUiVisibility()
+                    | SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
       } else {
-        decorView.setSystemUiVisibility(
-            decorView.getSystemUiVisibility() & ~SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        windowOfActivity
+            .getDecorView()
+            .setSystemUiVisibility(
+                windowOfActivity.getDecorView().getSystemUiVisibility()
+                    & ~SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
       }
     }
   }
@@ -134,10 +144,73 @@ public class SystemNavBarMixin implements Mixin {
    * should be drawn light-on-dark.
    */
   public boolean isLightSystemNavBar() {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
-      return (decorView.getSystemUiVisibility() & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O && windowOfActivity != null) {
+      return (windowOfActivity.getDecorView().getSystemUiVisibility()
+              & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
           == SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
     }
     return true;
+  }
+
+  /**
+   * Hides the navigation bar, make the color of the status and navigation bars transparent, and
+   * specify {@link View#SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN} flag so that the content is laid-out
+   * behind the transparent status bar. This is commonly used with {@link
+   * android.app.Activity#getWindow()} to make the navigation and status bars follow the Setup
+   * Wizard style.
+   *
+   * <p>This will only take effect in versions Lollipop or above. Otherwise this is a no-op.
+   */
+  public void hideSystemBars(final Window window) {
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      SystemBarBaseHelper.addVisibilityFlag(window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarBaseHelper.addImmersiveFlagsToDecorView(
+          window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+
+      // Also set the navigation bar and status bar to transparent color. Note that this
+      // doesn't work if android.R.boolean.config_enableTranslucentDecor is false.
+      window.setNavigationBarColor(Color.TRANSPARENT);
+      window.setStatusBarColor(Color.TRANSPARENT);
+    }
+  }
+
+  /**
+   * Reverts the actions of hideSystemBars. Note that this will remove the system UI visibility
+   * flags regardless of whether it is originally present. The status bar color is reset to
+   * transparent, thus it will show the status bar color set by StatusBarMixin.
+   *
+   * <p>This will only take effect in versions Lollipop or above. Otherwise this is a no-op.
+   */
+  public void showSystemBars(final Window window, final Context context) {
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      SystemBarBaseHelper.removeVisibilityFlag(window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarBaseHelper.removeImmersiveFlagsFromDecorView(
+          window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+
+      if (context != null) {
+        if (applyPartnerResources) {
+          int partnerNavigationBarColor =
+              PartnerConfigHelper.get(context)
+                  .getColor(context, PartnerConfig.CONFIG_NAVIGATION_BAR_BG_COLOR);
+          window.setStatusBarColor(Color.TRANSPARENT);
+          window.setNavigationBarColor(partnerNavigationBarColor);
+        } else {
+          if (templateLayout instanceof PartnerCustomizationLayout) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(sucSystemNavBarBackgroundColor);
+          } else {
+            // noinspection AndroidLintInlinedApi
+            final TypedArray typedArray =
+                context.obtainStyledAttributes(
+                    new int[] {android.R.attr.statusBarColor, android.R.attr.navigationBarColor});
+            final int statusBarColor = typedArray.getColor(0, 0);
+            final int navigationBarColor = typedArray.getColor(1, 0);
+            window.setStatusBarColor(statusBarColor);
+            window.setNavigationBarColor(navigationBarColor);
+            typedArray.recycle();
+          }
+        }
+      }
+    }
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.template;
+package com.google.android.setupcompat.partnerconfig;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,12 +32,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.TypedValue;
-import com.google.android.setupcompat.template.PartnerConfig.ResourceType;
-import com.google.android.setupcompat.util.ResourceEntry;
+import com.google.android.setupcompat.partnerconfig.PartnerConfig.ResourceType;
 import java.util.EnumMap;
 
 /** The helper reads and caches the partner configurations from SUW. */
-@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public class PartnerConfigHelper {
 
   private static final String TAG = PartnerConfigHelper.class.getSimpleName();
