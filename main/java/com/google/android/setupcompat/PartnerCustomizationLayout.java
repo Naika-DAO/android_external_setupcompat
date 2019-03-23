@@ -25,13 +25,11 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import androidx.annotation.ColorInt;
-import androidx.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.view.WindowManager;
 import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.internal.TemplateLayout;
@@ -45,6 +43,7 @@ import com.google.android.setupcompat.template.FooterBarMixin;
 import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
+import com.google.android.setupcompat.util.BuildCompat;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
@@ -52,9 +51,13 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   // Log tags can have at most 23 characters on N or before.
   private static final String TAG = "PartnerCustomizedLayout";
 
-  private final boolean suwVersionSupportPartnerResource = isAtLeastQ();
+  /**
+   * Attribute indicating whether usage of partner theme resources is allowed. This corresponds to
+   * the {@code app:sucUsePartnerResource} XML attribute. Note that when running in setup wizard,
+   * this is always overridden to true.
+   */
+  private boolean usePartnerResourceAttr = true;
 
-  private boolean applyPartnerResource;
   private Activity activity;
 
   public PartnerCustomizationLayout(Context context) {
@@ -94,8 +97,15 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     boolean layoutFullscreen =
         a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucLayoutFullscreen, true);
 
-    boolean usePartnerResource =
-        a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
+    if (!a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource)) {
+      // TODO(b/128961334): Enable Log.WTF after other client already set sucUsePartnerResource.
+      Log.e(TAG, "Attribute sucUsePartnerResource not found in " + activity.getComponentName());
+    }
+
+    usePartnerResourceAttr =
+        isSetupFlow
+            || a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
+
     a.recycle();
 
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && layoutFullscreen) {
@@ -106,29 +116,17 @@ public class PartnerCustomizationLayout extends TemplateLayout {
         TAG,
         "activity="
             + activity.getClass().getSimpleName()
-            + ", isSetupFlow="
+            + " isSetupFlow="
             + isSetupFlow
-            + ", applyPartnerResource="
-            + applyPartnerResource()
-            + ", usePartnerResource="
-            + usePartnerResource);
+            + " enablePartnerResourceLoading="
+            + enablePartnerResourceLoading()
+            + " usePartnerResourceAttr="
+            + usePartnerResourceAttr);
 
-    if (suwVersionSupportPartnerResource && isSetupFlow && !applyPartnerResource()) {
-      Log.w(TAG, "applyPartnerResource() should return true during setup wizard flow");
-    }
-
-    applyPartnerResource =
-        suwVersionSupportPartnerResource
-            && applyPartnerResource()
-            && (isSetupFlow || usePartnerResource);
     registerMixin(
-        StatusBarMixin.class,
-        new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr, applyPartnerResource));
-    registerMixin(
-        SystemNavBarMixin.class,
-        new SystemNavBarMixin(this, activity.getWindow(), applyPartnerResource));
-    registerMixin(
-        FooterBarMixin.class, new FooterBarMixin(this, attrs, defStyleAttr, applyPartnerResource));
+        StatusBarMixin.class, new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr));
+    registerMixin(SystemNavBarMixin.class, new SystemNavBarMixin(this, activity.getWindow()));
+    registerMixin(FooterBarMixin.class, new FooterBarMixin(this, attrs, defStyleAttr));
 
     getMixin(SystemNavBarMixin.class).applyPartnerCustomizations(attrs, defStyleAttr);
 
@@ -139,7 +137,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
-    if (applyPartnerResource) {
+    if (shouldApplyPartnerResource()) {
       updateContentBackgroundColorWithPartnerConfig();
     }
   }
@@ -170,8 +168,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    if (suwVersionSupportPartnerResource
-        && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
+    if (BuildCompat.isAtLeastQ() && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
       FooterBarMixin footerBarMixin = getMixin(FooterBarMixin.class);
       footerBarMixin.onDetachedFromWindow();
       FooterButton primaryButton = footerBarMixin.getPrimaryButton();
@@ -207,40 +204,31 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     }
   }
 
-  // TODO(b/127925696): remove the code for pre-release version of Android Q
-  private static boolean isAtLeastQ() {
-    return (VERSION.SDK_INT > VERSION_CODES.P)
-        || (VERSION.CODENAME.length() == 1
-            && VERSION.CODENAME.charAt(0) >= 'Q'
-            && VERSION.CODENAME.charAt(0) <= 'Z');
-  }
-
   /**
-   * This method determines applying the partner resource regardless inside setup wizard flow or
-   * not. It always returns true indicating applying partner resource inside setup wizard flow and
-   * applying customized attributes outside setup wizard flow. Subclasses can override this method
-   * to change applying flow. If Returns false, the layout forces applying customized attributes.
+   * Returns true if partner resource loading is enabled. If true, and other necessary conditions
+   * for loading theme attributes are met, this layout will use customized theme attributes from OEM
+   * overlays. This is intended to be used with flag-based development, to allow a flag to control
+   * the rollout of partner resource loading.
    */
-  protected boolean applyPartnerResource() {
+  protected boolean enablePartnerResourceLoading() {
     return true;
   }
 
-  /**
-   * Sets the footer of the layout, which is at the bottom of the content area outside the scrolling
-   * container. The footer can only be inflated once per instance of this layout.
-   *
-   * @param footer The layout to be inflated as footer.
-   * @return The root of the inflated footer view.
-   */
-  public View inflateFooter(@LayoutRes int footer) {
-    ViewStub footerStub = findManagedViewById(R.id.suc_layout_footer);
-    footerStub.setLayoutResource(footer);
-    return footerStub.inflate();
-  }
-
   /** Returns if the current layout/activity applies partner customized configurations or not. */
-  protected boolean shouldApplyPartnerResource() {
-    return applyPartnerResource;
+  public boolean shouldApplyPartnerResource() {
+    if (!enablePartnerResourceLoading()) {
+      return false;
+    }
+    if (!usePartnerResourceAttr) {
+      return false;
+    }
+    if (!BuildCompat.isAtLeastQ()) {
+      return false;
+    }
+    if (!PartnerConfigHelper.get(getContext()).isAvailable()) {
+      return false;
+    }
+    return true;
   }
 
   /** Updates the background color of this layout with the partner-customizable background color. */

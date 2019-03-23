@@ -68,42 +68,12 @@ public final class FooterButton implements OnClickListener {
    * Allows client customize text, click listener and theme for footer button before Button has been
    * created. The {@link FooterBarMixin} will inflate a corresponding Button view.
    *
-   * @param context The context of application.
    * @param text The text for button.
    * @param listener The listener for button.
    * @param buttonType The type of button.
    * @param theme The theme for button.
-   * @deprecated use {@link #FooterButton.Builder(Context)} instead.
    */
-  @Deprecated
-  public FooterButton(
-      Context context,
-      @StringRes int text,
-      @Nullable OnClickListener listener,
-      @ButtonType int buttonType,
-      @StyleRes int theme) {
-    this(context.getString(text), listener, buttonType, theme);
-  }
-
-  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
-  @Deprecated
-  public FooterButton(
-      Context context,
-      @StringRes int text,
-      @Nullable OnClickListener listener,
-      @StyleRes int theme) {
-    this(context.getString(text), listener, ButtonType.OTHER, theme);
-  }
-
-  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
-  @Deprecated
-  public FooterButton(String text, @Nullable OnClickListener listener, @StyleRes int theme) {
-    this(text, listener, ButtonType.OTHER, theme);
-  }
-
-  /** @deprecated use {@link #FooterButton.Builder(Context)} instead. */
-  @Deprecated
-  public FooterButton(
+  private FooterButton(
       CharSequence text,
       @Nullable OnClickListener listener,
       @ButtonType int buttonType,

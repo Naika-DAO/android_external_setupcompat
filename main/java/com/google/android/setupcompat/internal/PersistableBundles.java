@@ -16,6 +16,8 @@
 
 package com.google.android.setupcompat.internal;
 
+import android.annotation.TargetApi;
+import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** Contains utility methods related to {@link PersistableBundle}. */
+@TargetApi(VERSION_CODES.Q)
 public final class PersistableBundles {
 
   /**

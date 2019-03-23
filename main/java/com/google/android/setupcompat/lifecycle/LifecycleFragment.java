@@ -96,7 +96,7 @@ public class LifecycleFragment extends Fragment {
   @Override
   public void onDetach() {
     super.onDetach();
-    SetupMetricsLogger.logDuration(getContext(), metricKey, NANOSECONDS.toMillis(durationInNanos));
+    SetupMetricsLogger.logDuration(getActivity(), metricKey, NANOSECONDS.toMillis(durationInNanos));
   }
 
   @Override

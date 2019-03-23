@@ -16,6 +16,7 @@
 
 package com.google.android.setupcompat.internal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -106,7 +107,7 @@ public class SetupCompatServiceInvoker {
 
   public static synchronized SetupCompatServiceInvoker get(Context context) {
     if (instance == null) {
-      instance = new SetupCompatServiceInvoker(context);
+      instance = new SetupCompatServiceInvoker(context.getApplicationContext());
     }
 
     return instance;
@@ -117,7 +118,13 @@ public class SetupCompatServiceInvoker {
     instance = testInstance;
   }
 
+  // The instance is coming from Application context which alive during the application activate and
+  // it's not depend on the activities life cycle, so we can avoid memory leak. However linter
+  // cannot distinguish Application context or activity context, so we add @SuppressLint to avoid
+  // lint error.
+  @SuppressLint("StaticFieldLeak")
   private static SetupCompatServiceInvoker instance;
+
   private static final long MAX_WAIT_TIME_FOR_CONNECTION_MS = TimeUnit.SECONDS.toMillis(10);
-  private static final String TAG = "SetupCompat.SetupCompatServiceInvoker";
+  private static final String TAG = "SucServiceInvoker";
 }
