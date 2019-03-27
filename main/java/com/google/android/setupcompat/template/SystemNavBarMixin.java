@@ -54,13 +54,13 @@ public class SystemNavBarMixin implements Mixin {
    *
    * @param layout The layout this Mixin belongs to.
    * @param window The window this activity of Mixin belongs to.*
-   * @param applyPartnerResources whether to apply partner resources or not.
    */
-  public SystemNavBarMixin(
-      @NonNull TemplateLayout layout, @Nullable Window window, boolean applyPartnerResources) {
+  public SystemNavBarMixin(@NonNull TemplateLayout layout, @Nullable Window window) {
     this.templateLayout = layout;
     this.windowOfActivity = window;
-    this.applyPartnerResources = applyPartnerResources;
+    this.applyPartnerResources =
+        layout instanceof PartnerCustomizationLayout
+            && ((PartnerCustomizationLayout) layout).shouldApplyPartnerResource();
   }
 
   /**

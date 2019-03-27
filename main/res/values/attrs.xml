@@ -58,6 +58,7 @@
     <declare-styleable name="SucFooterButton">
         <attr name="android:text" />
         <attr name="android:theme" />
+        <!-- LINT.IfChange -->
         <!-- Next value: 9 -->
         <attr name="sucButtonType">
             <enum name="other" value="0" />
@@ -70,6 +71,10 @@
             <enum name="skip" value="7" />
             <enum name="stop" value="8" />
         </attr>
+        <!-- LINT.ThenChange(
+             //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/FooterButton.java,
+             //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/FooterBarMixin.java)
+        -->
     </declare-styleable>
 
     <!-- Button of footer attributes -->
