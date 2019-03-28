@@ -507,12 +507,21 @@ public class FooterBarMixin implements Mixin {
           new ColorStateList(
               new int[][] {DISABLED_STATE_SET, ENABLED_STATE_SET},
               new int[] {convertRgbToArgb(color, alpha), color});
+
+      // b/129482013: When a LayerDrawable is mutated, a new clone of its children drawables are
+      // created, but without copying the state from the parent drawable. So even though the parent
+      // is getting the correct drawable state from the view, the children won't get those states
+      // until a state change happens.
+      // As a workaround, we mutate the drawable and forcibly set the state to empty, and then
+      // refresh the state so the children will have the updated states.
+      button.getBackground().mutate().setState(new int[0]);
+      button.refreshDrawableState();
       button.setBackgroundTintList(colorStateList);
     }
   }
 
   private void updateButtonBackground(Button button, @ColorInt int color) {
-    button.getBackground().setColorFilter(color, Mode.SRC_ATOP);
+    button.getBackground().mutate().setColorFilter(color, Mode.SRC_ATOP);
   }
 
   private void updateButtonRadiusWithPartnerConfig(Button button) {
