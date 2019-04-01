@@ -612,6 +612,7 @@ public class FooterBarMixin implements Mixin {
 
   private static PartnerConfig getDrawablePartnerConfig(@ButtonType int buttonType) {
     PartnerConfig result;
+    // LINT.IfChange
     switch (buttonType) {
       case ButtonType.ADD_ANOTHER:
         result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_ADD_ANOTHER;
@@ -642,6 +643,9 @@ public class FooterBarMixin implements Mixin {
         result = null;
         break;
     }
+    // LINT.ThenChange(
+    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/FooterButton.java,
+    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/res/values/attrs.xml)
     return result;
   }
 

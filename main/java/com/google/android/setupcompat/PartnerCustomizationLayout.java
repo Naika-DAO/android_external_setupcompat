@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
@@ -31,9 +32,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import com.google.android.setupcompat.internal.BuildCompat;
+import com.google.android.setupcompat.internal.LifecycleFragment;
 import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.internal.TemplateLayout;
-import com.google.android.setupcompat.lifecycle.LifecycleFragment;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
@@ -43,7 +45,6 @@ import com.google.android.setupcompat.template.FooterBarMixin;
 import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
-import com.google.android.setupcompat.util.BuildCompat;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
@@ -56,7 +57,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
    * the {@code app:sucUsePartnerResource} XML attribute. Note that when running in setup wizard,
    * this is always overridden to true.
    */
-  private boolean usePartnerResourceAttr = true;
+  private boolean usePartnerResourceAttr;
 
   private Activity activity;
 
@@ -85,9 +86,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   }
 
   private void init(AttributeSet attrs, int defStyleAttr) {
-    activity = lookupActivityFromContext(getContext());
-
-    boolean isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
 
     TypedArray a =
         getContext()
@@ -97,31 +95,11 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     boolean layoutFullscreen =
         a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucLayoutFullscreen, true);
 
-    if (!a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource)) {
-      // TODO(b/128961334): Enable Log.WTF after other client already set sucUsePartnerResource.
-      Log.e(TAG, "Attribute sucUsePartnerResource not found in " + activity.getComponentName());
-    }
-
-    usePartnerResourceAttr =
-        isSetupFlow
-            || a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
-
     a.recycle();
 
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && layoutFullscreen) {
       setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
-
-    Log.i(
-        TAG,
-        "activity="
-            + activity.getClass().getSimpleName()
-            + " isSetupFlow="
-            + isSetupFlow
-            + " enablePartnerResourceLoading="
-            + enablePartnerResourceLoading()
-            + " usePartnerResourceAttr="
-            + usePartnerResourceAttr);
 
     registerMixin(
         StatusBarMixin.class, new StatusBarMixin(this, activity.getWindow(), attrs, defStyleAttr));
@@ -133,9 +111,11 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     // Override the FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS, FLAG_TRANSLUCENT_STATUS,
     // FLAG_TRANSLUCENT_NAVIGATION and SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN attributes of window forces
     // showing status bar and navigation bar.
-    activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+      activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+      activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    }
 
     if (shouldApplyPartnerResource()) {
       updateContentBackgroundColorWithPartnerConfig();
@@ -148,6 +128,55 @@ public class PartnerCustomizationLayout extends TemplateLayout {
       template = R.layout.partner_customization_layout;
     }
     return inflateTemplate(inflater, 0, template);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * <p>This method sets all these flags before onTemplateInflated since it will be too late and get
+   * incorrect flag value on PartnerCustomizationLayout if sets them after onTemplateInflated.
+   */
+  @Override
+  protected void onBeforeTemplateInflated(AttributeSet attrs, int defStyleAttr) {
+
+    boolean isSetupFlow;
+
+    // Sets default value to true since this timing
+    // before PartnerCustomization members initialization
+    usePartnerResourceAttr = true;
+
+    activity = lookupActivityFromContext(getContext());
+
+    isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
+
+    TypedArray a =
+        getContext()
+            .obtainStyledAttributes(
+                attrs, R.styleable.SucPartnerCustomizationLayout, defStyleAttr, 0);
+
+    if (!a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource)) {
+      // TODO(b/128961334): Enable Log.WTF after other client already set sucUsePartnerResource.
+      Log.e(TAG, "Attribute sucUsePartnerResource not found in " + activity.getComponentName());
+    }
+
+    usePartnerResourceAttr =
+        isSetupFlow
+            || a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
+
+    a.recycle();
+
+    if (Log.isLoggable(TAG, Log.DEBUG)) {
+      Log.d(
+          TAG,
+          "activity="
+              + activity.getClass().getSimpleName()
+              + " isSetupFlow="
+              + isSetupFlow
+              + " enablePartnerResourceLoading="
+              + enablePartnerResourceLoading()
+              + " usePartnerResourceAttr="
+              + usePartnerResourceAttr);
+    }
   }
 
   @Override
@@ -168,7 +197,9 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    if (BuildCompat.isAtLeastQ() && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP
+        && BuildCompat.isAtLeastQ()
+        && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
       FooterBarMixin footerBarMixin = getMixin(FooterBarMixin.class);
       footerBarMixin.onDetachedFromWindow();
       FooterButton primaryButton = footerBarMixin.getPrimaryButton();

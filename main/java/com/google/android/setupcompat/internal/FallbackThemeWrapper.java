@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.internal;
 
 import android.content.Context;
 import android.content.res.Resources.Theme;

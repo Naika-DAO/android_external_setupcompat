@@ -1,8 +1,9 @@
-package com.google.android.setupcompat.util;
+package com.google.android.setupcompat.internal;
 
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 
+/** Utility methods for detecting the build API version. */
 public final class BuildCompat {
 
   private BuildCompat() {}

@@ -23,6 +23,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.provider.Settings;
 import androidx.annotation.VisibleForTesting;
+import com.google.android.setupcompat.internal.BuildCompat;
 import java.util.Arrays;
 
 /**

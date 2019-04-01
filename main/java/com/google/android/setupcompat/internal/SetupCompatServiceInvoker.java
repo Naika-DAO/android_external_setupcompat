@@ -41,10 +41,9 @@ import java.util.concurrent.TimeoutException;
  */
 public class SetupCompatServiceInvoker {
 
-  @SuppressWarnings("FutureReturnValueIgnored")
   public void logMetricEvent(@MetricType int metricType, Bundle args) {
     try {
-      loggingExecutor.submit(() -> invokeLogMetric(metricType, args));
+      loggingExecutor.execute(() -> invokeLogMetric(metricType, args));
     } catch (RejectedExecutionException e) {
       Log.e(TAG, String.format("Metric of type %d dropped since queue is full.", metricType), e);
     }

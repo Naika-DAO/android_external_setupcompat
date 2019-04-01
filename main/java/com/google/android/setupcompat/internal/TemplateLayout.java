@@ -31,7 +31,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.template.Mixin;
-import com.google.android.setupcompat.util.FallbackThemeWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +79,7 @@ public class TemplateLayout extends FrameLayout {
     if (containerId == 0) {
       containerId = a.getResourceId(R.styleable.SucTemplateLayout_sucContainer, 0);
     }
+    onBeforeTemplateInflated(attrs, defStyleAttr);
     inflateTemplate(template, containerId);
 
     a.recycle();
@@ -206,6 +206,13 @@ public class TemplateLayout extends FrameLayout {
    * as {@link View#onFinishInflate()} but for inflation of the template instead of for child views.
    */
   protected void onTemplateInflated() {}
+
+  /**
+   * This is called before the template has been inflated and added to the view hierarchy.
+   * Subclasses can implement this method to modify the template as necessary, such as something
+   * need to be done before onTemplateInflated which is called while still in the constructor.
+   */
+  protected void onBeforeTemplateInflated(AttributeSet attrs, int defStyleAttr) {}
 
   /**
    * @return ID of the default container for this layout. This will be used to find the container

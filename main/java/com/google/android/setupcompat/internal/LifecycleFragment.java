@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.setupcompat.lifecycle;
+package com.google.android.setupcompat.internal;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
@@ -25,9 +25,6 @@ import android.content.Context;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
-import com.google.android.setupcompat.internal.ClockProvider;
-import com.google.android.setupcompat.internal.LayoutBindBackHelper;
-import com.google.android.setupcompat.internal.SetupCompatServiceInvoker;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
 import com.google.android.setupcompat.util.WizardManagerHelper;
