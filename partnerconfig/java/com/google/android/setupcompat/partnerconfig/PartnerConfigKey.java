@@ -58,7 +58,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY,
 })
-// TODO(b/121371322): can be removed and always reference PartnerConfig.getResourceName()?
+// TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public @interface PartnerConfigKey {
   // Status bar background color or illustration.

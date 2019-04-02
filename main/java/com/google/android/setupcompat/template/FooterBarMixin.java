@@ -52,6 +52,8 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
+import com.google.android.setupcompat.internal.BuildCompat;
+import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.logging.internal.FooterBarMixinMetrics;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig;
@@ -231,7 +233,7 @@ public class FooterBarMixin implements Mixin {
     if (footerButton.getTheme() == 0 || applyPartnerResources) {
       footerButton.setTheme(R.style.SucPartnerCustomizationButton_Primary);
     }
-    // TODO(b/120055778): Make sure customize attributes in theme can be applied during setup flow.
+    // TODO: Make sure customize attributes in theme can be applied during setup flow.
     // If sets background color to full transparent, the button changes to colored borderless ink
     // button style.
     if (applyPartnerResources
@@ -254,7 +256,7 @@ public class FooterBarMixin implements Mixin {
       if (footerBarPrimaryBackgroundColor != 0) {
         updateButtonBackground(button, footerBarPrimaryBackgroundColor);
       } else {
-        // TODO(b/122509325): get button background color from activity theme
+        // TODO: get button background color from activity theme
       }
     }
 
@@ -292,7 +294,7 @@ public class FooterBarMixin implements Mixin {
     int color =
         PartnerConfigHelper.get(context)
             .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR);
-    // TODO(b/120055778): Make sure customize attributes in theme can be applied during setup flow.
+    // TODO: Make sure customize attributes in theme can be applied during setup flow.
     // If doesn't set background color to full transparent or white, the button changes to colored
     // bordered ink button style.
     if (applyPartnerResources && (color != Color.TRANSPARENT && color != Color.WHITE)) {
@@ -311,7 +313,7 @@ public class FooterBarMixin implements Mixin {
       if (footerBarSecondaryBackgroundColor != 0) {
         updateButtonBackground(button, footerBarSecondaryBackgroundColor);
       } else {
-        // TODO(b/122509325): get button background color from activity theme
+        // TODO: get button background color from activity theme
       }
     }
 
@@ -426,7 +428,8 @@ public class FooterBarMixin implements Mixin {
     return button;
   }
 
-  // TODO(b/120055778): Make sure customize attributes in theme can be applied during setup flow.
+  // TODO: Make sure customize attributes in theme can be applied during setup flow.
+  @TargetApi(VERSION_CODES.Q)
   private void updateButtonAttrsWithPartnerConfig(
       Button button, boolean isPrimaryButton, @ButtonType int buttonType) {
     updateButtonTextColorWithPartnerConfig(button, isPrimaryButton);
@@ -483,7 +486,10 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
+  @TargetApi(VERSION_CODES.Q)
   private void updateButtonBackgroundWithPartnerConfig(Button button, boolean isPrimaryButton) {
+    Preconditions.checkArgument(
+        BuildCompat.isAtLeastQ(), "Update button background only support on sdk Q or higher");
     @ColorInt int color;
     int[] DISABLED_STATE_SET = {-android.R.attr.state_enabled};
     int[] ENABLED_STATE_SET = {};
@@ -509,9 +515,9 @@ public class FooterBarMixin implements Mixin {
               new int[] {convertRgbToArgb(color, alpha), color});
 
       // b/129482013: When a LayerDrawable is mutated, a new clone of its children drawables are
-      // created, but without copying the state from the parent drawable. So even though the parent
-      // is getting the correct drawable state from the view, the children won't get those states
-      // until a state change happens.
+      // created, but without copying the state from the parent drawable. So even though the
+      // parent is getting the correct drawable state from the view, the children won't get those
+      // states until a state change happens.
       // As a workaround, we mutate the drawable and forcibly set the state to empty, and then
       // refresh the state so the children will have the updated states.
       button.getBackground().mutate().setState(new int[0]);
@@ -590,7 +596,7 @@ public class FooterBarMixin implements Mixin {
     }
 
     if (icon != null) {
-      // TODO(b/120488979): restrict the icons to a reasonable size
+      // TODO: restrict the icons to a reasonable size
       int h = icon.getIntrinsicHeight();
       int w = icon.getIntrinsicWidth();
       icon.setBounds(0, 0, w, h);
@@ -612,7 +618,6 @@ public class FooterBarMixin implements Mixin {
 
   private static PartnerConfig getDrawablePartnerConfig(@ButtonType int buttonType) {
     PartnerConfig result;
-    // LINT.IfChange
     switch (buttonType) {
       case ButtonType.ADD_ANOTHER:
         result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_ADD_ANOTHER;
@@ -643,9 +648,6 @@ public class FooterBarMixin implements Mixin {
         result = null;
         break;
     }
-    // LINT.ThenChange(
-    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/FooterButton.java,
-    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/res/values/attrs.xml)
     return result;
   }
 

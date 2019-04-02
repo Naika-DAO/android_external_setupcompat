@@ -212,7 +212,6 @@ public final class FooterButton implements OnClickListener {
     this.theme = theme;
   }
 
-  // LINT.IfChange
   /** Maximum valid value of ButtonType */
   private static final int MAX_BUTTON_TYPE = 8;
 
@@ -266,7 +265,6 @@ public final class FooterButton implements OnClickListener {
   }
 
   private String getButtonTypeName() {
-    // LINT.IfChange
     switch (buttonType) {
       case ButtonType.ADD_ANOTHER:
         return "ADD_ANOTHER";
@@ -288,9 +286,6 @@ public final class FooterButton implements OnClickListener {
       default:
         return "OTHER";
     }
-    // LINT.ThenChange(
-    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/FooterBarMixin.java,
-    // //depot/google3/third_party/java_src/android_libs/setupcompat/main/res/values/attrs.xml)
   }
 
   /**

@@ -16,7 +16,7 @@
 
 package com.google.android.setupcompat.partnerconfig;
 
-// TODO(b/121371322): optimize the enum
+// TODO: optimize the enum
 /** Resources that can be customized by partner overlay APK. */
 public enum PartnerConfig {
 

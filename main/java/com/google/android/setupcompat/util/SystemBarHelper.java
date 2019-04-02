@@ -214,14 +214,12 @@ public final class SystemBarHelper {
    */
   @RequiresPermission("android.permission.STATUS_BAR")
   public static void setBackButtonVisible(final Window window, final boolean visible) {
-    if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-      if (visible) {
-        SystemBarHelper.removeVisibilityFlag(window, STATUS_BAR_DISABLE_BACK);
-        SystemBarHelper.removeImmersiveFlagsFromDecorView(window, STATUS_BAR_DISABLE_BACK);
-      } else {
-        SystemBarHelper.addVisibilityFlag(window, STATUS_BAR_DISABLE_BACK);
-        SystemBarHelper.addImmersiveFlagsToDecorView(window, STATUS_BAR_DISABLE_BACK);
-      }
+    if (visible) {
+      SystemBarHelper.removeVisibilityFlag(window, STATUS_BAR_DISABLE_BACK);
+      SystemBarHelper.removeImmersiveFlagsFromDecorView(window, STATUS_BAR_DISABLE_BACK);
+    } else {
+      SystemBarHelper.addVisibilityFlag(window, STATUS_BAR_DISABLE_BACK);
+      SystemBarHelper.addImmersiveFlagsToDecorView(window, STATUS_BAR_DISABLE_BACK);
     }
   }
 

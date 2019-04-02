@@ -8,7 +8,7 @@ public final class BuildCompat {
 
   private BuildCompat() {}
 
-  // TODO(b/127925696): remove the code for pre-release version of Android Q
+  // TODO: remove the code for pre-release version of Android Q
   public static boolean isAtLeastQ() {
     return (VERSION.SDK_INT > VERSION_CODES.P)
         || (VERSION.CODENAME.length() == 1

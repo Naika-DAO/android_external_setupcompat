@@ -155,7 +155,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
                 attrs, R.styleable.SucPartnerCustomizationLayout, defStyleAttr, 0);
 
     if (!a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource)) {
-      // TODO(b/128961334): Enable Log.WTF after other client already set sucUsePartnerResource.
+      // TODO: Enable Log.WTF after other client already set sucUsePartnerResource.
       Log.e(TAG, "Attribute sucUsePartnerResource not found in " + activity.getComponentName());
     }
 
