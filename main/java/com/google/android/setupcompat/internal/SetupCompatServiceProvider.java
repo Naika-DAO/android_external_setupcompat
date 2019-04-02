@@ -16,6 +16,7 @@
 
 package com.google.android.setupcompat.internal;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -103,11 +104,13 @@ public class SetupCompatServiceProvider {
           String.format("Failed to acquire connection after [%s %s]", timeout, timeUnit));
     }
     currentServiceState = getCurrentServiceState();
-    Log.i(
-        TAG,
-        String.format(
-            "Finished waiting for service to get connected. Current state = %s",
-            currentServiceState.state));
+    if (Log.isLoggable(TAG, Log.INFO)) {
+      Log.i(
+          TAG,
+          String.format(
+              "Finished waiting for service to get connected. Current state = %s",
+              currentServiceState.state));
+    }
     return currentServiceState.compatService;
   }
 
@@ -175,9 +178,12 @@ public class SetupCompatServiceProvider {
   }
 
   private void swapServiceContextAndNotify(ServiceContext latestServiceContext) {
-    Log.i(
-        TAG,
-        String.format("State changed: %s -> %s", serviceContext.state, latestServiceContext.state));
+    if (Log.isLoggable(TAG, Log.INFO)) {
+      Log.i(
+          TAG,
+          String.format(
+              "State changed: %s -> %s", serviceContext.state, latestServiceContext.state));
+    }
     serviceContext = latestServiceContext;
     CountDownLatch countDownLatch = getAndClearConnectedCondition();
     if (countDownLatch != null) {
@@ -208,7 +214,7 @@ public class SetupCompatServiceProvider {
 
   @VisibleForTesting
   SetupCompatServiceProvider(Context context) {
-    this.context = context;
+    this.context = context.getApplicationContext();
   }
 
   @VisibleForTesting
@@ -327,8 +333,15 @@ public class SetupCompatServiceProvider {
   }
 
   @VisibleForTesting static boolean disableLooperCheckForTesting = false;
+
+  // The instance is coming from Application context which alive during the application activate and
+  // it's not depend on the activities life cycle, so we can avoid memory leak. However linter
+  // cannot distinguish Application context or activity context, so we add @SuppressLint to avoid
+  // lint error.
+  @SuppressLint("StaticFieldLeak")
   private static volatile SetupCompatServiceProvider instance;
+
   private static final String COMPAT_PERMISSION =
       "com.google.android.setupwizard.SETUP_COMPAT_SERVICE";
-  private static final String TAG = "SetupCompat.SetupCompatServiceProvider";
+  private static final String TAG = "SucServiceProvider";
 }

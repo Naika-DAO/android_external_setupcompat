@@ -18,13 +18,16 @@ package com.google.android.setupcompat.logging;
 
 import static com.google.android.setupcompat.internal.Validations.assertLengthInRange;
 
+import android.annotation.TargetApi;
+import android.os.Build.VERSION_CODES;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import androidx.annotation.VisibleForTesting;
+import com.google.android.setupcompat.internal.BuildCompat;
 import com.google.android.setupcompat.internal.ClockProvider;
 import com.google.android.setupcompat.internal.Preconditions;
-import java.util.Objects;
+import com.google.android.setupcompat.util.ObjectUtils;
 
 /**
  * This class represents a interesting event at a particular point in time. The event is identified
@@ -32,16 +35,21 @@ import java.util.Objects;
  * providing more attributes associated with the given event. Only primitive values are supported
  * for now (int, long, double, float, String).
  */
+@TargetApi(VERSION_CODES.Q)
 public final class CustomEvent implements Parcelable {
 
   /** Creates a new instance of {@code CustomEvent}. Null arguments are not allowed. */
   public static CustomEvent create(
       MetricKey metricKey, PersistableBundle bundle, PersistableBundle piiValues) {
+    Preconditions.checkArgument(
+        BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher");
     return new CustomEvent(ClockProvider.timeInMillis(), metricKey, bundle, piiValues);
   }
 
   /** Creates a new instance of {@code CustomEvent}. Null arguments are not allowed. */
   public static CustomEvent create(MetricKey metricKey, PersistableBundle bundle) {
+    Preconditions.checkArgument(
+        BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher.");
     return create(metricKey, bundle, PersistableBundle.EMPTY);
   }
 
@@ -52,8 +60,8 @@ public final class CustomEvent implements Parcelable {
           return new CustomEvent(
               in.readLong(),
               in.readParcelable(MetricKey.class.getClassLoader()),
-              in.readPersistableBundle(),
-              in.readPersistableBundle());
+              in.readPersistableBundle(MetricKey.class.getClassLoader()),
+              in.readPersistableBundle(MetricKey.class.getClassLoader()));
         }
 
         @Override
@@ -108,14 +116,14 @@ public final class CustomEvent implements Parcelable {
     }
     CustomEvent that = (CustomEvent) o;
     return timestampMillis == that.timestampMillis
-        && Objects.equals(metricKey, that.metricKey)
-        && Objects.equals(persistableBundle, that.persistableBundle)
-        && Objects.equals(piiValues, that.piiValues);
+        && ObjectUtils.equals(metricKey, that.metricKey)
+        && ObjectUtils.equals(persistableBundle, that.persistableBundle)
+        && ObjectUtils.equals(piiValues, that.piiValues);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timestampMillis, metricKey, persistableBundle, piiValues);
+    return ObjectUtils.hashCode(timestampMillis, metricKey, persistableBundle, piiValues);
   }
 
   private CustomEvent(

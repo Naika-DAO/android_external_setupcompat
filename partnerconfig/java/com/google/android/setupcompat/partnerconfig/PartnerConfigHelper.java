@@ -63,6 +63,15 @@ public class PartnerConfigHelper {
   }
 
   /**
+   * Returns whether partner customized config values are available. This is true if setup wizard's
+   * content provider returns us a non-empty bundle, even if all the values are default, and none
+   * are customized by the overlay APK.
+   */
+  public boolean isAvailable() {
+    return resultBundle != null && !resultBundle.isEmpty();
+  }
+
+  /**
    * Returns the color of given {@code resourceConfig}, or 0 if the given {@code resourceConfig} is
    * not found. If the {@code ResourceType} of the given {@code resourceConfig} is not color,
    * IllegalArgumentException will be thrown.

@@ -16,6 +16,6 @@
 -->
 
 <manifest package="com.google.android.setupcompat">
-    <!-- Set in the BUILD or gradle file -->
-    <uses-sdk />
+  <!-- Set in the BUILD or gradle file -->
+  <uses-sdk />
 </manifest>
