@@ -28,7 +28,6 @@ import android.os.Build.VERSION_CODES;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
@@ -49,7 +48,6 @@ public class StatusBarMixin implements Mixin {
   private StatusBarBackgroundLayout statusBarLayout;
   private LinearLayout linearLayout;
   private final View decorView;
-  @VisibleForTesting boolean applyPartnerResources;
 
   /**
    * Creates a mixin for managing status bar.
@@ -58,14 +56,12 @@ public class StatusBarMixin implements Mixin {
    * @param window The window this activity of Mixin belongs to.
    * @param attrs XML attributes given to the layout.
    * @param defStyleAttr The default style attribute as given to the constructor of the layout.
-   * @param applyPartnerResources determine applies partner resources or not.
    */
   public StatusBarMixin(
       @NonNull PartnerCustomizationLayout partnerCustomizationLayout,
       @NonNull Window window,
       @Nullable AttributeSet attrs,
-      @AttrRes int defStyleAttr,
-      boolean applyPartnerResources) {
+      @AttrRes int defStyleAttr) {
 
     this.partnerCustomizationLayout = partnerCustomizationLayout;
 
@@ -81,7 +77,6 @@ public class StatusBarMixin implements Mixin {
     }
 
     decorView = window.getDecorView();
-    this.applyPartnerResources = applyPartnerResources;
 
     // Override the color of status bar to transparent such that the color of
     // StatusBarBackgroundLayout can be seen.
@@ -116,7 +111,7 @@ public class StatusBarMixin implements Mixin {
    * @param background The drawable of status bar.
    */
   public void setStatusBarBackground(Drawable background) {
-    if (applyPartnerResources) {
+    if (partnerCustomizationLayout.shouldApplyPartnerResource()) {
       Context context = partnerCustomizationLayout.getContext();
       background =
           PartnerConfigHelper.get(context)
@@ -124,7 +119,7 @@ public class StatusBarMixin implements Mixin {
     }
 
     if (statusBarLayout == null) {
-      linearLayout.setBackground(background);
+      linearLayout.setBackgroundDrawable(background);
     } else {
       statusBarLayout.setStatusBarBackground(background);
     }
@@ -148,7 +143,7 @@ public class StatusBarMixin implements Mixin {
    */
   public void setLightStatusBar(boolean isLight) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
-      if (applyPartnerResources) {
+      if (partnerCustomizationLayout.shouldApplyPartnerResource()) {
         Context context = partnerCustomizationLayout.getContext();
         isLight =
             PartnerConfigHelper.get(context)

@@ -36,7 +36,7 @@ import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig;
 import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
-import com.google.android.setupcompat.util.SystemBarBaseHelper;
+import com.google.android.setupcompat.util.SystemBarHelper;
 
 /**
  * A {@link Mixin} for setting and getting background color and window compatible with light theme
@@ -54,13 +54,13 @@ public class SystemNavBarMixin implements Mixin {
    *
    * @param layout The layout this Mixin belongs to.
    * @param window The window this activity of Mixin belongs to.*
-   * @param applyPartnerResources whether to apply partner resources or not.
    */
-  public SystemNavBarMixin(
-      @NonNull TemplateLayout layout, @Nullable Window window, boolean applyPartnerResources) {
+  public SystemNavBarMixin(@NonNull TemplateLayout layout, @Nullable Window window) {
     this.templateLayout = layout;
     this.windowOfActivity = window;
-    this.applyPartnerResources = applyPartnerResources;
+    this.applyPartnerResources =
+        layout instanceof PartnerCustomizationLayout
+            && ((PartnerCustomizationLayout) layout).shouldApplyPartnerResource();
   }
 
   /**
@@ -163,9 +163,8 @@ public class SystemNavBarMixin implements Mixin {
    */
   public void hideSystemBars(final Window window) {
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-      SystemBarBaseHelper.addVisibilityFlag(window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
-      SystemBarBaseHelper.addImmersiveFlagsToDecorView(
-          window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarHelper.addVisibilityFlag(window, SystemBarHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarHelper.addImmersiveFlagsToDecorView(window, SystemBarHelper.DEFAULT_IMMERSIVE_FLAGS);
 
       // Also set the navigation bar and status bar to transparent color. Note that this
       // doesn't work if android.R.boolean.config_enableTranslucentDecor is false.
@@ -183,9 +182,9 @@ public class SystemNavBarMixin implements Mixin {
    */
   public void showSystemBars(final Window window, final Context context) {
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-      SystemBarBaseHelper.removeVisibilityFlag(window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
-      SystemBarBaseHelper.removeImmersiveFlagsFromDecorView(
-          window, SystemBarBaseHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarHelper.removeVisibilityFlag(window, SystemBarHelper.DEFAULT_IMMERSIVE_FLAGS);
+      SystemBarHelper.removeImmersiveFlagsFromDecorView(
+          window, SystemBarHelper.DEFAULT_IMMERSIVE_FLAGS);
 
       if (context != null) {
         if (applyPartnerResources) {

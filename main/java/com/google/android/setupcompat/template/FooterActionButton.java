@@ -16,12 +16,12 @@
 
 package com.google.android.setupcompat.template;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 
 /** Button that can react to touch when disabled. */
@@ -37,6 +37,9 @@ public class FooterActionButton extends Button {
     this.footerButton = footerButton;
   }
 
+  // getOnClickListenerWhenDisabled is responsible for handling accessibility correctly, calling
+  // performClick if necessary.
+  @SuppressLint("ClickableViewAccessibility")
   @Override
   public boolean onTouchEvent(MotionEvent event) {
     if (event.getAction() == MotionEvent.ACTION_DOWN) {

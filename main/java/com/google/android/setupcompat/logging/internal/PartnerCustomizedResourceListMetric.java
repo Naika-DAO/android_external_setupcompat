@@ -16,7 +16,9 @@
 
 package com.google.android.setupcompat.logging.internal;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import androidx.annotation.VisibleForTesting;
@@ -25,6 +27,7 @@ import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
 
 /** Uses to log internal event customization resource list. */
+@TargetApi(VERSION_CODES.Q)
 public class PartnerCustomizedResourceListMetric {
 
   public static void logMetrics(Context context, String screenName, Bundle bundle) {

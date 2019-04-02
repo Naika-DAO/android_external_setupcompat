@@ -22,7 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import com.google.android.setupcompat.internal.Preconditions;
-import java.util.Objects;
+import com.google.android.setupcompat.util.ObjectUtils;
 import java.util.regex.Pattern;
 
 /**
@@ -99,12 +99,13 @@ public final class MetricKey implements Parcelable {
       return false;
     }
     MetricKey metricKey = (MetricKey) o;
-    return Objects.equals(name, metricKey.name) && Objects.equals(screenName, metricKey.screenName);
+    return ObjectUtils.equals(name, metricKey.name)
+        && ObjectUtils.equals(screenName, metricKey.screenName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, screenName);
+    return ObjectUtils.hashCode(name, screenName);
   }
 
   private MetricKey(String name, String screenName) {
