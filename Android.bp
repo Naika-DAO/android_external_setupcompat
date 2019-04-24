@@ -15,8 +15,6 @@ android_library {
     ],
     static_libs: [
         "androidx.annotation_annotation",
-        "androidx.core_core",
-        "guava",
     ],
     min_sdk_version: "14",
 }
