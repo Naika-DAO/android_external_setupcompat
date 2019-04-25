@@ -134,7 +134,7 @@ public @interface PartnerConfigKey {
   String KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR = "setup_compat_footer_secondary_button_text_color";
 
   // Background color of layout
-  String KEY_LAYOUT_BACKGROUND_COLOR = "setup_compat_layout_bg_color";
+  String KEY_LAYOUT_BACKGROUND_COLOR = "setup_design_layout_bg_color";
 
   // Text size of the header
   String KEY_HEADER_TEXT_SIZE = "setup_design_header_text_size";
