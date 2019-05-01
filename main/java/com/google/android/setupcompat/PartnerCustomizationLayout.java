@@ -25,7 +25,6 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
-import androidx.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +38,6 @@ import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
 import com.google.android.setupcompat.logging.SetupMetricsLogger;
-import com.google.android.setupcompat.partnerconfig.PartnerConfig;
 import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 import com.google.android.setupcompat.template.FooterBarMixin;
 import com.google.android.setupcompat.template.FooterButton;
@@ -115,10 +113,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
       activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-    }
-
-    if (shouldApplyPartnerResource()) {
-      updateContentBackgroundColorWithPartnerConfig();
     }
   }
 
@@ -260,14 +254,5 @@ public class PartnerCustomizationLayout extends TemplateLayout {
       return false;
     }
     return true;
-  }
-
-  /** Updates the background color of this layout with the partner-customizable background color. */
-  private void updateContentBackgroundColorWithPartnerConfig() {
-    @ColorInt
-    int color =
-        PartnerConfigHelper.get(getContext())
-            .getColor(getContext(), PartnerConfig.CONFIG_LAYOUT_BACKGROUND_COLOR);
-    this.getRootView().setBackgroundColor(color);
   }
 }

@@ -16,6 +16,8 @@
 
 package com.google.android.setupcompat.template;
 
+import static com.google.android.setupcompat.internal.Preconditions.ensureOnMainThread;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -36,6 +38,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
@@ -226,7 +229,9 @@ public class FooterBarMixin implements Mixin {
   }
 
   /** Sets primary button for footer. */
+  @MainThread
   public void setPrimaryButton(FooterButton footerButton) {
+    ensureOnMainThread("setPrimaryButton");
     LinearLayout buttonContainer = ensureFooterInflated();
 
     // Set the default theme if theme is not set, or when running in setup flow.
@@ -284,7 +289,9 @@ public class FooterBarMixin implements Mixin {
   }
 
   /** Sets secondary button for footer. */
+  @MainThread
   public void setSecondaryButton(FooterButton footerButton) {
+    ensureOnMainThread("setSecondaryButton");
     LinearLayout buttonContainer = ensureFooterInflated();
 
     // Set the default theme if theme is not set, or when running in setup flow.
