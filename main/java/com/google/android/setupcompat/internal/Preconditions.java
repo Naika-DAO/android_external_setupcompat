@@ -15,6 +15,8 @@
  */
 package com.google.android.setupcompat.internal;
 
+import android.os.Looper;
+
 /**
  * Static convenience methods that help a method or constructor check whether it was invoked
  * correctly (that is, whether its <i>preconditions</i> were met).
@@ -48,5 +50,15 @@ public final class Preconditions {
       throw new NullPointerException(errorMessage);
     }
     return reference;
+  }
+
+  /**
+   * Ensures that this method is called from the main thread, otherwise an exception will be thrown.
+   */
+  public static void ensureOnMainThread(String whichMethod) {
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+      return;
+    }
+    throw new IllegalStateException(whichMethod + " must be called from the UI thread.");
   }
 }
