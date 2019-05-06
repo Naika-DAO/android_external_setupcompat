@@ -55,7 +55,9 @@ public interface SetupMetricsLoggingConstants {
   @Retention(RetentionPolicy.SOURCE)
   @StringDef({
     MetricBundleKeys.METRIC_KEY,
+    MetricBundleKeys.METRIC_KEY_BUNDLE,
     MetricBundleKeys.CUSTOM_EVENT,
+    MetricBundleKeys.CUSTOM_EVENT_BUNDLE,
     MetricBundleKeys.TIME_MILLIS_LONG,
     MetricBundleKeys.COUNTER_INT
   })
@@ -63,14 +65,18 @@ public interface SetupMetricsLoggingConstants {
     /**
      * {@link MetricKey} of the data being logged. This will be set when {@code metricType} is
      * either {@link MetricType#COUNTER_EVENT} or {@link MetricType#DURATION_EVENT}.
+     *
+     * @deprecated Use {@link #METRIC_KEY_BUNDLE} instead.
      */
-    String METRIC_KEY = "MetricKey";
+    @Deprecated String METRIC_KEY = "MetricKey";
 
     /**
      * This key will be used when {@code metricType} is {@link MetricType#CUSTOM_EVENT} with the
      * value being a parcelable of type {@link com.google.android.setupcompat.logging.CustomEvent}.
+     *
+     * @deprecated Use {@link #CUSTOM_EVENT_BUNDLE} instead.
      */
-    String CUSTOM_EVENT = "CustomEvent";
+    @Deprecated String CUSTOM_EVENT = "CustomEvent";
 
     /**
      * This key will be set when {@code metricType} is {@link MetricType#DURATION_EVENT} with the
@@ -85,5 +91,18 @@ public interface SetupMetricsLoggingConstants {
      * MetricKey}.
      */
     String COUNTER_INT = "counter";
+
+    /**
+     * {@link MetricKey} of the data being logged. This will be set when {@code metricType} is
+     * either {@link MetricType#COUNTER_EVENT} or {@link MetricType#DURATION_EVENT}.
+     */
+    String METRIC_KEY_BUNDLE = "MetricKey_bundle";
+
+    /**
+     * This key will be used when {@code metricType} is {@link MetricType#CUSTOM_EVENT} with the
+     * value being a Bundle which can be used to read {@link
+     * com.google.android.setupcompat.logging.CustomEvent}.
+     */
+    String CUSTOM_EVENT_BUNDLE = "CustomEvent_bundle";
   }
 }

@@ -17,11 +17,10 @@
 package com.google.android.setupcompat.logging;
 
 import android.content.Context;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.internal.SetupCompatServiceInvoker;
-import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricBundleKeys;
+import com.google.android.setupcompat.logging.internal.MetricBundleConverter;
 import com.google.android.setupcompat.logging.internal.SetupMetricsLoggingConstants.MetricType;
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +31,9 @@ public class SetupMetricsLogger {
   public static void logCustomEvent(@NonNull Context context, @NonNull CustomEvent customEvent) {
     Preconditions.checkNotNull(context, "Context cannot be null.");
     Preconditions.checkNotNull(customEvent, "CustomEvent cannot be null.");
-    Bundle bundle = new Bundle();
-    bundle.putParcelable(MetricBundleKeys.CUSTOM_EVENT, customEvent);
-    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.CUSTOM_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context)
+        .logMetricEvent(
+            MetricType.CUSTOM_EVENT, MetricBundleConverter.createBundleForLogging(customEvent));
   }
 
   /** Increments the counter value with the name {@code counterName} by {@code times}. */
@@ -43,10 +42,10 @@ public class SetupMetricsLogger {
     Preconditions.checkNotNull(context, "Context cannot be null.");
     Preconditions.checkNotNull(counterName, "CounterName cannot be null.");
     Preconditions.checkArgument(times > 0, "Counter cannot be negative.");
-    Bundle bundle = new Bundle();
-    bundle.putParcelable(MetricBundleKeys.METRIC_KEY, counterName);
-    bundle.putInt(MetricBundleKeys.COUNTER_INT, times);
-    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.COUNTER_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context)
+        .logMetricEvent(
+            MetricType.COUNTER_EVENT,
+            MetricBundleConverter.createBundleForLoggingCounter(counterName, times));
   }
 
   /**
@@ -67,9 +66,9 @@ public class SetupMetricsLogger {
     Preconditions.checkNotNull(context, "Context cannot be null.");
     Preconditions.checkNotNull(timerName, "Timer name cannot be null.");
     Preconditions.checkArgument(timeInMillis >= 0, "Duration cannot be negative.");
-    Bundle bundle = new Bundle();
-    bundle.putParcelable(MetricBundleKeys.METRIC_KEY, timerName);
-    bundle.putLong(MetricBundleKeys.TIME_MILLIS_LONG, timeInMillis);
-    SetupCompatServiceInvoker.get(context).logMetricEvent(MetricType.DURATION_EVENT, bundle);
+    SetupCompatServiceInvoker.get(context)
+        .logMetricEvent(
+            MetricType.DURATION_EVENT,
+            MetricBundleConverter.createBundleForLoggingTimer(timerName, timeInMillis));
   }
 }

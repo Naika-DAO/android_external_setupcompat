@@ -20,12 +20,14 @@ import static com.google.android.setupcompat.internal.Validations.assertLengthIn
 
 import android.annotation.TargetApi;
 import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.setupcompat.internal.BuildCompat;
 import com.google.android.setupcompat.internal.ClockProvider;
+import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.util.ObjectUtils;
 
@@ -37,13 +39,26 @@ import com.google.android.setupcompat.util.ObjectUtils;
  */
 @TargetApi(VERSION_CODES.Q)
 public final class CustomEvent implements Parcelable {
+  private static final String BUNDLE_KEY_TIMESTAMP = "CustomEvent_timestamp";
+  private static final String BUNDLE_KEY_METRICKEY = "CustomEvent_metricKey";
+  private static final String BUNDLE_KEY_BUNDLE_VALUES = "CustomEvent_bundleValues";
+  private static final String BUNDLE_KEY_BUNDLE_PII_VALUES = "CustomEvent_pii_bundleValues";
+  private static final String BUNDLE_VERSION = "CustomEvent_version";
+  private static final int VERSION = 1;
 
   /** Creates a new instance of {@code CustomEvent}. Null arguments are not allowed. */
   public static CustomEvent create(
       MetricKey metricKey, PersistableBundle bundle, PersistableBundle piiValues) {
     Preconditions.checkArgument(
         BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher");
-    return new CustomEvent(ClockProvider.timeInMillis(), metricKey, bundle, piiValues);
+    return new CustomEvent(
+        ClockProvider.timeInMillis(),
+        metricKey,
+        // Assert only in factory methods since these methods are directly used by API consumers
+        // while constructor is used directly only when data is de-serialized from bundle (which
+        // might have been sent by a client using a newer API)
+        PersistableBundles.assertIsValid(bundle),
+        PersistableBundles.assertIsValid(piiValues));
   }
 
   /** Creates a new instance of {@code CustomEvent}. Null arguments are not allowed. */
@@ -51,6 +66,28 @@ public final class CustomEvent implements Parcelable {
     Preconditions.checkArgument(
         BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher.");
     return create(metricKey, bundle, PersistableBundle.EMPTY);
+  }
+
+  /** Converts {@link Bundle} into {@link CustomEvent}. */
+  public static CustomEvent toCustomEvent(Bundle bundle) {
+    return new CustomEvent(
+        bundle.getLong(BUNDLE_KEY_TIMESTAMP, /* defaultValue= */ Long.MIN_VALUE),
+        MetricKey.toMetricKey(bundle.getBundle(BUNDLE_KEY_METRICKEY)),
+        PersistableBundles.fromBundle(bundle.getBundle(BUNDLE_KEY_BUNDLE_VALUES)),
+        PersistableBundles.fromBundle(bundle.getBundle(BUNDLE_KEY_BUNDLE_PII_VALUES)));
+  }
+
+  /** Converts {@link CustomEvent} into {@link Bundle}. */
+  public static Bundle toBundle(CustomEvent customEvent) {
+    Preconditions.checkNotNull(customEvent, "CustomEvent cannot be null");
+    Bundle bundle = new Bundle();
+    bundle.putInt(BUNDLE_VERSION, VERSION);
+    bundle.putLong(BUNDLE_KEY_TIMESTAMP, customEvent.timestampMillis());
+    bundle.putBundle(BUNDLE_KEY_METRICKEY, MetricKey.fromMetricKey(customEvent.metricKey()));
+    bundle.putBundle(BUNDLE_KEY_BUNDLE_VALUES, PersistableBundles.toBundle(customEvent.values()));
+    bundle.putBundle(
+        BUNDLE_KEY_BUNDLE_PII_VALUES, PersistableBundles.toBundle(customEvent.piiValues()));
+    return bundle;
   }
 
   public static final Creator<CustomEvent> CREATOR =
@@ -117,8 +154,8 @@ public final class CustomEvent implements Parcelable {
     CustomEvent that = (CustomEvent) o;
     return timestampMillis == that.timestampMillis
         && ObjectUtils.equals(metricKey, that.metricKey)
-        && ObjectUtils.equals(persistableBundle, that.persistableBundle)
-        && ObjectUtils.equals(piiValues, that.piiValues);
+        && PersistableBundles.equals(persistableBundle, that.persistableBundle)
+        && PersistableBundles.equals(piiValues, that.piiValues);
   }
 
   @Override
@@ -152,19 +189,6 @@ public final class CustomEvent implements Parcelable {
     for (String key : bundle.keySet()) {
       assertLengthInRange(key, "bundle key", MIN_BUNDLE_KEY_LENGTH, MAX_STR_LENGTH);
       Object value = bundle.get(key);
-      boolean valid = false;
-      for (Class<?> clazz : CUSTOM_EVENT_ALLOWED_DATA_TYPES) {
-        if (clazz.isInstance(value)) {
-          valid = true;
-          break;
-        }
-      }
-      Preconditions.checkArgument(
-          valid,
-          String.format(
-              "Invalid data type for key='%s'. Expected values of type %s, but found [%s].",
-              key, CUSTOM_EVENT_ALLOWED_DATA_TYPES, value));
-
       if (value instanceof String) {
         Preconditions.checkArgument(
             ((String) value).length() <= MAX_STR_LENGTH,
@@ -175,8 +199,6 @@ public final class CustomEvent implements Parcelable {
     }
   }
 
-  private static final Class<?>[] CUSTOM_EVENT_ALLOWED_DATA_TYPES =
-      new Class<?>[] {Integer.class, Long.class, Double.class, String.class, Boolean.class};
   @VisibleForTesting static final int MAX_STR_LENGTH = 50;
   @VisibleForTesting static final int MIN_BUNDLE_KEY_LENGTH = 3;
 }
