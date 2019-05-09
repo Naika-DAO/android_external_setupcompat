@@ -18,6 +18,7 @@ package com.google.android.setupcompat.logging;
 
 import static com.google.android.setupcompat.internal.Validations.assertLengthInRange;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
@@ -30,6 +31,11 @@ import java.util.regex.Pattern;
  * values reported by the API consumer.
  */
 public final class MetricKey implements Parcelable {
+
+  private static final String METRIC_KEY_BUNDLE_NAME_KEY = "MetricKey_name";
+  private static final String METRIC_KEY_BUNDLE_SCREEN_NAME_KEY = "MetricKey_screenName";
+  private static final String METRIC_KEY_BUNDLE_VERSION = "MetricKey_version";
+  private static final int VERSION = 1;
 
   /**
    * Creates a new instance of MetricKey.
@@ -54,6 +60,24 @@ public final class MetricKey implements Parcelable {
         METRIC_KEY_PATTERN.matcher(screenName).matches(),
         "Invalid MetricKey, only alpha numeric characters are allowed.");
     return new MetricKey(name, screenName);
+  }
+
+  /** Converts {@link MetricKey} into {@link Bundle}. */
+  public static Bundle fromMetricKey(MetricKey metricKey) {
+    Preconditions.checkNotNull(metricKey, "MetricKey cannot be null.");
+    Bundle bundle = new Bundle();
+    bundle.putInt(METRIC_KEY_BUNDLE_VERSION, VERSION);
+    bundle.putString(METRIC_KEY_BUNDLE_NAME_KEY, metricKey.name());
+    bundle.putString(METRIC_KEY_BUNDLE_SCREEN_NAME_KEY, metricKey.screenName());
+    return bundle;
+  }
+
+  /** Converts {@link Bundle} into {@link MetricKey}. */
+  public static MetricKey toMetricKey(Bundle bundle) {
+    Preconditions.checkNotNull(bundle, "Bundle cannot be null");
+    return MetricKey.get(
+        bundle.getString(METRIC_KEY_BUNDLE_NAME_KEY),
+        bundle.getString(METRIC_KEY_BUNDLE_SCREEN_NAME_KEY));
   }
 
   public static final Creator<MetricKey> CREATOR =

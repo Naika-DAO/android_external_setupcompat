@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import androidx.annotation.AttrRes;
+import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
@@ -56,6 +57,7 @@ import android.widget.LinearLayout.LayoutParams;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.internal.BuildCompat;
+import com.google.android.setupcompat.internal.FooterButtonPartnerConfig;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.internal.TemplateLayout;
 import com.google.android.setupcompat.logging.internal.FooterBarMixinMetrics;
@@ -82,8 +84,10 @@ public class FooterBarMixin implements Mixin {
   private FooterButton secondaryButton;
   @IdRes private int primaryButtonId;
   @IdRes private int secondaryButtonId;
-  ColorStateList primaryTextColorStateList = null;
-  ColorStateList secondaryTextColorStateList = null;
+  ColorStateList primaryDefaultTextColor = null;
+  ColorStateList secondaryDefaultTextColor = null;
+  @VisibleForTesting public FooterButtonPartnerConfig primaryButtonPartnerConfigForTesting;
+  @VisibleForTesting public FooterButtonPartnerConfig secondaryButtonPartnerConfigForTesting;
 
   private int footerBarPaddingTop;
   private int footerBarPaddingBottom;
@@ -108,7 +112,11 @@ public class FooterBarMixin implements Mixin {
           if (button != null) {
             button.setEnabled(enabled);
             if (applyPartnerResources && !enabled) {
-              updateButtonTextColorWithPartnerConfig(button, id == primaryButtonId);
+              updateButtonTextColorWithPartnerConfig(
+                  button,
+                  (id == primaryButtonId)
+                      ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR
+                      : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR);
             }
           }
         }
@@ -203,25 +211,77 @@ public class FooterBarMixin implements Mixin {
         throw new IllegalStateException("Footer stub is not found in this template");
       }
       buttonContainer = (LinearLayout) inflateFooter(R.layout.suc_footer_button_bar);
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-        buttonContainer.setId(View.generateViewId());
-      } else {
-        buttonContainer.setId(generateViewId());
-      }
-      updateFooterBarPadding();
-      if (applyPartnerResources) {
-        @ColorInt
-        int color =
-            PartnerConfigHelper.get(context)
-                .getColor(context, PartnerConfig.CONFIG_FOOTER_BAR_BG_COLOR);
-        buttonContainer.setBackgroundColor(color);
-      }
+      onFooterBarInflated(buttonContainer);
+      onFooterBarApplyPartnerResource(buttonContainer);
     }
     return buttonContainer;
   }
 
+  /**
+   * Notifies that the footer bar has been inflated to the view hierarchy. Calling super is
+   * necessary while subclass implement it.
+   */
+  @CallSuper
+  protected void onFooterBarInflated(LinearLayout buttonContainer) {
+    if (buttonContainer == null) {
+      // Ignore action since buttonContainer is null
+      return;
+    }
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+      buttonContainer.setId(View.generateViewId());
+    } else {
+      buttonContainer.setId(generateViewId());
+    }
+    updateFooterBarPadding(
+        buttonContainer,
+        buttonContainer.getPaddingLeft(),
+        footerBarPaddingTop,
+        buttonContainer.getPaddingRight(),
+        footerBarPaddingBottom);
+  }
+
+  /**
+   * Notifies while the footer bar apply Partner Resource. Calling super is necessary while subclass
+   * implement it.
+   */
+  @CallSuper
+  protected void onFooterBarApplyPartnerResource(LinearLayout buttonContainer) {
+    if (buttonContainer == null) {
+      // Ignore action since buttonContainer is null
+      return;
+    }
+    if (!applyPartnerResources) {
+      return;
+    }
+
+    @ColorInt
+    int color =
+        PartnerConfigHelper.get(context)
+            .getColor(context, PartnerConfig.CONFIG_FOOTER_BAR_BG_COLOR);
+    buttonContainer.setBackgroundColor(color);
+
+    footerBarPaddingTop =
+        (int)
+            PartnerConfigHelper.get(context)
+                .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_TOP);
+    footerBarPaddingBottom =
+        (int)
+            PartnerConfigHelper.get(context)
+                .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_BOTTOM);
+    updateFooterBarPadding(
+        buttonContainer,
+        buttonContainer.getPaddingLeft(),
+        footerBarPaddingTop,
+        buttonContainer.getPaddingRight(),
+        footerBarPaddingBottom);
+  }
+
+  /**
+   * Inflate FooterActionButton with layout "suc_button". Subclasses can implement this method to
+   * modify the footer button layout as necessary.
+   */
   @SuppressLint("InflateParams")
-  private FooterActionButton createThemedButton(Context context, @StyleRes int theme) {
+  protected FooterActionButton createThemedButton(Context context, @StyleRes int theme) {
     // Inflate a single button from XML, which when using support lib, will take advantage of
     // the injected layout inflater and give us AppCompatButton instead.
     LayoutInflater inflater = LayoutInflater.from(new ContextThemeWrapper(context, theme));
@@ -232,41 +292,35 @@ public class FooterBarMixin implements Mixin {
   @MainThread
   public void setPrimaryButton(FooterButton footerButton) {
     ensureOnMainThread("setPrimaryButton");
-    LinearLayout buttonContainer = ensureFooterInflated();
+    ensureFooterInflated();
 
-    // Set the default theme if theme is not set, or when running in setup flow.
-    if (footerButton.getTheme() == 0 || applyPartnerResources) {
-      footerButton.setTheme(R.style.SucPartnerCustomizationButton_Primary);
-    }
-    // TODO: Make sure customize attributes in theme can be applied during setup flow.
-    // If sets background color to full transparent, the button changes to colored borderless ink
-    // button style.
-    if (applyPartnerResources
-        && PartnerConfigHelper.get(context)
-                .getColor(context, PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
-            == Color.TRANSPARENT) {
-      footerButton.setTheme(R.style.SucPartnerCustomizationButton_Secondary);
-    }
+    // Setup button partner config
+    FooterButtonPartnerConfig footerButtonPartnerConfig =
+        new FooterButtonPartnerConfig.Builder(footerButton)
+            .setPartnerTheme(
+                getPartnerTheme(
+                    footerButton,
+                    /* defaultPartnerTheme= */ R.style.SucPartnerCustomizationButton_Primary,
+                    /* buttonBackgroundColorConfig= */ PartnerConfig
+                        .CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR))
+            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
+            .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
+            .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
+            .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
+            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR)
+            .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .build();
 
-    FooterActionButton button = inflateButton(footerButton);
+    FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
+    // update information for primary button. Need to update as long as the button inflated.
     primaryButtonId = button.getId();
-    buttonContainer.addView(button);
-    autoSetButtonBarVisibility();
-
-    if (applyPartnerResources) {
-      // This API should only be called after primaryButtonId is set.
-      updateButtonAttrsWithPartnerConfig(button, true, footerButton.getButtonType());
-    } else {
-      // Try to set default value
-      if (footerBarPrimaryBackgroundColor != 0) {
-        updateButtonBackground(button, footerBarPrimaryBackgroundColor);
-      } else {
-        // TODO: get button background color from activity theme
-      }
-    }
-
-    footerButton.setOnButtonEventListener(createButtonEventListener(primaryButtonId));
+    primaryDefaultTextColor = button.getTextColors();
     primaryButton = footerButton;
+    primaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
+
+    onFooterButtonInflated(button, footerBarPrimaryBackgroundColor);
+    onFooterButtonApplyPartnerResource(button, footerButtonPartnerConfig);
 
     // Make sure the position of buttons are correctly and prevent primary button create twice or
     // more.
@@ -278,7 +332,7 @@ public class FooterBarMixin implements Mixin {
     return primaryButton;
   }
 
-  @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+  @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
   public Button getPrimaryButtonView() {
     return buttonContainer == null ? null : buttonContainer.findViewById(primaryButtonId);
   }
@@ -292,47 +346,46 @@ public class FooterBarMixin implements Mixin {
   @MainThread
   public void setSecondaryButton(FooterButton footerButton) {
     ensureOnMainThread("setSecondaryButton");
-    LinearLayout buttonContainer = ensureFooterInflated();
+    ensureFooterInflated();
 
-    // Set the default theme if theme is not set, or when running in setup flow.
-    if (footerButton.getTheme() == 0 || applyPartnerResources) {
-      footerButton.setTheme(R.style.SucPartnerCustomizationButton_Secondary);
-    }
-    int color =
-        PartnerConfigHelper.get(context)
-            .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR);
-    // TODO: Make sure customize attributes in theme can be applied during setup flow.
-    // If doesn't set background color to full transparent or white, the button changes to colored
-    // bordered ink button style.
-    if (applyPartnerResources && (color != Color.TRANSPARENT && color != Color.WHITE)) {
-      footerButton.setTheme(R.style.SucPartnerCustomizationButton_Primary);
-    }
+    // Setup button partner config
+    FooterButtonPartnerConfig footerButtonPartnerConfig =
+        new FooterButtonPartnerConfig.Builder(footerButton)
+            .setPartnerTheme(
+                getPartnerTheme(
+                    footerButton,
+                    /* defaultPartnerTheme= */ R.style.SucPartnerCustomizationButton_Secondary,
+                    /* buttonBackgroundColorConfig= */ PartnerConfig
+                        .CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR))
+            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
+            .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
+            .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
+            .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
+            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
+            .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .build();
 
-    FooterActionButton button = inflateButton(footerButton);
+    FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
+    // update information for secondary button. Need to update as long as the button inflated.
     secondaryButtonId = button.getId();
-    buttonContainer.addView(button);
-
-    if (applyPartnerResources) {
-      // This API should only be called after secondaryButtonId is set.
-      updateButtonAttrsWithPartnerConfig(button, false, footerButton.getButtonType());
-    } else {
-      // Try to set default value
-      if (footerBarSecondaryBackgroundColor != 0) {
-        updateButtonBackground(button, footerBarSecondaryBackgroundColor);
-      } else {
-        // TODO: get button background color from activity theme
-      }
-    }
-
-    footerButton.setOnButtonEventListener(createButtonEventListener(secondaryButtonId));
+    secondaryDefaultTextColor = button.getTextColors();
     secondaryButton = footerButton;
+    secondaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
+
+    onFooterButtonInflated(button, footerBarSecondaryBackgroundColor);
+    onFooterButtonApplyPartnerResource(button, footerButtonPartnerConfig);
 
     // Make sure the position of buttons are correctly and prevent secondary button create twice or
     // more.
     repopulateButtons();
   }
 
-  private void repopulateButtons() {
+  /**
+   * Corrects the order of footer buttons after the button has been inflated to the view hierarchy.
+   * Subclasses can implement this method to modify the order of footer buttons as necessary.
+   */
+  protected void repopulateButtons() {
     LinearLayout buttonContainer = ensureFooterInflated();
     Button tempPrimaryButton = getPrimaryButtonView();
     Button tempSecondaryButton = getSecondaryButtonView();
@@ -347,8 +400,49 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
+  /**
+   * Notifies that the footer button has been inInflated and add to the view hierarchy. Calling
+   * super is necessary while subclass implement it.
+   */
+  @CallSuper
+  protected void onFooterButtonInflated(Button button, @ColorInt int defaultButtonBackgroundColor) {
+    // Try to set default background
+    if (defaultButtonBackgroundColor != 0) {
+      updateButtonBackground(button, defaultButtonBackgroundColor);
+    } else {
+      // TODO: get button background color from activity theme
+    }
+    buttonContainer.addView(button);
+    autoSetButtonBarVisibility();
+  }
+
+  private int getPartnerTheme(
+      FooterButton footerButton,
+      int defaultPartnerTheme,
+      PartnerConfig buttonBackgroundColorConfig) {
+    int overrideTheme = footerButton.getTheme();
+
+    // Set the default theme if theme is not set, or when running in setup flow.
+    if (footerButton.getTheme() == 0 || applyPartnerResources) {
+      overrideTheme = defaultPartnerTheme;
+    }
+    // TODO: Make sure customize attributes in theme can be applied during setup flow.
+    // If sets background color to full transparent, the button changes to colored borderless ink
+    // button style.
+    int color = PartnerConfigHelper.get(context).getColor(context, buttonBackgroundColorConfig);
+    if (applyPartnerResources && color == Color.TRANSPARENT) {
+      overrideTheme = R.style.SucPartnerCustomizationButton_Secondary;
+    } else if (applyPartnerResources && (color != Color.TRANSPARENT)) {
+      // TODO: remove the constrain (color != Color.WHITE), need to check all pages go
+      // well without customization. It should be fine since the default value of secondary bg color
+      // is set as transparent.
+      overrideTheme = R.style.SucPartnerCustomizationButton_Primary;
+    }
+    return overrideTheme;
+  }
+
   @VisibleForTesting
-  LinearLayout getButtonContainer() {
+  public LinearLayout getButtonContainer() {
     return buttonContainer;
   }
 
@@ -392,7 +486,7 @@ public class FooterBarMixin implements Mixin {
     return buttonContainer.getVisibility();
   }
 
-  @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+  @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
   public Button getSecondaryButtonView() {
     return buttonContainer == null ? null : buttonContainer.findViewById(secondaryButtonId);
   }
@@ -417,8 +511,10 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
-  private FooterActionButton inflateButton(FooterButton footerButton) {
-    FooterActionButton button = createThemedButton(context, footerButton.getTheme());
+  private FooterActionButton inflateButton(
+      FooterButton footerButton, FooterButtonPartnerConfig footerButtonPartnerConfig) {
+    FooterActionButton button =
+        createThemedButton(context, footerButtonPartnerConfig.getPartnerTheme());
     if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
       button.setId(View.generateViewId());
     } else {
@@ -432,61 +528,55 @@ public class FooterBarMixin implements Mixin {
     button.setEnabled(footerButton.isEnabled());
     button.setFooterButton(footerButton);
 
+    footerButton.setOnButtonEventListener(createButtonEventListener(button.getId()));
     return button;
   }
 
   // TODO: Make sure customize attributes in theme can be applied during setup flow.
   @TargetApi(VERSION_CODES.Q)
-  private void updateButtonAttrsWithPartnerConfig(
-      Button button, boolean isPrimaryButton, @ButtonType int buttonType) {
-    updateButtonTextColorWithPartnerConfig(button, isPrimaryButton);
-    updateButtonTextSizeWithPartnerConfig(button);
-    updateButtonTypeFaceWithPartnerConfig(button);
-    updateButtonBackgroundWithPartnerConfig(button, isPrimaryButton);
-    updateButtonRadiusWithPartnerConfig(button);
-    updateButtonIconWithPartnerConfig(button, buttonType);
-    updateButtonRippleColorWithPartnerConfig(button, isPrimaryButton);
+  private void onFooterButtonApplyPartnerResource(
+      Button button, FooterButtonPartnerConfig footerButtonPartnerConfig) {
+    if (!applyPartnerResources) {
+      return;
+    }
+    updateButtonTextColorWithPartnerConfig(
+        button, footerButtonPartnerConfig.getButtonTextColorConfig());
+    updateButtonTextSizeWithPartnerConfig(
+        button, footerButtonPartnerConfig.getButtonTextSizeConfig());
+    updateButtonTypeFaceWithPartnerConfig(
+        button, footerButtonPartnerConfig.getButtonTextTypeFaceConfig());
+    updateButtonBackgroundWithPartnerConfig(
+        button, footerButtonPartnerConfig.getButtonBackgroundConfig());
+    updateButtonRadiusWithPartnerConfig(button, footerButtonPartnerConfig.getButtonRadiusConfig());
+    updateButtonIconWithPartnerConfig(button, footerButtonPartnerConfig.getButtonIconConfig());
+    updateButtonRippleColorWithPartnerConfig(button, footerButtonPartnerConfig);
   }
 
-  private void updateButtonTextColorWithPartnerConfig(Button button, boolean isPrimaryButton) {
-    @ColorInt int color;
-    if (isPrimaryButton) {
-      color =
-          PartnerConfigHelper.get(context)
-              .getColor(context, PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR);
-      if (primaryTextColorStateList == null) {
-        primaryTextColorStateList = button.getTextColors();
-      }
-    } else {
-      color =
-          PartnerConfigHelper.get(context)
-              .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR);
-      if (secondaryTextColorStateList == null) {
-        secondaryTextColorStateList = button.getTextColors();
-      }
-    }
-
+  private void updateButtonTextColorWithPartnerConfig(
+      Button button, PartnerConfig buttonTextColorConfig) {
     if (button.isEnabled()) {
+      @ColorInt
+      int color = PartnerConfigHelper.get(context).getColor(context, buttonTextColorConfig);
       button.setTextColor(ColorStateList.valueOf(color));
     } else {
+      // disable state will use the default disable state color
       button.setTextColor(
-          isPrimaryButton ? primaryTextColorStateList : secondaryTextColorStateList);
+          button.getId() == primaryButtonId ? primaryDefaultTextColor : secondaryDefaultTextColor);
     }
   }
 
-  private void updateButtonTextSizeWithPartnerConfig(Button button) {
-    float size =
-        PartnerConfigHelper.get(context)
-            .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE);
+  private void updateButtonTextSizeWithPartnerConfig(
+      Button button, PartnerConfig buttonTextSizeConfig) {
+    float size = PartnerConfigHelper.get(context).getDimension(context, buttonTextSizeConfig);
     if (size > 0) {
       button.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
   }
 
-  private void updateButtonTypeFaceWithPartnerConfig(Button button) {
+  private void updateButtonTypeFaceWithPartnerConfig(
+      Button button, PartnerConfig buttonTextTypeFaceConfig) {
     String fontFamilyName =
-        PartnerConfigHelper.get(context)
-            .getString(context, PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY);
+        PartnerConfigHelper.get(context).getString(context, buttonTextTypeFaceConfig);
     Typeface font = Typeface.create(fontFamilyName, Typeface.NORMAL);
     if (font != null) {
       button.setTypeface(font);
@@ -494,21 +584,14 @@ public class FooterBarMixin implements Mixin {
   }
 
   @TargetApi(VERSION_CODES.Q)
-  private void updateButtonBackgroundWithPartnerConfig(Button button, boolean isPrimaryButton) {
+  private void updateButtonBackgroundWithPartnerConfig(
+      Button button, PartnerConfig buttonBackgroundConfig) {
     Preconditions.checkArgument(
         BuildCompat.isAtLeastQ(), "Update button background only support on sdk Q or higher");
     @ColorInt int color;
     int[] DISABLED_STATE_SET = {-android.R.attr.state_enabled};
     int[] ENABLED_STATE_SET = {};
-    if (isPrimaryButton) {
-      color =
-          PartnerConfigHelper.get(context)
-              .getColor(context, PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR);
-    } else {
-      color =
-          PartnerConfigHelper.get(context)
-              .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR);
-    }
+    color = PartnerConfigHelper.get(context).getColor(context, buttonBackgroundConfig);
 
     if (color != Color.TRANSPARENT) {
       TypedArray a = context.obtainStyledAttributes(new int[] {android.R.attr.disabledAlpha});
@@ -537,11 +620,10 @@ public class FooterBarMixin implements Mixin {
     button.getBackground().mutate().setColorFilter(color, Mode.SRC_ATOP);
   }
 
-  private void updateButtonRadiusWithPartnerConfig(Button button) {
+  private void updateButtonRadiusWithPartnerConfig(
+      Button button, PartnerConfig buttonRadiusConfig) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
-      float radius =
-          PartnerConfigHelper.get(context)
-              .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS);
+      float radius = PartnerConfigHelper.get(context).getDimension(context, buttonRadiusConfig);
       GradientDrawable gradientDrawable = getGradientDrawable(button);
       if (gradientDrawable != null) {
         gradientDrawable.setCornerRadius(radius);
@@ -549,7 +631,8 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
-  private void updateButtonRippleColorWithPartnerConfig(Button button, boolean isPrimaryButton) {
+  private void updateButtonRippleColorWithPartnerConfig(
+      Button button, FooterButtonPartnerConfig footerButtonPartnerConfig) {
     // RippleDrawable is available after sdk 21. And because on lower sdk the RippleDrawable is
     // unavailable. Since Stencil customization provider only works on Q+, there is no need to
     // perform any customization for versions 21.
@@ -562,19 +645,13 @@ public class FooterBarMixin implements Mixin {
       int[] pressedState = {android.R.attr.state_pressed};
       @ColorInt int color;
       // Get partner text color.
-      if (isPrimaryButton) {
-        color =
-            PartnerConfigHelper.get(context)
-                .getColor(context, PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR);
-      } else {
-        color =
-            PartnerConfigHelper.get(context)
-                .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR);
-      }
+      color =
+          PartnerConfigHelper.get(context)
+              .getColor(context, footerButtonPartnerConfig.getButtonTextColorConfig());
 
       float alpha =
           PartnerConfigHelper.get(context)
-              .getFraction(context, PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA);
+              .getFraction(context, footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
 
       // Set text color for ripple.
       ColorStateList colorStateList =
@@ -585,14 +662,13 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
-  private void updateButtonIconWithPartnerConfig(Button button, @ButtonType int buttonType) {
+  private void updateButtonIconWithPartnerConfig(Button button, PartnerConfig buttonIconConfig) {
     if (button == null) {
       return;
     }
     Drawable icon = null;
-    PartnerConfig id = getDrawablePartnerConfig(buttonType);
-    if (id != null) {
-      icon = PartnerConfigHelper.get(context).getDrawable(context, id);
+    if (buttonIconConfig != null) {
+      icon = PartnerConfigHelper.get(context).getDrawable(context, buttonIconConfig);
     }
     setButtonIcon(button, icon);
   }
@@ -706,27 +782,13 @@ public class FooterBarMixin implements Mixin {
     return footerStub.inflate();
   }
 
-  private void updateFooterBarPadding() {
+  private void updateFooterBarPadding(
+      LinearLayout buttonContainer, int left, int top, int right, int bottom) {
     if (buttonContainer == null) {
       // Ignore action since buttonContainer is null
       return;
     }
-
-    if (applyPartnerResources) {
-      footerBarPaddingTop =
-          (int)
-              PartnerConfigHelper.get(context)
-                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_TOP);
-      footerBarPaddingBottom =
-          (int)
-              PartnerConfigHelper.get(context)
-                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_BOTTOM);
-    }
-    buttonContainer.setPadding(
-        buttonContainer.getPaddingLeft(),
-        footerBarPaddingTop,
-        buttonContainer.getPaddingRight(),
-        footerBarPaddingBottom);
+    buttonContainer.setPadding(left, top, right, bottom);
   }
 
   /** Returns the paddingTop of footer bar. */
