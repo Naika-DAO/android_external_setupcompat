@@ -70,16 +70,21 @@ public class SystemNavBarMixin implements Mixin {
    * @param defStyleAttr The default style attribute as given to the constructor of the layout.
    */
   public void applyPartnerCustomizations(@Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-    TypedArray a =
-        templateLayout
-            .getContext()
-            .obtainStyledAttributes(attrs, R.styleable.SucSystemNavBarMixin, defStyleAttr, 0);
-    sucSystemNavBarBackgroundColor =
-        a.getColor(R.styleable.SucSystemNavBarMixin_sucSystemNavBarBackgroundColor, 0);
-    setSystemNavBarBackground(sucSystemNavBarBackgroundColor);
-    setLightSystemNavBar(
-        a.getBoolean(R.styleable.SucSystemNavBarMixin_sucLightSystemNavBar, isLightSystemNavBar()));
-    a.recycle();
+    // Support updating system navigation bar background color and is light system navigation bar
+    // from O.
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+      TypedArray a =
+          templateLayout
+              .getContext()
+              .obtainStyledAttributes(attrs, R.styleable.SucSystemNavBarMixin, defStyleAttr, 0);
+      sucSystemNavBarBackgroundColor =
+          a.getColor(R.styleable.SucSystemNavBarMixin_sucSystemNavBarBackgroundColor, 0);
+      setSystemNavBarBackground(sucSystemNavBarBackgroundColor);
+      setLightSystemNavBar(
+          a.getBoolean(
+              R.styleable.SucSystemNavBarMixin_sucLightSystemNavBar, isLightSystemNavBar()));
+      a.recycle();
+    }
   }
 
   /**
@@ -194,20 +199,23 @@ public class SystemNavBarMixin implements Mixin {
           window.setStatusBarColor(Color.TRANSPARENT);
           window.setNavigationBarColor(partnerNavigationBarColor);
         } else {
+          // noinspection AndroidLintInlinedApi
+          TypedArray typedArray =
+              context.obtainStyledAttributes(
+                  new int[] {android.R.attr.statusBarColor, android.R.attr.navigationBarColor});
+          int statusBarColor = typedArray.getColor(0, 0);
+          int navigationBarColor = typedArray.getColor(1, 0);
           if (templateLayout instanceof PartnerCustomizationLayout) {
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(sucSystemNavBarBackgroundColor);
-          } else {
-            // noinspection AndroidLintInlinedApi
-            final TypedArray typedArray =
-                context.obtainStyledAttributes(
-                    new int[] {android.R.attr.statusBarColor, android.R.attr.navigationBarColor});
-            final int statusBarColor = typedArray.getColor(0, 0);
-            final int navigationBarColor = typedArray.getColor(1, 0);
-            window.setStatusBarColor(statusBarColor);
-            window.setNavigationBarColor(navigationBarColor);
-            typedArray.recycle();
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+              statusBarColor = Color.TRANSPARENT;
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+              navigationBarColor = sucSystemNavBarBackgroundColor;
+            }
           }
+          window.setStatusBarColor(statusBarColor);
+          window.setNavigationBarColor(navigationBarColor);
+          typedArray.recycle();
         }
       }
     }

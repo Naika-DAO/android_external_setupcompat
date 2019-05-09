@@ -78,20 +78,20 @@ public class StatusBarMixin implements Mixin {
 
     decorView = window.getDecorView();
 
-    // Override the color of status bar to transparent such that the color of
-    // StatusBarBackgroundLayout can be seen.
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+    // Support updating system status bar background color and is light system status bar from M.
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
+      // Override the color of status bar to transparent such that the color of
+      // StatusBarBackgroundLayout can be seen.
       window.setStatusBarColor(Color.TRANSPARENT);
+      TypedArray a =
+          partnerCustomizationLayout
+              .getContext()
+              .obtainStyledAttributes(attrs, R.styleable.SucStatusBarMixin, defStyleAttr, 0);
+      setLightStatusBar(
+          a.getBoolean(R.styleable.SucStatusBarMixin_sucLightStatusBar, isLightStatusBar()));
+      setStatusBarBackground(a.getDrawable(R.styleable.SucStatusBarMixin_sucStatusBarBackground));
+      a.recycle();
     }
-
-    TypedArray a =
-        partnerCustomizationLayout
-            .getContext()
-            .obtainStyledAttributes(attrs, R.styleable.SucStatusBarMixin, defStyleAttr, 0);
-    setLightStatusBar(
-        a.getBoolean(R.styleable.SucStatusBarMixin_sucLightStatusBar, isLightStatusBar()));
-    setStatusBarBackground(a.getDrawable(R.styleable.SucStatusBarMixin_sucStatusBarBackground));
-    a.recycle();
   }
 
   /**

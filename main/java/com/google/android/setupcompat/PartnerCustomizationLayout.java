@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import com.google.android.setupcompat.internal.BuildCompat;
 import com.google.android.setupcompat.internal.LifecycleFragment;
 import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.internal.TemplateLayout;
@@ -192,7 +191,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP
-        && BuildCompat.isAtLeastQ()
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         && WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
       FooterBarMixin footerBarMixin = getMixin(FooterBarMixin.class);
       footerBarMixin.onDetachedFromWindow();
@@ -247,7 +246,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     if (!usePartnerResourceAttr) {
       return false;
     }
-    if (!BuildCompat.isAtLeastQ()) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
       return false;
     }
     if (!PartnerConfigHelper.get(getContext()).isAvailable()) {
