@@ -202,16 +202,6 @@ public final class FooterButton implements OnClickListener {
     void onTextChanged(CharSequence text);
   }
 
-  /**
-   * Sets the default theme for footer button, the method only for internal use in {@link
-   * FooterBarMixin} and there will have no influence during setup wizard flow.
-   *
-   * @param theme The theme for footer button.
-   */
-  public void setTheme(@StyleRes int theme) {
-    this.theme = theme;
-  }
-
   /** Maximum valid value of ButtonType */
   private static final int MAX_BUTTON_TYPE = 8;
 
