@@ -34,7 +34,7 @@
         <attr name="sucUsePartnerResource" format="boolean" />
     </declare-styleable>
 
-    <!-- Status bar attributes -->
+    <!-- Status bar attributes; only takes effect on M or above -->
     <declare-styleable name="SucStatusBarMixin">
         <!-- The color for the status bar. For this to take effect,
              "android:windowDrawsSystemBarBackgrounds" should be set to true and
@@ -45,7 +45,7 @@
         <attr name="sucLightStatusBar" format="boolean" />
     </declare-styleable>
 
-    <!-- System navigation bar attributes -->
+    <!-- System navigation bar attributes; only takes effect on O_MR1 or above -->
     <declare-styleable name="SucSystemNavBarMixin">
         <!-- The color for the system navigation bar. For this to take effect,
              "android:windowDrawsSystemBarBackgrounds" should be set to true and

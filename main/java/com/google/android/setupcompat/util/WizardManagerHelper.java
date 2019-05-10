@@ -19,12 +19,12 @@ package com.google.android.setupcompat.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.provider.Settings;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import com.google.android.setupcompat.internal.BuildCompat;
 import java.util.Arrays;
 
 /**
@@ -202,7 +202,7 @@ public class WizardManagerHelper {
       return false;
     }
 
-    if (BuildCompat.isAtLeastQ()) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       return originalIntent.getBooleanExtra(EXTRA_IS_SETUP_FLOW, false);
     } else {
       return isSetupWizardIntent(originalIntent)

@@ -19,13 +19,13 @@ package com.google.android.setupcompat.logging;
 import static com.google.android.setupcompat.internal.Validations.assertLengthInRange;
 
 import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import androidx.annotation.VisibleForTesting;
-import com.google.android.setupcompat.internal.BuildCompat;
 import com.google.android.setupcompat.internal.ClockProvider;
 import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.internal.Preconditions;
@@ -50,7 +50,8 @@ public final class CustomEvent implements Parcelable {
   public static CustomEvent create(
       MetricKey metricKey, PersistableBundle bundle, PersistableBundle piiValues) {
     Preconditions.checkArgument(
-        BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher");
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,
+        "The constructor only support on sdk Q or higher");
     return new CustomEvent(
         ClockProvider.timeInMillis(),
         metricKey,
@@ -64,7 +65,8 @@ public final class CustomEvent implements Parcelable {
   /** Creates a new instance of {@code CustomEvent}. Null arguments are not allowed. */
   public static CustomEvent create(MetricKey metricKey, PersistableBundle bundle) {
     Preconditions.checkArgument(
-        BuildCompat.isAtLeastQ(), "The constructor only support on sdk Q or higher.");
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,
+        "The constructor only support on sdk Q or higher.");
     return create(metricKey, bundle, PersistableBundle.EMPTY);
   }
 
