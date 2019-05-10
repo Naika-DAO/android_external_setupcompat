@@ -56,7 +56,6 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import com.google.android.setupcompat.PartnerCustomizationLayout;
 import com.google.android.setupcompat.R;
-import com.google.android.setupcompat.internal.BuildCompat;
 import com.google.android.setupcompat.internal.FooterButtonPartnerConfig;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.internal.TemplateLayout;
@@ -557,7 +556,9 @@ public class FooterBarMixin implements Mixin {
     if (button.isEnabled()) {
       @ColorInt
       int color = PartnerConfigHelper.get(context).getColor(context, buttonTextColorConfig);
-      button.setTextColor(ColorStateList.valueOf(color));
+      if (color != Color.TRANSPARENT) {
+        button.setTextColor(ColorStateList.valueOf(color));
+      }
     } else {
       // disable state will use the default disable state color
       button.setTextColor(
@@ -587,7 +588,8 @@ public class FooterBarMixin implements Mixin {
   private void updateButtonBackgroundWithPartnerConfig(
       Button button, PartnerConfig buttonBackgroundConfig) {
     Preconditions.checkArgument(
-        BuildCompat.isAtLeastQ(), "Update button background only support on sdk Q or higher");
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,
+        "Update button background only support on sdk Q or higher");
     @ColorInt int color;
     int[] DISABLED_STATE_SET = {-android.R.attr.state_enabled};
     int[] ENABLED_STATE_SET = {};
