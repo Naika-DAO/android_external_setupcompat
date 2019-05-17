@@ -110,7 +110,7 @@ public class FooterBarMixin implements Mixin {
           Button button = buttonContainer.findViewById(id);
           if (button != null) {
             button.setEnabled(enabled);
-            if (applyPartnerResources && !enabled) {
+            if (applyPartnerResources) {
               updateButtonTextColorWithPartnerConfig(
                   button,
                   (id == primaryButtonId)

@@ -154,11 +154,7 @@ public class SetupCompatServiceProvider {
     } else {
       // SetupWizard is not installed/calling app does not have permissions to bind.
       swapServiceContextAndNotify(new ServiceContext(State.BIND_FAILED));
-      Log.e(
-          TAG,
-          String.format(
-              "Context#bindService did not succeed, is the manifest missing %s permission?",
-              COMPAT_PERMISSION));
+      Log.e(TAG, "Context#bindService did not succeed.");
     }
   }
 
@@ -341,7 +337,5 @@ public class SetupCompatServiceProvider {
   @SuppressLint("StaticFieldLeak")
   private static volatile SetupCompatServiceProvider instance;
 
-  private static final String COMPAT_PERMISSION =
-      "com.google.android.setupwizard.SETUP_COMPAT_SERVICE";
   private static final String TAG = "SucServiceProvider";
 }
