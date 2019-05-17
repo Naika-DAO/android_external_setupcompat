@@ -30,6 +30,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig.ResourceType;
@@ -237,7 +238,8 @@ public class PartnerConfigHelper {
     }
 
     if (partnerResourceCache.containsKey(resourceConfig)) {
-      return (float) partnerResourceCache.get(resourceConfig);
+      return getDimensionFromTypedValue(
+          context, (TypedValue) partnerResourceCache.get(resourceConfig));
     }
 
     float result = defaultValue;
@@ -245,7 +247,13 @@ public class PartnerConfigHelper {
       ResourceEntry resourceEntry = getResourceEntryFromKey(resourceConfig.getResourceName());
       Resources resource = getResourcesByPackageName(context, resourceEntry.getPackageName());
       result = resource.getDimension(resourceEntry.getResourceId());
-      partnerResourceCache.put(resourceConfig, result);
+      TypedValue value =
+          getTypedValueFromResource(
+              resource, resourceEntry.getResourceId(), TypedValue.TYPE_DIMENSION);
+      partnerResourceCache.put(resourceConfig, value);
+      result =
+          getDimensionFromTypedValue(
+              context, (TypedValue) partnerResourceCache.get(resourceConfig));
     } catch (PackageManager.NameNotFoundException | NullPointerException exception) {
       // fall through
     }
@@ -330,5 +338,24 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   public static synchronized void resetForTesting() {
     instance = null;
+  }
+
+  private TypedValue getTypedValueFromResource(Resources resource, int resId, int type) {
+    TypedValue value = new TypedValue();
+    resource.getValue(resId, value, true);
+    if (value.type != type) {
+      throw new NotFoundException(
+          "Resource ID #0x"
+              + Integer.toHexString(resId)
+              + " type #0x"
+              + Integer.toHexString(value.type)
+              + " is not valid");
+    }
+    return value;
+  }
+
+  private float getDimensionFromTypedValue(Context context, TypedValue value) {
+    DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+    return value.getDimension(displayMetrics);
   }
 }
