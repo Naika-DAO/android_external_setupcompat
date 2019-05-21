@@ -113,12 +113,8 @@ public class WizardManagerHelper {
     }
   }
 
-  /**
-   * Checks whether an intent is intended to be used within the setup wizard flow.
-   *
-   * @param intent The intent to be checked, usually from {@link Activity#getIntent()}.
-   * @return true if the intent passed in was intended to be used with setup wizard.
-   */
+  /** @deprecated Use {@link isInitialSetupWizard} instead. */
+  @Deprecated
   public static boolean isSetupWizardIntent(Intent intent) {
     return intent.getBooleanExtra(EXTRA_IS_FIRST_RUN, false);
   }
@@ -191,6 +187,16 @@ public class WizardManagerHelper {
   }
 
   /**
+   * Checks whether an intent is is running in the initial setup wizard flow.
+   *
+   * @param intent The intent to be checked, usually from {@link Activity#getIntent()}.
+   * @return true if the intent passed in was intended to be used with setup wizard.
+   */
+  public static boolean isInitialSetupWizard(Intent intent) {
+    return intent.getBooleanExtra(EXTRA_IS_FIRST_RUN, false);
+  }
+
+  /**
    * Returns true if the intent passed in indicates that it is running in any setup wizard flow,
    * including initial setup and deferred setup etc.
    *
@@ -205,7 +211,7 @@ public class WizardManagerHelper {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       return originalIntent.getBooleanExtra(EXTRA_IS_SETUP_FLOW, false);
     } else {
-      return isSetupWizardIntent(originalIntent)
+      return isInitialSetupWizard(originalIntent)
           || isPreDeferredSetupWizard(originalIntent)
           || isDeferredSetupWizard(originalIntent);
     }
