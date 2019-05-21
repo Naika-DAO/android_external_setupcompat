@@ -325,7 +325,13 @@ public class PartnerConfigHelper {
   private Resources getResourcesByPackageName(Context context, String packageName)
       throws PackageManager.NameNotFoundException {
     PackageManager manager = context.getPackageManager();
-    return manager.getResourcesForApplication(packageName);
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+      return manager.getResourcesForApplication(
+          manager.getApplicationInfo(packageName, PackageManager.MATCH_DISABLED_COMPONENTS));
+    } else {
+      return manager.getResourcesForApplication(
+          manager.getApplicationInfo(packageName, PackageManager.GET_DISABLED_COMPONENTS));
+    }
   }
 
   private ResourceEntry getResourceEntryFromKey(String resourceName) {
