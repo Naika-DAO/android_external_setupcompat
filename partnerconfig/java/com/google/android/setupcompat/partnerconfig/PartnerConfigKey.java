@@ -57,6 +57,11 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY,
+  PartnerConfigKey.KEY_CONTENT_TEXT_SIZE,
+  PartnerConfigKey.KEY_CONTENT_TEXT_COLOR,
+  PartnerConfigKey.KEY_CONTENT_LINK_TEXT_COLOR,
+  PartnerConfigKey.KEY_CONTENT_FONT_FAMILY,
+  PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -162,4 +167,19 @@ public @interface PartnerConfigKey {
 
   // Font family of the description
   String KEY_DESCRIPTION_FONT_FAMILY = "setup_design_description_font_family";
+
+  // Text size of the body content text
+  String KEY_CONTENT_TEXT_SIZE = "setup_design_content_text_size";
+
+  // Text color of the body content text
+  String KEY_CONTENT_TEXT_COLOR = "setup_design_content_text_color";
+
+  // Link text color of the body content text
+  String KEY_CONTENT_LINK_TEXT_COLOR = "setup_design_content_link_text_color";
+
+  // Font family of the body content text
+  String KEY_CONTENT_FONT_FAMILY = "setup_design_content_font_family";
+
+  // Gravity of the body content text
+  String KEY_CONTENT_LAYOUT_GRAVITY = "setup_design_content_layout_gravity";
 }

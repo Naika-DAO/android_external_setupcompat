@@ -139,7 +139,22 @@ public enum PartnerConfig {
       PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR, ResourceType.COLOR),
 
   // Font family of the description
-  CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING);
+  CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING),
+
+  // Text size of the body content text
+  CONFIG_CONTENT_TEXT_SIZE(PartnerConfigKey.KEY_CONTENT_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // Text color of the body content text
+  CONFIG_CONTENT_TEXT_COLOR(PartnerConfigKey.KEY_CONTENT_TEXT_COLOR, ResourceType.COLOR),
+
+  // Link text color of the body content text
+  CONFIG_CONTENT_LINK_TEXT_COLOR(PartnerConfigKey.KEY_CONTENT_LINK_TEXT_COLOR, ResourceType.COLOR),
+
+  // Font family of the body content text
+  CONFIG_CONTENT_FONT_FAMILY(PartnerConfigKey.KEY_CONTENT_FONT_FAMILY, ResourceType.STRING),
+
+  // Gravity of the body content text
+  CONFIG_CONTENT_LAYOUT_GRAVITY(PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY, ResourceType.STRING);
 
   public enum ResourceType {
     BOOL,
