@@ -16,9 +16,12 @@
 
 package com.google.android.setupcompat.logging;
 
+import static com.google.android.setupcompat.internal.Validations.assertLengthInRange;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
+import androidx.annotation.VisibleForTesting;
 import com.google.android.setupcompat.internal.ClockProvider;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
@@ -71,7 +74,7 @@ public final class CustomEvent implements Parcelable {
 
   /** Returns the non PII values describing the event. Only primitive values are supported. */
   public PersistableBundle values() {
-    return this.persistableBundle;
+    return new PersistableBundle(this.persistableBundle);
   }
 
   /**
@@ -125,6 +128,7 @@ public final class CustomEvent implements Parcelable {
     Preconditions.checkNotNull(bundle, "Bundle cannot be null.");
     Preconditions.checkArgument(!bundle.isEmpty(), "Bundle cannot be empty.");
     Preconditions.checkNotNull(piiValues, "piiValues cannot be null.");
+    assertPersistableBundleIsValid(bundle);
     this.timestampMillis = timestampMillis;
     this.metricKey = metricKey;
     this.persistableBundle = bundle.deepCopy();
@@ -135,4 +139,37 @@ public final class CustomEvent implements Parcelable {
   private final MetricKey metricKey;
   private final PersistableBundle persistableBundle;
   private final PersistableBundle piiValues;
+
+  private static void assertPersistableBundleIsValid(PersistableBundle bundle) {
+    for (String key : bundle.keySet()) {
+      assertLengthInRange(key, "bundle key", MIN_BUNDLE_KEY_LENGTH, MAX_STR_LENGTH);
+      Object value = bundle.get(key);
+      boolean valid = false;
+      for (Class<?> clazz : CUSTOM_EVENT_ALLOWED_DATA_TYPES) {
+        if (clazz.isInstance(value)) {
+          valid = true;
+          break;
+        }
+      }
+      Preconditions.checkArgument(
+          valid,
+          "Invalid data type for key='%s'. Expected values of type %s, but found [%s].",
+          key,
+          CUSTOM_EVENT_ALLOWED_DATA_TYPES,
+          value);
+
+      if (value instanceof String) {
+        Preconditions.checkArgument(
+            ((String) value).length() <= MAX_STR_LENGTH,
+            "Maximum length of string value for key='%s' cannot exceed %s.",
+            key,
+            MAX_STR_LENGTH);
+      }
+    }
+  }
+
+  private static final Class<?>[] CUSTOM_EVENT_ALLOWED_DATA_TYPES =
+      new Class<?>[] {Integer.class, Long.class, Double.class, String.class, Boolean.class};
+  @VisibleForTesting static final int MAX_STR_LENGTH = 50;
+  @VisibleForTesting static final int MIN_BUNDLE_KEY_LENGTH = 3;
 }

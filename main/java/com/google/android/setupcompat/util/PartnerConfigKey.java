@@ -28,8 +28,14 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR,
   PartnerConfigKey.KEY_WINDOW_LIGHT_NAVIGATION_BAR,
   PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CLEAR,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_DONE,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_NEXT,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_OPT_IN,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_SKIP,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_STOP,
   PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_TOP,
   PartnerConfigKey.KEY_FOOTER_BUTTON_PADDING_BOTTOM,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
@@ -40,6 +46,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_SIZE,
 })
+// TODO(121371322): can be removed and always reference PartnerConfig.getResourceName()?
 public @interface PartnerConfigKey {
   // Status bar background color or illustration.
   String KEY_STATUS_BAR_BACKGROUND = "setup_compat_status_bar_background";
@@ -59,16 +66,28 @@ public @interface PartnerConfigKey {
   // available in the system. Font references (@font or @xml) are not allowed.
   String KEY_FOOTER_BUTTON_FONT_FAMILY = "setup_compat_footer_button_font_family";
 
+  // The icon for "add another" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER = "setup_compat_footer_button_icon_add_another";
+
+  // The icon for "cancel" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_CANCEL = "setup_compat_footer_button_icon_cancel";
+
+  // The icon for "clear" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_CLEAR = "setup_compat_footer_button_icon_clear";
+
+  // The icon for "done" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_DONE = "setup_compat_footer_button_icon_done";
+
   // The icon for "next" action. Can be "@null" for no icon.
   String KEY_FOOTER_BUTTON_ICON_NEXT = "setup_compat_footer_button_icon_next";
+
+  // The icon for "opt-in" action. Can be "@null" for no icon.
+  String KEY_FOOTER_BUTTON_ICON_OPT_IN = "setup_compat_footer_button_icon_opt_in";
 
   // The icon for "skip" action. Can be "@null" for no icon.
   String KEY_FOOTER_BUTTON_ICON_SKIP = "setup_compat_footer_button_icon_skip";
 
-  // The icon for "skip" action. Can be "@null" for no icon.
-  String KEY_FOOTER_BUTTON_ICON_CANCEL = "setup_compat_footer_button_icon_cancel";
-
-  // The icon for "skip" action. Can be "@null" for no icon.
+  // The icon for "stop" action. Can be "@null" for no icon.
   String KEY_FOOTER_BUTTON_ICON_STOP = "setup_compat_footer_button_icon_stop";
 
   // Top padding of the footer buttons

@@ -59,11 +59,15 @@
     <attr name="android:text" />
     <attr name="android:theme" />
     <attr name="sucButtonType">
-      <enum name="none" value="0" />
-      <enum name="next" value="1" />
-      <enum name="skip" value="2" />
-      <enum name="cancel" value="3" />
-      <enum name="stop" value="4" />
+      <enum name="other" value="0" />
+      <enum name="add_another" value="1" />
+      <enum name="cancel" value="2" />
+      <enum name="clear" value="3" />
+      <enum name="done" value="4" />
+      <enum name="next" value="5" />
+      <enum name="opt_in" value="6" />
+      <enum name="skip" value="7" />
+      <enum name="stop" value="8" />
     </attr>
   </declare-styleable>
 
@@ -79,5 +83,19 @@
     <attr name="sucFooterBarButtonHighlightAlpha" format="float" />
     <attr name="sucFooterBarButtonColorControlHighlight" format="color" />
     <attr name="sucFooterBarButtonColorControlHighlightRipple" format="color" />
+    <attr name="sucFooterButtonPaddingVertical" format="dimension" />
   </declare-styleable>
+
+  <declare-styleable name="SucIconMixin">
+    <attr name="android:icon" />
+  </declare-styleable>
+
+  <declare-styleable name="SucHeaderMixin">
+    <attr name="sucHeaderText" format="string" localization="suggested" />
+  </declare-styleable>
+
+  <declare-styleable name="SucColoredHeaderMixin">
+    <attr name="sucHeaderColor" format="reference|color" />
+  </declare-styleable>
+
 </resources>

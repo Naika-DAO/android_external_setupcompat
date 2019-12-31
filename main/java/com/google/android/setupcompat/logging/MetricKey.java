@@ -16,6 +16,8 @@
 
 package com.google.android.setupcompat.logging;
 
+import static com.google.android.setupcompat.internal.Validations.assertLengthInRange;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
@@ -42,15 +44,9 @@ public final class MetricKey implements Parcelable {
    * </ul>
    */
   public static MetricKey get(@NonNull String name, @NonNull String screenName) {
-    Preconditions.checkNotNull(name);
-    Preconditions.checkNotNull(screenName);
+    assertLengthInRange(name, "MetricKey.name", MIN_METRIC_KEY_LENGTH, MAX_METRIC_KEY_LENGTH);
     assertLengthInRange(
-        name.length(), "MetricKey.name", MIN_METRIC_KEY_LENGTH, MAX_METRIC_KEY_LENGTH);
-    assertLengthInRange(
-        screenName.length(),
-        "MetricKey.screenName",
-        MIN_SCREEN_NAME_LENGTH,
-        MAX_SCREEN_NAME_LENGTH);
+        screenName, "MetricKey.screenName", MIN_SCREEN_NAME_LENGTH, MAX_SCREEN_NAME_LENGTH);
     Preconditions.checkArgument(
         METRIC_KEY_PATTERN.matcher(name).matches(),
         "Invalid MetricKey, only alpha numeric characters are allowed.");
@@ -118,16 +114,6 @@ public final class MetricKey implements Parcelable {
 
   private final String name;
   private final String screenName;
-
-  private static void assertLengthInRange(
-      int foundLength, String name, int minLength, int maxLength) {
-    Preconditions.checkArgument(
-        foundLength <= maxLength && foundLength >= minLength,
-        "Length of %s should be in the range [%s-%s]",
-        name,
-        minLength,
-        maxLength);
-  }
 
   private static final int MIN_SCREEN_NAME_LENGTH = 5;
   private static final int MIN_METRIC_KEY_LENGTH = 5;

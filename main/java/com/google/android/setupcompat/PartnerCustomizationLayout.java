@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
+import com.google.android.setupcompat.internal.PersistableBundles;
 import com.google.android.setupcompat.lifecycle.LifecycleFragment;
 import com.google.android.setupcompat.logging.CustomEvent;
 import com.google.android.setupcompat.logging.MetricKey;
@@ -43,8 +44,7 @@ import com.google.android.setupcompat.util.WizardManagerHelper;
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
 public class PartnerCustomizationLayout extends TemplateLayout {
 
-  private final boolean suwVersionSupportPartnerResource =
-      Build.VERSION.SDK_INT > VERSION_CODES.P;
+  private final boolean suwVersionSupportPartnerResource = Build.VERSION.SDK_INT > VERSION_CODES.P;
   private Activity activity;
 
   public PartnerCustomizationLayout(Context context) {
@@ -147,9 +147,9 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     if (WizardManagerHelper.isAnySetupWizard(activity.getIntent())) {
       ButtonFooterMixin buttonFooterMixin = getMixin(ButtonFooterMixin.class);
       buttonFooterMixin.onDetachedFromWindow();
-      PersistableBundle persistableBundle = new PersistableBundle();
-      persistableBundle.putPersistableBundle(
-          "FooterButtonVisibilityMetrics", buttonFooterMixin.getLoggingMetrics());
+      PersistableBundle persistableBundle =
+          PersistableBundles.mergeBundles(
+              new PersistableBundle(), buttonFooterMixin.getLoggingMetrics());
       SetupMetricsLogger.logCustomEvent(
           getContext(),
           CustomEvent.create(

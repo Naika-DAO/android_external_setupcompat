@@ -29,16 +29,12 @@
     <item name="android:gravity">center_vertical</item>
     <item name="android:minHeight">@dimen/suc_customization_footer_min_height</item>
     <item name="android:orientation">horizontal</item>
-    <item name="android:paddingTop">?attr/sucFooterBarPaddingTop</item>
-    <item name="android:paddingBottom">?attr/sucFooterBarPaddingBottom</item>
+    <item name="android:paddingTop">?attr/sucFooterButtonPaddingVertical</item>
+    <item name="android:paddingBottom">?attr/sucFooterButtonPaddingVertical</item>
     <item name="android:paddingEnd" tools:ignore="NewApi">@dimen/suc_customization_button_margin_end</item>
     <item name="android:paddingLeft">@dimen/suc_customization_button_margin_start</item>
     <item name="android:paddingRight">@dimen/suc_customization_button_margin_end</item>
     <item name="android:paddingStart" tools:ignore="NewApi">@dimen/suc_customization_button_margin_start</item>
-
-    <!-- Default value -->
-    <item name="sucFooterBarPaddingTop">@dimen/suc_customization_footer_padding_vertical</item>
-    <item name="sucFooterBarPaddingBottom">@dimen/suc_customization_footer_padding_vertical</item>
   </style>
 
   <style name="SucPartnerCustomizationButton.Primary" parent="android:Widget.Material.Button.Colored">

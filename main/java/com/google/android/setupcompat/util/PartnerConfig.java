@@ -16,6 +16,7 @@
 
 package com.google.android.setupcompat.util;
 
+// TODO(b/121371322): optimize the enum
 /** Resources that can be customized by partner overlay APK. */
 public enum PartnerConfig {
 
@@ -39,17 +40,33 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_FONT_FAMILY(
       PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY, ResourceType.STRING),
 
-  // The icon for "next" action. Can be "@null" for no icon.
-  CONFIG_FOOTER_BUTTON_ICON_NEXT(
-      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_NEXT, ResourceType.DRAWABLE),
-
-  // The icon for "skip" action. Can be "@null" for no icon.
-  CONFIG_FOOTER_BUTTON_ICON_SKIP(
-      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_SKIP, ResourceType.DRAWABLE),
+  // The icon for "add another" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_ADD_ANOTHER(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER, ResourceType.DRAWABLE),
 
   // The icon for "cancel" action. Can be "@null" for no icon.
   CONFIG_FOOTER_BUTTON_ICON_CANCEL(
       PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL, ResourceType.DRAWABLE),
+
+  // The icon for "clear" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_CLEAR(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CLEAR, ResourceType.DRAWABLE),
+
+  // The icon for "done" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_DONE(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_DONE, ResourceType.DRAWABLE),
+
+  // The icon for "next" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_NEXT(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_NEXT, ResourceType.DRAWABLE),
+
+  // The icon for "opt-in" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_OPT_IN(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_OPT_IN, ResourceType.DRAWABLE),
+
+  // The icon for "skip" action. Can be "@null" for no icon.
+  CONFIG_FOOTER_BUTTON_ICON_SKIP(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_SKIP, ResourceType.DRAWABLE),
 
   // The icon for "stop" action. Can be "@null" for no icon.
   CONFIG_FOOTER_BUTTON_ICON_STOP(

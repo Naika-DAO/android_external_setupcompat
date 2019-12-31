@@ -35,7 +35,6 @@ import com.google.android.setupcompat.template.ButtonFooterMixin;
  * button type and click listener, and ButtonFooterMixin will inflate a corresponding Button view.
  */
 public final class FooterButton {
-  private static final int BUTTON_TYPE_NONE = 0;
 
   private final ButtonType buttonType;
   private CharSequence text;
@@ -52,7 +51,9 @@ public final class FooterButton {
     onClickListener = null;
     buttonType =
         ButtonType.valueOf(
-            a.getInt(R.styleable.SucFooterButton_sucButtonType, /* defValue= */ BUTTON_TYPE_NONE));
+            a.getInt(
+                R.styleable.SucFooterButton_sucButtonType,
+                /* defValue= */ ButtonType.OTHER.getEnumValue()));
     theme = a.getResourceId(R.styleable.SucFooterButton_android_theme, /* defValue= */ 0);
     a.recycle();
   }
@@ -164,6 +165,7 @@ public final class FooterButton {
    * @param enabled True if this view is enabled, false otherwise.
    */
   public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
     if (buttonListener != null && id != 0) {
       buttonListener.onEnabledChanged(enabled, id);
     }
@@ -242,27 +244,56 @@ public final class FooterButton {
     this.theme = theme;
   }
 
-  /** Types for footer button. The button appearance and behavior may change based on its type. */
+  /**
+   * Types for footer button. The button appearance and behavior may change based on its type. In
+   * order to be backward compatible with application built with old version of setupcompat; the
+   * {@code enumValue} of each ButtonType should not be changed.
+   */
   public enum ButtonType {
     /** A type of button that doesn't fit into any other categories. */
-    OTHER,
-    /** A type of button that will go to the next screen, or next step in the flow when clicked. */
-    NEXT,
-    /** A type of button that will skip the current step when clicked. */
-    SKIP,
+    OTHER(0),
+    /**
+     * A type of button that will set up additional elements of the ongoing setup step(s) when
+     * clicked.
+     */
+    ADD_ANOTHER(1),
     /** A type of button that will cancel the ongoing setup step(s) and exit setup when clicked. */
-    CANCEL,
+    CANCEL(2),
+    /** A type of button that will clear the progress when clicked. (eg: clear PIN code) */
+    CLEAR(3),
+    /** A type of button that will exit the setup flow when clicked. */
+    DONE(4),
+    /** A type of button that will go to the next screen, or next step in the flow when clicked. */
+    NEXT(5),
+    /** A type of button to opt-in or agree to the features described in the current screen. */
+    OPT_IN(6),
+    /** A type of button that will skip the current step when clicked. */
+    SKIP(7),
     /** A type of button that will stop the ongoing setup step(s) and skip forward when clicked. */
-    STOP;
+    STOP(8);
 
-    public static ButtonType valueOf(int value) {
-      if (value >= 0 && value < ButtonType.values().length) {
-        return ButtonType.values()[value];
-      } else {
-        return OTHER;
+    private final int enumValue;
+
+    public int getEnumValue() {
+      return enumValue;
+    }
+
+    ButtonType(int enumValue) {
+      this.enumValue = enumValue;
+    }
+
+    public static ButtonType valueOf(int enumValue) {
+      for (ButtonType type : ButtonType.values()) {
+        if (type.getEnumValue() == enumValue) {
+          return type;
+        }
       }
+      return OTHER;
     }
   }
+  // LINT.ThenChange(
+  // //depot/google3/third_party/java_src/android_libs/setupcompat/main/java/com/google/android/setupcompat/template/ButtonFooterMixin.java,
+  // //depot/google3/third_party/java_src/android_libs/setupcompat/main/res/values/attrs.xml)
 
   /**
    * Builder class for constructing {@code FooterButton} objects.

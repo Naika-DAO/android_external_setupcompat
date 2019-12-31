@@ -81,6 +81,7 @@ public class ButtonFooterMixin implements Mixin {
 
   private int footerBarPaddingTop;
   private int footerBarPaddingBottom;
+  @VisibleForTesting int defaultPadding;
 
   private static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
 
@@ -157,11 +158,9 @@ public class ButtonFooterMixin implements Mixin {
     footerStub = (ViewStub) layout.findManagedViewById(R.id.suc_layout_footer);
     this.applyPartnerResources = applyPartnerResources;
 
-    int defaultPadding =
-        context
-            .getResources()
-            .getDimensionPixelSize(R.dimen.suc_customization_footer_padding_vertical);
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SucFooterBar, defStyleAttr, 0);
+    defaultPadding =
+        a.getDimensionPixelSize(R.styleable.SucFooterBar_sucFooterButtonPaddingVertical, 0);
     footerBarPaddingTop =
         a.getDimensionPixelSize(R.styleable.SucFooterBar_sucFooterBarPaddingTop, defaultPadding);
     footerBarPaddingBottom =
@@ -476,32 +475,10 @@ public class ButtonFooterMixin implements Mixin {
     if (button == null) {
       return;
     }
-    Drawable icon;
-    switch (buttonType) {
-      case NEXT:
-        icon =
-            PartnerConfigHelper.get(context)
-                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_NEXT);
-        break;
-      case SKIP:
-        icon =
-            PartnerConfigHelper.get(context)
-                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_SKIP);
-        break;
-      case CANCEL:
-        icon =
-            PartnerConfigHelper.get(context)
-                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_CANCEL);
-        break;
-      case STOP:
-        icon =
-            PartnerConfigHelper.get(context)
-                .getDrawable(context, PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_STOP);
-        break;
-      case OTHER:
-      default:
-        icon = null;
-        break;
+    Drawable icon = null;
+    PartnerConfig id = getDrawablePartnerConfig(buttonType);
+    if (id != null) {
+      icon = PartnerConfigHelper.get(context).getDrawable(context, id);
     }
     setButtonIcon(button, icon);
   }
@@ -530,6 +507,41 @@ public class ButtonFooterMixin implements Mixin {
     } else {
       button.setCompoundDrawables(iconStart, null, iconEnd, null);
     }
+  }
+
+  private static PartnerConfig getDrawablePartnerConfig(ButtonType buttonType) {
+    PartnerConfig result;
+    switch (buttonType) {
+      case ADD_ANOTHER:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_ADD_ANOTHER;
+        break;
+      case CANCEL:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_CANCEL;
+        break;
+      case CLEAR:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_CLEAR;
+        break;
+      case DONE:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_DONE;
+        break;
+      case NEXT:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_NEXT;
+        break;
+      case OPT_IN:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_OPT_IN;
+        break;
+      case SKIP:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_SKIP;
+        break;
+      case STOP:
+        result = PartnerConfig.CONFIG_FOOTER_BUTTON_ICON_STOP;
+        break;
+      case OTHER:
+      default:
+        result = null;
+        break;
+    }
+    return result;
   }
 
   GradientDrawable getGradientDrawable(Button button) {
