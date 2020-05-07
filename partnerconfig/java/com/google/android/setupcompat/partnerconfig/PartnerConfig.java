@@ -154,15 +154,40 @@ public enum PartnerConfig {
   CONFIG_CONTENT_FONT_FAMILY(PartnerConfigKey.KEY_CONTENT_FONT_FAMILY, ResourceType.STRING),
 
   // Gravity of the body content text
-  CONFIG_CONTENT_LAYOUT_GRAVITY(PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY, ResourceType.STRING);
+  CONFIG_CONTENT_LAYOUT_GRAVITY(PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY, ResourceType.STRING),
+
+  // The animation of loading screen used in those activities which is non of below type.
+  CONFIG_PROGRESS_ILLUSTRATION_DEFAULT(
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DEFAULT, ResourceType.ILLUSTRATION),
+
+  // The animation of loading screen used in those activity which is processing account info or
+  // related functions.
+  // For example:com.google.android.setupwizard.LOAD_ADD_ACCOUNT_INTENT
+  CONFIG_PROGRESS_ILLUSTRATION_ACCOUNT(
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_ACCOUNT, ResourceType.ILLUSTRATION),
+
+  // The animation of loading screen used in those activity which is processing data connection.
+  // For example:com.android.setupwizard.CAPTIVE_PORTAL
+  CONFIG_PROGRESS_ILLUSTRATION_CONNECTION(
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION, ResourceType.ILLUSTRATION),
+
+  // The animation of loading screen used in those activities which is updating device.
+  // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
+  CONFIG_PROGRESS_ILLUSTRATION_UPDATE(
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE, ResourceType.ILLUSTRATION),
+
+  CONFIG_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS(
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS, ResourceType.INTEGER);
 
   public enum ResourceType {
+    INTEGER,
     BOOL,
     COLOR,
     DRAWABLE,
     STRING,
     DIMENSION,
-    FRACTION;
+    FRACTION,
+    ILLUSTRATION;
   }
 
   private final String resourceName;
