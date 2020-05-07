@@ -62,6 +62,11 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_CONTENT_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_CONTENT_FONT_FAMILY,
   PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DEFAULT,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_ACCOUNT,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -182,4 +187,23 @@ public @interface PartnerConfigKey {
 
   // Gravity of the body content text
   String KEY_CONTENT_LAYOUT_GRAVITY = "setup_design_content_layout_gravity";
+
+  // The animation of loading screen used in those activities which is non of below type.
+  String KEY_PROGRESS_ILLUSTRATION_DEFAULT = "progress_illustration_custom_default";
+
+  // The animation of loading screen used in those activity which is processing account info or
+  // related functions.
+  // For example:com.google.android.setupwizard.LOAD_ADD_ACCOUNT_INTENT
+  String KEY_PROGRESS_ILLUSTRATION_ACCOUNT = "progress_illustration_custom_account";
+
+  // The animation of loading screen used in those activity which is processing data connection.
+  // For example:com.android.setupwizard.CAPTIVE_PORTAL
+  String KEY_PROGRESS_ILLUSTRATION_CONNECTION = "progress_illustration_custom_connection";
+
+  // The animation of loading screen used in those activities which is updating device.
+  // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
+  String KEY_PROGRESS_ILLUSTRATION_UPDATE = "progress_illustration_custom_update";
+
+  // The minimum illustration display time, set to 0 may cause the illustration stuck
+  String KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS = "progress_illustration_display_minimum_ms";
 }
