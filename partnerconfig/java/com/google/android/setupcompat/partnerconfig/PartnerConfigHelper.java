@@ -315,6 +315,50 @@ public class PartnerConfigHelper {
     return result;
   }
 
+  /**
+   * Returns the {@link ResourceEntry} of given {@code resourceConfig}, or {@code null} if the given
+   * {@code resourceConfig} is not found. If the {@link ResourceType} of the given {@code
+   * resourceConfig} is not illustration, IllegalArgumentException will be thrown.
+   *
+   * @param context The context of client activity
+   * @param resourceConfig The {@link PartnerConfig} of target resource
+   */
+  @Nullable
+  public ResourceEntry getIllustrationResourceEntry(
+      @NonNull Context context, PartnerConfig resourceConfig) {
+    if (resourceConfig.getResourceType() != ResourceType.ILLUSTRATION) {
+      throw new IllegalArgumentException("Not a illustration resource");
+    }
+
+    if (partnerResourceCache.containsKey(resourceConfig)) {
+      return (ResourceEntry) partnerResourceCache.get(resourceConfig);
+    }
+
+    try {
+      ResourceEntry resourceEntry =
+          getResourceEntryFromKey(context, resourceConfig.getResourceName());
+
+      Resources resource = resourceEntry.getResources();
+      int resId = resourceEntry.getResourceId();
+
+      // TODO: The illustration resource entry validation should validate is it a video
+      // resource or not?
+      // for @null
+      TypedValue outValue = new TypedValue();
+      resource.getValue(resId, outValue, true);
+      if (outValue.type == TypedValue.TYPE_REFERENCE && outValue.data == 0) {
+        return null;
+      }
+
+      partnerResourceCache.put(resourceConfig, resourceEntry);
+      return resourceEntry;
+    } catch (NullPointerException exception) {
+      // fall through
+    }
+
+    return null;
+  }
+
   private void getPartnerConfigBundle(Context context) {
     if (resultBundle == null || resultBundle.isEmpty()) {
       try {
@@ -330,7 +374,7 @@ public class PartnerConfigHelper {
                 .call(
                     contentUri, SUW_GET_PARTNER_CONFIG_METHOD, /* arg= */ null, /* extras= */ null);
         partnerResourceCache.clear();
-      } catch (IllegalArgumentException exception) {
+      } catch (IllegalArgumentException | SecurityException exception) {
         Log.w(TAG, "Fail to get config from suw provider");
       }
     }
