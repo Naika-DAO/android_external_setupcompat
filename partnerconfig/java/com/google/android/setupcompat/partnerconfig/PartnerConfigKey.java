@@ -43,6 +43,8 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR,
@@ -130,6 +132,12 @@ public @interface PartnerConfigKey {
 
   // Text size of the footer button
   String KEY_FOOTER_BUTTON_TEXT_SIZE = "setup_compat_footer_button_text_size";
+
+  // Disabled background alpha of the footer buttons
+  String KEY_FOOTER_BUTTON_DISABLED_ALPHA = "setup_compat_footer_button_disabled_alpha";
+
+  // Disabled background color of the footer buttons
+  String KEY_FOOTER_BUTTON_DISABLED_BG_COLOR = "setup_compat_footer_button_disabled_bg_color";
 
   // Background color of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR = "setup_compat_footer_primary_button_bg_color";
