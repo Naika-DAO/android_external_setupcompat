@@ -93,6 +93,14 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_TEXT_SIZE(
       PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE, ResourceType.DIMENSION),
 
+  // Disabled background alpha of the footer buttons
+  CONFIG_FOOTER_BUTTON_DISABLED_ALPHA(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA, ResourceType.FRACTION),
+
+  // Disabled background color of the footer buttons
+  CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR, ResourceType.COLOR),
+
   // Background color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR, ResourceType.COLOR),
