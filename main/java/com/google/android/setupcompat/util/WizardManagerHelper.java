@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.provider.Settings;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ import java.util.Arrays;
  */
 public final class WizardManagerHelper {
 
-  private static final String ACTION_NEXT = "com.android.wizard.NEXT";
+  @VisibleForTesting public static final String ACTION_NEXT = "com.android.wizard.NEXT";
 
   // EXTRA_SCRIPT_URI and EXTRA_ACTION_ID are used in setup wizard in versions before M and are
   // kept for backwards compatibility.
@@ -43,10 +44,24 @@ public final class WizardManagerHelper {
 
   @VisibleForTesting static final String EXTRA_WIZARD_BUNDLE = "wizardBundle";
   private static final String EXTRA_RESULT_CODE = "com.android.setupwizard.ResultCode";
-  @VisibleForTesting public static final String EXTRA_IS_FIRST_RUN = "firstRun";
-  @VisibleForTesting static final String EXTRA_IS_DEFERRED_SETUP = "deferredSetup";
-  @VisibleForTesting static final String EXTRA_IS_PRE_DEFERRED_SETUP = "preDeferredSetup";
-  @VisibleForTesting public static final String EXTRA_IS_SETUP_FLOW = "isSetupFlow";
+
+  /** Extra for notifying an Activity that it is inside the first SetupWizard flow or not. */
+  public static final String EXTRA_IS_FIRST_RUN = "firstRun";
+
+  /** Extra for notifying an Activity that it is inside the Deferred SetupWizard flow or not. */
+  public static final String EXTRA_IS_DEFERRED_SETUP = "deferredSetup";
+
+  /** Extra for notifying an Activity that it is inside the "Pre-Deferred Setup" flow. */
+  public static final String EXTRA_IS_PRE_DEFERRED_SETUP = "preDeferredSetup";
+
+  /**
+   * Extra for notifying an Activity that it is inside the any setup flow.
+   *
+   * <p>Apps that target API levels below {@link android.os.Build.VERSION_CODES#Q} is able to
+   * determine whether Activity is inside the any setup flow by one of {@link #EXTRA_IS_FIRST_RUN},
+   * {@link #EXTRA_IS_DEFERRED_SETUP}, and {@link #EXTRA_IS_PRE_DEFERRED_SETUP} is true.
+   */
+  public static final String EXTRA_IS_SETUP_FLOW = "isSetupFlow";
 
   public static final String EXTRA_THEME = "theme";
   public static final String EXTRA_USE_IMMERSIVE_MODE = "useImmersiveMode";

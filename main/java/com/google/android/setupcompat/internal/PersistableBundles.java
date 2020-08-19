@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** Contains utility methods related to {@link PersistableBundle}. */
-@TargetApi(VERSION_CODES.Q)
+@TargetApi(VERSION_CODES.LOLLIPOP_MR1)
 public final class PersistableBundles {
 
   /**

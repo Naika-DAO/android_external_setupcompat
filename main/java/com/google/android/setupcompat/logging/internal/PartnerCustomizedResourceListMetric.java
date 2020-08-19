@@ -48,6 +48,8 @@ public class PartnerCustomizedResourceListMetric {
       Bundle resourceExtra = resourceConfigBundle.getBundle(key);
       if (!resourceExtra.getString("packageName", defaultPackageName).equals(defaultPackageName)) {
         persistableBundle.putBoolean(resourceExtra.getString("resourceName", key), true);
+      } else {
+        persistableBundle.putBoolean(resourceExtra.getString("resourceName", key), false);
       }
     }
 

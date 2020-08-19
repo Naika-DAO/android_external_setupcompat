@@ -68,7 +68,7 @@ public class SetupCompatServiceInvoker {
       } else {
         Log.w(TAG, "logMetric failed since service reference is null. Are the permissions valid?");
       }
-    } catch (InterruptedException | TimeoutException | RemoteException e) {
+    } catch (InterruptedException | TimeoutException | RemoteException | IllegalStateException e) {
       Log.e(TAG, String.format("Exception occurred while trying to log metric = [%s]", args), e);
     }
   }
