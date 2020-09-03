@@ -18,6 +18,7 @@ package com.google.android.setupcompat;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.TypedArray;
@@ -226,6 +227,16 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     }
   }
 
+  private static boolean isAtLeastS() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+      return false;
+    }
+    return (Build.VERSION.CODENAME.equals("REL") && Build.VERSION.SDK_INT >= 31)
+        || (Build.VERSION.CODENAME.length() == 1
+            && Build.VERSION.CODENAME.charAt(0) >= 'S'
+            && Build.VERSION.CODENAME.charAt(0) <= 'Z');
+  }
+
   /**
    * Returns true if partner resource loading is enabled. If true, and other necessary conditions
    * for loading theme attributes are met, this layout will use customized theme attributes from OEM
@@ -233,6 +244,21 @@ public class PartnerCustomizationLayout extends TemplateLayout {
    * the rollout of partner resource loading.
    */
   protected boolean enablePartnerResourceLoading() {
+    // TODO : Enable the PartnerResourceLoading again once dark mode PartnerResource is
+    // ready.
+    if (isAtLeastS()
+        && getContext().getSystemService(UiModeManager.class).getNightMode()
+            == UiModeManager.MODE_NIGHT_YES) {
+      // Temporary turn off partner resource if on S device and system set as dark mode. This is
+      // easy for 1p to test dark theme before stencil ready to overlay PartnerResource dark
+      // resource.
+      Log.i(
+          TAG,
+          "Temporary disable PartnerResourceLoading on S as NightMode:"
+              + getContext().getSystemService(UiModeManager.class).getNightMode());
+      return false;
+    }
+
     return true;
   }
 

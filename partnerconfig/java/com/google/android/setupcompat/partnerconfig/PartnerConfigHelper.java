@@ -25,13 +25,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig.ResourceType;
 import java.util.EnumMap;
 
@@ -46,6 +46,11 @@ public class PartnerConfigHelper {
   @VisibleForTesting public static final String SUW_GET_PARTNER_CONFIG_METHOD = "getOverlayConfig";
 
   @VisibleForTesting public static final String KEY_FALLBACK_CONFIG = "fallbackConfig";
+
+  @VisibleForTesting
+  public static final String IS_SUW_DAY_NIGHT_ENABLED_METHOD = "isSuwDayNightEnabled";
+
+  @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
   private static PartnerConfigHelper instance = null;
 
@@ -393,6 +398,41 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   public static synchronized void resetForTesting() {
     instance = null;
+    suwDayNightEnabledBundle = null;
+  }
+
+  /**
+   * Checks whether SetupWizard supports the DayNight theme during setup flow; if return false setup
+   * flow should force to light theme.
+   *
+   * @return true if the setupwizard is listening to system DayNight theme setting.
+   */
+  public static boolean isSetupWizardDayNightEnabled(@NonNull Context context) {
+    if (suwDayNightEnabledBundle == null) {
+      try {
+        Uri contentUri =
+            new Uri.Builder()
+                .scheme(ContentResolver.SCHEME_CONTENT)
+                .authority(SUW_AUTHORITY)
+                .appendPath(IS_SUW_DAY_NIGHT_ENABLED_METHOD)
+                .build();
+        suwDayNightEnabledBundle =
+            context
+                .getContentResolver()
+                .call(
+                    contentUri,
+                    IS_SUW_DAY_NIGHT_ENABLED_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
+      } catch (IllegalArgumentException | SecurityException exception) {
+        Log.w(TAG, "SetupWizard DayNight supporting status unknown; return as false.");
+        suwDayNightEnabledBundle = null;
+        return false;
+      }
+    }
+
+    return (suwDayNightEnabledBundle != null
+        && suwDayNightEnabledBundle.getBoolean(IS_SUW_DAY_NIGHT_ENABLED_METHOD, false));
   }
 
   private TypedValue getTypedValueFromResource(Resources resource, int resId, int type) {
