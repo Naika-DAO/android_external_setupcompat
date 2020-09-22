@@ -30,6 +30,10 @@ public enum PartnerConfig {
   // Navigation bar background color
   CONFIG_NAVIGATION_BAR_BG_COLOR(PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR, ResourceType.COLOR),
 
+  // Navigation bar divider color
+  CONFIG_NAVIGATION_BAR_DIVIDER_COLOR(
+      PartnerConfigKey.KEY_NAVIGATION_BAR_DIVIDER_COLOR, ResourceType.COLOR),
+
   // Background color of the footer bar.
   CONFIG_FOOTER_BAR_BG_COLOR(PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR, ResourceType.COLOR),
 

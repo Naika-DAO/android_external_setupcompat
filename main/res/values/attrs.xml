@@ -52,6 +52,10 @@
              "android:windowTranslucentNavigation" should be set to false. -->
         <attr name="sucSystemNavBarBackgroundColor" format="color" />
         <attr name="sucLightSystemNavBar" format="boolean" />
+        <!-- The color for the system navigation bar divider. For this to take effect,
+             "android:windowDrawsSystemBarBackgrounds" should be set to true and
+             "android:windowTranslucentNavigation" should be set to false. -->
+        <attr name="sucSystemNavBarDividerColor" format="color" />
     </declare-styleable>
 
     <!-- FooterButton attributes -->

@@ -28,6 +28,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LIGHT_STATUS_BAR,
   PartnerConfigKey.KEY_NAVIGATION_BAR_BG_COLOR,
   PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR,
+  PartnerConfigKey.KEY_NAVIGATION_BAR_DIVIDER_COLOR,
   PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER,
@@ -86,6 +87,9 @@ public @interface PartnerConfigKey {
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
   String KEY_LIGHT_NAVIGATION_BAR = "setup_compat_light_navigation_bar";
+
+  // Navigation bar divider color
+  String KEY_NAVIGATION_BAR_DIVIDER_COLOR = "setup_compat_navigation_bar_divider_color";
 
   // Background color of the footer bar.
   String KEY_FOOTER_BAR_BG_COLOR = "setup_compat_footer_bar_bg_color";

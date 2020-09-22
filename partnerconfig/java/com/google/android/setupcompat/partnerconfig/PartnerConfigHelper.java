@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,10 +16,13 @@
 
 package com.google.android.setupcompat.partnerconfig;
 
+import android.app.UiModeManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
+import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -59,6 +62,8 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   final EnumMap<PartnerConfig, Object> partnerResourceCache = new EnumMap<>(PartnerConfig.class);
 
+  private static ContentObserver contentObserver;
+
   public static synchronized PartnerConfigHelper get(@NonNull Context context) {
     if (instance == null) {
       instance = new PartnerConfigHelper(context);
@@ -68,6 +73,8 @@ public class PartnerConfigHelper {
 
   private PartnerConfigHelper(Context context) {
     getPartnerConfigBundle(context);
+
+    registerContentObserver(context);
   }
 
   /**
@@ -80,12 +87,22 @@ public class PartnerConfigHelper {
   }
 
   /**
+   * Returns whether the given {@code resourceConfig} are available. This is true if setup wizard's
+   * content provider returns us a non-empty bundle, and this result bundle includes the given
+   * {@code resourceConfig} even if all the values are default, and none are customized by the
+   * overlay APK.
+   */
+  public boolean isPartnerConfigAvailable(PartnerConfig resourceConfig) {
+    return isAvailable() && resultBundle.containsKey(resourceConfig.getResourceName());
+  }
+
+  /**
    * Returns the color of given {@code resourceConfig}, or 0 if the given {@code resourceConfig} is
    * not found. If the {@code ResourceType} of the given {@code resourceConfig} is not color,
    * IllegalArgumentException will be thrown.
    *
    * @param context The context of client activity
-   * @param resourceConfig The {@code PartnerConfig} of target resource
+   * @param resourceConfig The {@link PartnerConfig} of target resource
    */
   @ColorInt
   public int getColor(@NonNull Context context, PartnerConfig resourceConfig) {
@@ -367,17 +384,14 @@ public class PartnerConfigHelper {
   private void getPartnerConfigBundle(Context context) {
     if (resultBundle == null || resultBundle.isEmpty()) {
       try {
-        Uri contentUri =
-            new Uri.Builder()
-                .scheme(ContentResolver.SCHEME_CONTENT)
-                .authority(SUW_AUTHORITY)
-                .appendPath(SUW_GET_PARTNER_CONFIG_METHOD)
-                .build();
         resultBundle =
             context
                 .getContentResolver()
                 .call(
-                    contentUri, SUW_GET_PARTNER_CONFIG_METHOD, /* arg= */ null, /* extras= */ null);
+                    getContentUri(),
+                    SUW_GET_PARTNER_CONFIG_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
         partnerResourceCache.clear();
       } catch (IllegalArgumentException | SecurityException exception) {
         Log.w(TAG, "Fail to get config from suw provider");
@@ -386,17 +400,47 @@ public class PartnerConfigHelper {
   }
 
   @Nullable
-  private ResourceEntry getResourceEntryFromKey(Context context, String resourceName) {
+  @VisibleForTesting
+  ResourceEntry getResourceEntryFromKey(Context context, String resourceName) {
     Bundle resourceEntryBundle = resultBundle.getBundle(resourceName);
     Bundle fallbackBundle = resultBundle.getBundle(KEY_FALLBACK_CONFIG);
     if (fallbackBundle != null) {
       resourceEntryBundle.putBundle(KEY_FALLBACK_CONFIG, fallbackBundle.getBundle(resourceName));
     }
-    return ResourceEntry.fromBundle(context, resourceEntryBundle);
+
+    return adjustResourceEntryDayNightMode(
+        context, ResourceEntry.fromBundle(context, resourceEntryBundle));
+  }
+
+  /**
+   * Force to day mode if setup wizard does not support day/night mode and current system is in
+   * night mode.
+   */
+  private static ResourceEntry adjustResourceEntryDayNightMode(
+      Context context, ResourceEntry resourceEntry) {
+    if (!isSetupWizardDayNightEnabled(context) && isNightMode(context)) {
+      if (resourceEntry == null) {
+        Log.w(TAG, "resourceEntry is null, skip to force day mode.");
+        return resourceEntry;
+      }
+      Resources resource = resourceEntry.getResources();
+      Configuration configuration = resource.getConfiguration();
+      configuration.uiMode =
+          Configuration.UI_MODE_NIGHT_NO
+              | (configuration.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+      resource.updateConfiguration(configuration, resource.getDisplayMetrics());
+    }
+
+    return resourceEntry;
+  }
+
+  private static boolean isNightMode(Context context) {
+    UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+    return uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
   }
 
   @VisibleForTesting
-  public static synchronized void resetForTesting() {
+  public static synchronized void resetInstance() {
     instance = null;
     suwDayNightEnabledBundle = null;
   }
@@ -405,22 +449,16 @@ public class PartnerConfigHelper {
    * Checks whether SetupWizard supports the DayNight theme during setup flow; if return false setup
    * flow should force to light theme.
    *
-   * @return true if the setupwizard is listening to system DayNight theme setting.
+   * <p>Returns true if the setupwizard is listening to system DayNight theme setting.
    */
   public static boolean isSetupWizardDayNightEnabled(@NonNull Context context) {
     if (suwDayNightEnabledBundle == null) {
       try {
-        Uri contentUri =
-            new Uri.Builder()
-                .scheme(ContentResolver.SCHEME_CONTENT)
-                .authority(SUW_AUTHORITY)
-                .appendPath(IS_SUW_DAY_NIGHT_ENABLED_METHOD)
-                .build();
         suwDayNightEnabledBundle =
             context
                 .getContentResolver()
                 .call(
-                    contentUri,
+                    getContentUri(),
                     IS_SUW_DAY_NIGHT_ENABLED_METHOD,
                     /* arg= */ null,
                     /* extras= */ null);
@@ -435,7 +473,15 @@ public class PartnerConfigHelper {
         && suwDayNightEnabledBundle.getBoolean(IS_SUW_DAY_NIGHT_ENABLED_METHOD, false));
   }
 
-  private TypedValue getTypedValueFromResource(Resources resource, int resId, int type) {
+  @VisibleForTesting
+  static Uri getContentUri() {
+    return new Uri.Builder()
+        .scheme(ContentResolver.SCHEME_CONTENT)
+        .authority(SUW_AUTHORITY)
+        .build();
+  }
+
+  private static TypedValue getTypedValueFromResource(Resources resource, int resId, int type) {
     TypedValue value = new TypedValue();
     resource.getValue(resId, value, true);
     if (value.type != type) {
@@ -449,8 +495,42 @@ public class PartnerConfigHelper {
     return value;
   }
 
-  private float getDimensionFromTypedValue(Context context, TypedValue value) {
+  private static float getDimensionFromTypedValue(Context context, TypedValue value) {
     DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
     return value.getDimension(displayMetrics);
+  }
+
+  private static void registerContentObserver(Context context) {
+    if (isSetupWizardDayNightEnabled(context)) {
+      if (contentObserver != null) {
+        unregisterContentObserver(context);
+      }
+
+      Uri contentUri = getContentUri();
+      try {
+        contentObserver =
+            new ContentObserver(null) {
+              @Override
+              public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                resetInstance();
+              }
+            };
+        context
+            .getContentResolver()
+            .registerContentObserver(contentUri, /* notifyForDescendants= */ true, contentObserver);
+      } catch (SecurityException | NullPointerException | IllegalArgumentException e) {
+        Log.w(TAG, "Failed to register content observer for " + contentUri + ": " + e);
+      }
+    }
+  }
+
+  private static void unregisterContentObserver(Context context) {
+    try {
+      context.getContentResolver().unregisterContentObserver(contentObserver);
+      contentObserver = null;
+    } catch (SecurityException | NullPointerException | IllegalArgumentException e) {
+      Log.w(TAG, "Failed to unregister content observer: " + e);
+    }
   }
 }

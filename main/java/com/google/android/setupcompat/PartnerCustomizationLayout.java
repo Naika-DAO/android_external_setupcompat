@@ -133,15 +133,13 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   @Override
   protected void onBeforeTemplateInflated(AttributeSet attrs, int defStyleAttr) {
 
-    boolean isSetupFlow;
-
     // Sets default value to true since this timing
     // before PartnerCustomization members initialization
     usePartnerResourceAttr = true;
 
     activity = lookupActivityFromContext(getContext());
 
-    isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
+    boolean isSetupFlow = WizardManagerHelper.isAnySetupWizard(activity.getIntent());
 
     TypedArray a =
         getContext()

@@ -83,6 +83,19 @@ public class SystemNavBarMixin implements Mixin {
       setLightSystemNavBar(
           a.getBoolean(
               R.styleable.SucSystemNavBarMixin_sucLightSystemNavBar, isLightSystemNavBar()));
+
+      // Support updating system navigation bar divider color from P.
+      if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        // get fallback value from theme
+        int[] navBarDividerColorAttr = new int[] {android.R.attr.navigationBarDividerColor};
+        TypedArray typedArray =
+            templateLayout.getContext().obtainStyledAttributes(navBarDividerColorAttr);
+        int defaultColor = typedArray.getColor(/* index= */ 0, /* defValue= */ 0);
+        int sucSystemNavBarDividerColor =
+            a.getColor(R.styleable.SucSystemNavBarMixin_sucSystemNavBarDividerColor, defaultColor);
+        setSystemNavBarDividerColor(sucSystemNavBarDividerColor);
+        typedArray.recycle();
+      }
       a.recycle();
     }
   }
@@ -120,6 +133,7 @@ public class SystemNavBarMixin implements Mixin {
    *
    * @param isLight true means compatible with light theme, otherwise compatible with dark theme
    */
+
   public void setLightSystemNavBar(boolean isLight) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.O && windowOfActivity != null) {
       if (applyPartnerResources) {
@@ -155,6 +169,28 @@ public class SystemNavBarMixin implements Mixin {
           == SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
     }
     return true;
+  }
+
+  /**
+   * Sets the divider color of navigation bar. The color will be overridden by partner resource if
+   * the activity is running in setup wizard flow.
+   *
+   * @param color the default divider color of navigation bar
+   */
+  public void setSystemNavBarDividerColor(int color) {
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.P && windowOfActivity != null) {
+      if (applyPartnerResources) {
+        Context context = templateLayout.getContext();
+        // Do nothing if the old version partner provider did not contain the new config.
+        if (PartnerConfigHelper.get(context)
+            .isPartnerConfigAvailable(PartnerConfig.CONFIG_NAVIGATION_BAR_DIVIDER_COLOR)) {
+          color =
+              PartnerConfigHelper.get(context)
+                  .getColor(context, PartnerConfig.CONFIG_NAVIGATION_BAR_DIVIDER_COLOR);
+        }
+      }
+      windowOfActivity.setNavigationBarDividerColor(color);
+    }
   }
 
   /**
