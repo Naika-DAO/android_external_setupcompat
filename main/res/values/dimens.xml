@@ -20,8 +20,6 @@
     <!-- TODO: Remove default values from setup compat, use from theme -->
     <!-- Footer button bar style padding attributes-->
     <dimen name="suc_customization_footer_min_height">72dp</dimen>
-    <dimen name="suc_customization_button_margin_start">8dp</dimen>
-    <dimen name="suc_customization_button_margin_end">20dp</dimen>
 
     <!-- Footer button style padding attributes -->
     <dimen name="suc_customization_button_padding">16dp</dimen>

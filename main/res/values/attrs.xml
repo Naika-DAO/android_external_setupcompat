@@ -91,11 +91,14 @@
         <attr name="sucFooterBarButtonColorControlHighlight" format="color" />
         <attr name="sucFooterBarButtonColorControlHighlightRipple" format="color" />
         <attr name="sucFooterBarPaddingVertical" format="dimension" />
+        <attr name="sucFooterBarPaddingStart" format="dimension" />
+        <attr name="sucFooterBarPaddingEnd" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SucHeaderMixin">
         <attr name="sucHeaderText" format="string" localization="suggested" />
         <attr name="sucHeaderTextColor" format="reference|color" />
+        <attr name="sucGlifIconMarginTop" format="dimension" />
     </declare-styleable>
 
 </resources>
