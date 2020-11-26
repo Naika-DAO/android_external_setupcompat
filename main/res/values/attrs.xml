@@ -99,6 +99,14 @@
         <attr name="sucHeaderText" format="string" localization="suggested" />
         <attr name="sucHeaderTextColor" format="reference|color" />
         <attr name="sucGlifIconMarginTop" format="dimension" />
+        <attr name="sucGlifHeaderMarginTop" format="dimension" />
+        <attr name="sucGlifHeaderMarginBottom" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="SucSubtitleMixin">
+        <attr name="sucSubtitleText" format="string" localization="suggested" />
+        <attr name="sucSubtitleTextColor" format="reference|color" />
+        <attr name="sucGlifSubtitleMarginTop" format="dimension" />
+        <attr name="sucGlifSubtitleMarginBottom" format="dimension" />
+    </declare-styleable>
 </resources>
