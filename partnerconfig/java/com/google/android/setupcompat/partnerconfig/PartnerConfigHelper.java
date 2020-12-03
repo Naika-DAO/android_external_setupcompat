@@ -53,7 +53,13 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   public static final String IS_SUW_DAY_NIGHT_ENABLED_METHOD = "isSuwDayNightEnabled";
 
+  @VisibleForTesting
+  public static final String IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD =
+      "isExtendedPartnerConfigEnabled";
+
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
+
+  @VisibleForTesting static Bundle applyExtendedPartnerConfigBundle = null;
 
   private static PartnerConfigHelper instance = null;
 
@@ -443,6 +449,7 @@ public class PartnerConfigHelper {
   public static synchronized void resetInstance() {
     instance = null;
     suwDayNightEnabledBundle = null;
+    applyExtendedPartnerConfigBundle = null;
   }
 
   /**
@@ -471,6 +478,32 @@ public class PartnerConfigHelper {
 
     return (suwDayNightEnabledBundle != null
         && suwDayNightEnabledBundle.getBoolean(IS_SUW_DAY_NIGHT_ENABLED_METHOD, false));
+  }
+
+  /** Returns true if the SetupWizard supports the extended partner configs during setup flow. */
+  public static boolean shouldApplyExtendedPartnerConfig(@NonNull Context context) {
+    if (applyExtendedPartnerConfigBundle == null) {
+      try {
+        applyExtendedPartnerConfigBundle =
+            context
+                .getContentResolver()
+                .call(
+                    getContentUri(),
+                    IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
+      } catch (IllegalArgumentException | SecurityException exception) {
+        Log.w(
+            TAG,
+            "SetupWizard extended partner configs supporting status unknown; return as false.");
+        applyExtendedPartnerConfigBundle = null;
+        return false;
+      }
+    }
+
+    return (applyExtendedPartnerConfigBundle != null
+        && applyExtendedPartnerConfigBundle.getBoolean(
+            IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD, false));
   }
 
   @VisibleForTesting
