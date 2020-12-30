@@ -214,7 +214,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
     }
   }
 
-  private static Activity lookupActivityFromContext(Context context) {
+  public static Activity lookupActivityFromContext(Context context) {
     if (context instanceof Activity) {
       return (Activity) context;
     } else if (context instanceof ContextWrapper) {
