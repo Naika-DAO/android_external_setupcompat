@@ -261,8 +261,8 @@ public class PartnerConfigHelper {
   }
 
   /**
-   * Returns the dimension of given {@code resourceConfig}. If the given {@code resourceConfig} not
-   * found, will return {@code defaultValue}. If the {@code ResourceType} of given {@code
+   * Returns the dimension of given {@code resourceConfig}. If the given {@code resourceConfig} is
+   * not found, will return {@code defaultValue}. If the {@code ResourceType} of given {@code
    * resourceConfig} is not dimension, will throw IllegalArgumentException.
    *
    * @param context The context of client activity
@@ -336,6 +336,39 @@ public class PartnerConfigHelper {
       int resId = resourceEntry.getResourceId();
 
       result = resource.getFraction(resId, 1, 1);
+      partnerResourceCache.put(resourceConfig, result);
+    } catch (NullPointerException exception) {
+      // fall through
+    }
+    return result;
+  }
+
+  /**
+   * Returns the integer of given {@code resourceConfig}. If the given {@code resourceConfig} is not
+   * found, will return {@code defaultValue}. If the {@code ResourceType} of given {@code
+   * resourceConfig} is not dimension, will throw IllegalArgumentException.
+   *
+   * @param context The context of client activity
+   * @param resourceConfig The {@code PartnerConfig} of target resource
+   * @param defaultValue The default value
+   */
+  public int getInteger(@NonNull Context context, PartnerConfig resourceConfig, int defaultValue) {
+    if (resourceConfig.getResourceType() != ResourceType.INTEGER) {
+      throw new IllegalArgumentException("Not a integer resource");
+    }
+
+    if (partnerResourceCache.containsKey(resourceConfig)) {
+      return (int) partnerResourceCache.get(resourceConfig);
+    }
+
+    int result = defaultValue;
+    try {
+      ResourceEntry resourceEntry =
+          getResourceEntryFromKey(context, resourceConfig.getResourceName());
+      Resources resource = resourceEntry.getResources();
+      int resId = resourceEntry.getResourceId();
+
+      result = resource.getInteger(resId);
       partnerResourceCache.put(resourceConfig, result);
     } catch (NullPointerException exception) {
       // fall through

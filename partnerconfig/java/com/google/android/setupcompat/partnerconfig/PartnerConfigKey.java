@@ -51,25 +51,47 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR,
+  PartnerConfigKey.KEY_LAYOUT_MARGIN_START,
+  PartnerConfigKey.KEY_LAYOUT_MARGIN_END,
   PartnerConfigKey.KEY_HEADER_TEXT_SIZE,
   PartnerConfigKey.KEY_HEADER_TEXT_COLOR,
   PartnerConfigKey.KEY_HEADER_FONT_FAMILY,
   PartnerConfigKey.KEY_HEADER_AREA_BACKGROUND_COLOR,
+  PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_TOP,
+  PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_BOTTOM,
+  PartnerConfigKey.KEY_HEADER_CONTAINER_MARGIN_BOTTOM,
+  PartnerConfigKey.KEY_HEADER_AUTO_SIZE_ENABLED,
+  PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MAX_TEXT_SIZE,
+  PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MIN_TEXT_SIZE,
+  PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MAX_LINE_OF_MAX_SIZE,
+  PartnerConfigKey.KEY_HEADER_AUTO_SIZE_LINE_SPACING_EXTRA,
   PartnerConfigKey.KEY_LAYOUT_GRAVITY,
+  PartnerConfigKey.KEY_ICON_MARGIN_TOP,
+  PartnerConfigKey.KEY_ICON_SIZE,
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_SIZE,
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY,
+  PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_TOP,
+  PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM,
   PartnerConfigKey.KEY_CONTENT_TEXT_SIZE,
   PartnerConfigKey.KEY_CONTENT_TEXT_COLOR,
   PartnerConfigKey.KEY_CONTENT_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_CONTENT_FONT_FAMILY,
   PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY,
+  PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE,
+  PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE,
+  PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP,
+  PartnerConfigKey.KEY_ITEMS_FONT_FAMILY,
+  PartnerConfigKey.KEY_ITEMS_PADDING_TOP,
+  PartnerConfigKey.KEY_ITEMS_PADDING_BOTTOM,
+  PartnerConfigKey.KEY_ITEMS_MIN_HEIGHT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DEFAULT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_ACCOUNT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS,
+  PartnerConfigKey.KEY_TRANSITION_TYPE,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -158,6 +180,12 @@ public @interface PartnerConfigKey {
   // Background color of layout
   String KEY_LAYOUT_BACKGROUND_COLOR = "setup_design_layout_bg_color";
 
+  // Margin start of the layout
+  String KEY_LAYOUT_MARGIN_START = "setup_design_layout_margin_start";
+
+  // Margin end of the layout
+  String KEY_LAYOUT_MARGIN_END = "setup_design_layout_margin_end";
+
   // Text size of the header
   String KEY_HEADER_TEXT_SIZE = "setup_design_header_text_size";
 
@@ -167,11 +195,43 @@ public @interface PartnerConfigKey {
   // Font family of the header
   String KEY_HEADER_FONT_FAMILY = "setup_design_header_font_family";
 
+  // Margin top size of the header text
+  String KEY_HEADER_TEXT_MARGIN_TOP = "setup_design_header_text_margin_top";
+
+  // Margin bottom size of the header text
+  String KEY_HEADER_TEXT_MARGIN_BOTTOM = "setup_design_header_text_margin_bottom";
+
   // Gravity of the header, icon and description
   String KEY_LAYOUT_GRAVITY = "setup_design_layout_gravity";
 
+  // Margin top of the icon
+  String KEY_ICON_MARGIN_TOP = "setup_design_icon_margin_top";
+
+  // Size of the icon
+  String KEY_ICON_SIZE = "setup_design_icon_size";
+
   // Background color of the header area
   String KEY_HEADER_AREA_BACKGROUND_COLOR = "setup_design_header_area_background_color";
+
+  // Margin bottom size of the header container
+  String KEY_HEADER_CONTAINER_MARGIN_BOTTOM = "setup_design_header_container_margin_bottom";
+
+  // Auto text size enabled status
+  String KEY_HEADER_AUTO_SIZE_ENABLED = "setup_design_header_auto_size_enabled";
+
+  // Max text size of header when auto size enabled. Ignored if auto size is false.
+  String KEY_HEADER_AUTO_SIZE_MAX_TEXT_SIZE = "setup_design_header_auto_size_max_text_size";
+
+  // Min text size of header when auto size enabled. Ignored if auto size is false.
+  String KEY_HEADER_AUTO_SIZE_MIN_TEXT_SIZE = "setup_design_header_auto_size_min_text_size";
+
+  // The max lines of the max text size when auto size enabled. Ignored if auto size is false.
+  String KEY_HEADER_AUTO_SIZE_MAX_LINE_OF_MAX_SIZE =
+      "setup_design_header_auto_size_max_line_of_max_size";
+
+  // Extra line spacing of header when auto size enabled. Ignored if auto size is false.
+  String KEY_HEADER_AUTO_SIZE_LINE_SPACING_EXTRA =
+      "setup_design_header_auto_size_line_spacing_extra";
 
   // Text size of the description
   String KEY_DESCRIPTION_TEXT_SIZE = "setup_design_description_text_size";
@@ -184,6 +244,12 @@ public @interface PartnerConfigKey {
 
   // Font family of the description
   String KEY_DESCRIPTION_FONT_FAMILY = "setup_design_description_font_family";
+
+  // Margin top size of the header text
+  String KEY_DESCRIPTION_TEXT_MARGIN_TOP = "setup_design_description_text_margin_top";
+
+  // Margin bottom size of the header text
+  String KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM = "setup_design_description_text_margin_bottom";
 
   // Text size of the body content text
   String KEY_CONTENT_TEXT_SIZE = "setup_design_content_text_size";
@@ -199,6 +265,27 @@ public @interface PartnerConfigKey {
 
   // Gravity of the body content text
   String KEY_CONTENT_LAYOUT_GRAVITY = "setup_design_content_layout_gravity";
+
+  // The title text size of list items.
+  String KEY_ITEMS_TITLE_TEXT_SIZE = "setup_design_items_title_text_size";
+
+  // The summary text size of list items.
+  String KEY_ITEMS_SUMMARY_TEXT_SIZE = "setup_design_items_summary_text_size";
+
+  // The summary margin top of list items.
+  String KEY_ITEMS_SUMMARY_MARGIN_TOP = "setup_design_items_summary_margin_top";
+
+  // The font family of list items.
+  String KEY_ITEMS_FONT_FAMILY = "setup_design_items_font_family";
+
+  // The padding top of list items.
+  String KEY_ITEMS_PADDING_TOP = "setup_design_items_padding_top";
+
+  // The padding bottom of list items.
+  String KEY_ITEMS_PADDING_BOTTOM = "setup_design_items_padding_bottom";
+
+  // The minimum height of list items.
+  String KEY_ITEMS_MIN_HEIGHT = "setup_design_items_min_height";
 
   // The animation of loading screen used in those activities which is non of below type.
   String KEY_PROGRESS_ILLUSTRATION_DEFAULT = "progress_illustration_custom_default";
@@ -218,4 +305,7 @@ public @interface PartnerConfigKey {
 
   // The minimum illustration display time, set to 0 may cause the illustration stuck
   String KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS = "progress_illustration_display_minimum_ms";
+
+  // The transition type between activities
+  String KEY_TRANSITION_TYPE = "setup_design_transition_type";
 }

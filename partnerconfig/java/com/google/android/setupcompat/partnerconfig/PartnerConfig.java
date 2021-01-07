@@ -124,6 +124,12 @@ public enum PartnerConfig {
   // Background color of layout
   CONFIG_LAYOUT_BACKGROUND_COLOR(PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR, ResourceType.COLOR),
 
+  // Margin start of the layout
+  CONFIG_LAYOUT_MARGIN_START(PartnerConfigKey.KEY_LAYOUT_MARGIN_START, ResourceType.DIMENSION),
+
+  // Margin end of the layout
+  CONFIG_LAYOUT_MARGIN_END(PartnerConfigKey.KEY_LAYOUT_MARGIN_END, ResourceType.DIMENSION),
+
   // Text color of the header
   CONFIG_HEADER_TEXT_COLOR(PartnerConfigKey.KEY_HEADER_TEXT_COLOR, ResourceType.COLOR),
 
@@ -133,12 +139,49 @@ public enum PartnerConfig {
   // Font family of the header
   CONFIG_HEADER_FONT_FAMILY(PartnerConfigKey.KEY_HEADER_FONT_FAMILY, ResourceType.STRING),
 
+  // Margin top size of the header text
+  CONFIG_HEADER_TEXT_MARGIN_TOP(
+      PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_TOP, ResourceType.DIMENSION),
+
+  // Margin bottom size of the header text
+  CONFIG_HEADER_TEXT_MARGIN_BOTTOM(
+      PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_BOTTOM, ResourceType.DIMENSION),
+
   // Gravity of the header, icon and description
   CONFIG_LAYOUT_GRAVITY(PartnerConfigKey.KEY_LAYOUT_GRAVITY, ResourceType.STRING),
+
+  // Margin top of the icon
+  CONFIG_ICON_MARGIN_TOP(PartnerConfigKey.KEY_ICON_MARGIN_TOP, ResourceType.DIMENSION),
+
+  // Size of the icon
+  CONFIG_ICON_SIZE(PartnerConfigKey.KEY_ICON_SIZE, ResourceType.DIMENSION),
 
   // Background color of the header area
   CONFIG_HEADER_AREA_BACKGROUND_COLOR(
       PartnerConfigKey.KEY_HEADER_AREA_BACKGROUND_COLOR, ResourceType.COLOR),
+
+  // Margin bottom size of the header container
+  CONFIG_HEADER_CONTAINER_MARGIN_BOTTOM(
+      PartnerConfigKey.KEY_HEADER_CONTAINER_MARGIN_BOTTOM, ResourceType.DIMENSION),
+
+  // Auto text size enabled status
+  CONFIG_HEADER_AUTO_SIZE_ENABLED(PartnerConfigKey.KEY_HEADER_AUTO_SIZE_ENABLED, ResourceType.BOOL),
+
+  // Max text size of header when auto size enabled. Ignored if auto size is false.
+  CONFIG_HEADER_AUTO_SIZE_MAX_TEXT_SIZE(
+      PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MAX_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // Min text size of header when auto size enabled. Ignored if auto size is false.
+  CONFIG_HEADER_AUTO_SIZE_MIN_TEXT_SIZE(
+      PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MIN_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // The max lines of the max text size when auto size enabled. Ignored if auto size is false.
+  CONFIG_HEADER_AUTO_SIZE_MAX_LINE_OF_MAX_SIZE(
+      PartnerConfigKey.KEY_HEADER_AUTO_SIZE_MAX_LINE_OF_MAX_SIZE, ResourceType.INTEGER),
+
+  // Extra line spacing of header when auto size enabled. Ignored if auto size is false.
+  CONFIG_HEADER_AUTO_SIZE_LINE_SPACING_EXTRA(
+      PartnerConfigKey.KEY_HEADER_AUTO_SIZE_LINE_SPACING_EXTRA, ResourceType.DIMENSION),
 
   // Text size of the description
   CONFIG_DESCRIPTION_TEXT_SIZE(PartnerConfigKey.KEY_DESCRIPTION_TEXT_SIZE, ResourceType.DIMENSION),
@@ -152,6 +195,14 @@ public enum PartnerConfig {
 
   // Font family of the description
   CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING),
+
+  // Margin top size of the description text
+  CONFIG_DESCRIPTION_TEXT_MARGIN_TOP(
+      PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_TOP, ResourceType.DIMENSION),
+
+  // Margin bottom size of the description text
+  CONFIG_DESCRIPTION_TEXT_MARGIN_BOTTOM(
+      PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM, ResourceType.DIMENSION),
 
   // Text size of the body content text
   CONFIG_CONTENT_TEXT_SIZE(PartnerConfigKey.KEY_CONTENT_TEXT_SIZE, ResourceType.DIMENSION),
@@ -167,6 +218,29 @@ public enum PartnerConfig {
 
   // Gravity of the body content text
   CONFIG_CONTENT_LAYOUT_GRAVITY(PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY, ResourceType.STRING),
+
+  // The title text size of list items.
+  CONFIG_ITEMS_TITLE_TEXT_SIZE(PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // The summary text size of list items.
+  CONFIG_ITEMS_SUMMARY_TEXT_SIZE(
+      PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // The summary margin top of list items.
+  CONFIG_ITEMS_SUMMARY_MARGIN_TOP(
+      PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP, ResourceType.DIMENSION),
+
+  // The font family of list items.
+  CONFIG_ITEMS_FONT_FAMILY(PartnerConfigKey.KEY_ITEMS_FONT_FAMILY, ResourceType.STRING),
+
+  // The padding top of list items.
+  CONFIG_ITEMS_PADDING_TOP(PartnerConfigKey.KEY_ITEMS_PADDING_TOP, ResourceType.DIMENSION),
+
+  // The padding bottom of list items.
+  CONFIG_ITEMS_PADDING_BOTTOM(PartnerConfigKey.KEY_ITEMS_PADDING_BOTTOM, ResourceType.DIMENSION),
+
+  // The minimum height of list items.
+  CONFIG_ITEMS_MIN_HEIGHT(PartnerConfigKey.KEY_ITEMS_MIN_HEIGHT, ResourceType.DIMENSION),
 
   // The animation of loading screen used in those activities which is non of below type.
   CONFIG_PROGRESS_ILLUSTRATION_DEFAULT(
@@ -188,9 +262,14 @@ public enum PartnerConfig {
   CONFIG_PROGRESS_ILLUSTRATION_UPDATE(
       PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE, ResourceType.ILLUSTRATION),
 
+  // The animation of loading screen to define how long showing on the pages.
   CONFIG_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS(
-      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS, ResourceType.INTEGER);
+      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS, ResourceType.INTEGER),
 
+  // The transition type to decide the transition between activities or fragments.
+  CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER);
+
+  /** Resource type of the partner resources type. */
   public enum ResourceType {
     INTEGER,
     BOOL,
