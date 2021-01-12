@@ -139,11 +139,11 @@ public enum PartnerConfig {
   // Font family of the header
   CONFIG_HEADER_FONT_FAMILY(PartnerConfigKey.KEY_HEADER_FONT_FAMILY, ResourceType.STRING),
 
-  // Margin top size of the header text
+  // Margin top of the header text
   CONFIG_HEADER_TEXT_MARGIN_TOP(
       PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_TOP, ResourceType.DIMENSION),
 
-  // Margin bottom size of the header text
+  // Margin bottom of the header text
   CONFIG_HEADER_TEXT_MARGIN_BOTTOM(
       PartnerConfigKey.KEY_HEADER_TEXT_MARGIN_BOTTOM, ResourceType.DIMENSION),
 
@@ -160,7 +160,7 @@ public enum PartnerConfig {
   CONFIG_HEADER_AREA_BACKGROUND_COLOR(
       PartnerConfigKey.KEY_HEADER_AREA_BACKGROUND_COLOR, ResourceType.COLOR),
 
-  // Margin bottom size of the header container
+  // Margin bottom of the header container
   CONFIG_HEADER_CONTAINER_MARGIN_BOTTOM(
       PartnerConfigKey.KEY_HEADER_CONTAINER_MARGIN_BOTTOM, ResourceType.DIMENSION),
 
@@ -196,11 +196,11 @@ public enum PartnerConfig {
   // Font family of the description
   CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING),
 
-  // Margin top size of the description text
+  // Margin top of the description text
   CONFIG_DESCRIPTION_TEXT_MARGIN_TOP(
       PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_TOP, ResourceType.DIMENSION),
 
-  // Margin bottom size of the description text
+  // Margin bottom of the description text
   CONFIG_DESCRIPTION_TEXT_MARGIN_BOTTOM(
       PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM, ResourceType.DIMENSION),
 
@@ -218,6 +218,9 @@ public enum PartnerConfig {
 
   // Gravity of the body content text
   CONFIG_CONTENT_LAYOUT_GRAVITY(PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY, ResourceType.STRING),
+
+  // The padding top of the content
+  CONFIG_CONTENT_PADDING_TOP(PartnerConfigKey.KEY_CONTENT_PADDING_TOP, ResourceType.DIMENSION),
 
   // The title text size of list items.
   CONFIG_ITEMS_TITLE_TEXT_SIZE(PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE, ResourceType.DIMENSION),
