@@ -79,6 +79,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_CONTENT_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_CONTENT_FONT_FAMILY,
   PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY,
+  PartnerConfigKey.KEY_CONTENT_PADDING_TOP,
   PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP,
@@ -195,10 +196,10 @@ public @interface PartnerConfigKey {
   // Font family of the header
   String KEY_HEADER_FONT_FAMILY = "setup_design_header_font_family";
 
-  // Margin top size of the header text
+  // Margin top of the header text
   String KEY_HEADER_TEXT_MARGIN_TOP = "setup_design_header_text_margin_top";
 
-  // Margin bottom size of the header text
+  // Margin bottom of the header text
   String KEY_HEADER_TEXT_MARGIN_BOTTOM = "setup_design_header_text_margin_bottom";
 
   // Gravity of the header, icon and description
@@ -213,7 +214,7 @@ public @interface PartnerConfigKey {
   // Background color of the header area
   String KEY_HEADER_AREA_BACKGROUND_COLOR = "setup_design_header_area_background_color";
 
-  // Margin bottom size of the header container
+  // Margin bottom of the header container
   String KEY_HEADER_CONTAINER_MARGIN_BOTTOM = "setup_design_header_container_margin_bottom";
 
   // Auto text size enabled status
@@ -245,10 +246,10 @@ public @interface PartnerConfigKey {
   // Font family of the description
   String KEY_DESCRIPTION_FONT_FAMILY = "setup_design_description_font_family";
 
-  // Margin top size of the header text
+  // Margin top of the header text
   String KEY_DESCRIPTION_TEXT_MARGIN_TOP = "setup_design_description_text_margin_top";
 
-  // Margin bottom size of the header text
+  // Margin bottom of the header text
   String KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM = "setup_design_description_text_margin_bottom";
 
   // Text size of the body content text
@@ -265,6 +266,9 @@ public @interface PartnerConfigKey {
 
   // Gravity of the body content text
   String KEY_CONTENT_LAYOUT_GRAVITY = "setup_design_content_layout_gravity";
+
+  // The padding top of the content
+  String KEY_CONTENT_PADDING_TOP = "setup_design_content_padding_top";
 
   // The title text size of list items.
   String KEY_ITEMS_TITLE_TEXT_SIZE = "setup_design_items_title_text_size";
