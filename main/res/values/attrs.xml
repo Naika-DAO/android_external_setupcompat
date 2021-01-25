@@ -74,6 +74,8 @@
             <enum name="skip" value="7" />
             <enum name="stop" value="8" />
         </attr>
+        <attr name="sucFooterButtonPaddingStart" format="dimension" />
+        <attr name="sucFooterButtonPaddingEnd" format="dimension" />
     </declare-styleable>
 
     <!-- Button of footer attributes -->
@@ -93,6 +95,7 @@
         <attr name="sucFooterBarPaddingVertical" format="dimension" />
         <attr name="sucFooterBarPaddingStart" format="dimension" />
         <attr name="sucFooterBarPaddingEnd" format="dimension" />
+        <attr name="sucFooterBarMinHeight" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SucHeaderMixin">
