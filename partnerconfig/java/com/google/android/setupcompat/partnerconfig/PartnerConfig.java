@@ -93,9 +93,13 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA(
       PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA, ResourceType.FRACTION),
 
-  // Text size of the primary footer button
+  // Text size of the footer buttons
   CONFIG_FOOTER_BUTTON_TEXT_SIZE(
       PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE, ResourceType.DIMENSION),
+
+  // The min height of the footer buttons
+  CONFIG_FOOTER_BUTTON_MIN_HEIGHT(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT, ResourceType.DIMENSION),
 
   // Disabled background alpha of the footer buttons
   CONFIG_FOOTER_BUTTON_DISABLED_ALPHA(
@@ -268,6 +272,26 @@ public enum PartnerConfig {
   // The animation of loading screen to define how long showing on the pages.
   CONFIG_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS(
       PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS, ResourceType.INTEGER),
+
+  // The animation for S+ devices used in those screens waiting for non of below type.
+  CONFIG_LOADING_LOTTIE_DEFAULT(
+      PartnerConfigKey.KEY_LOADING_LOTTIE_DEFAULT, ResourceType.ILLUSTRATION),
+
+  // The animation for S+ devices used in those screens which is processing account info or related
+  // functions.
+  // For example:com.google.android.setupwizard.LOAD_ADD_ACCOUNT_INTENT
+  CONFIG_LOADING_LOTTIE_ACCOUNT(
+      PartnerConfigKey.KEY_LOADING_LOTTIE_ACCOUNT, ResourceType.ILLUSTRATION),
+
+  // The animation for S+ devices used in those screens which is processing data connection.
+  // For example:com.android.setupwizard.CAPTIVE_PORTAL
+  CONFIG_LOADING_LOTTIE_CONNECTION(
+      PartnerConfigKey.KEY_LOADING_LOTTIE_CONNECTION, ResourceType.ILLUSTRATION),
+
+  // The animation for S+ devices used in those screens which is updating devices.
+  // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
+  CONFIG_LOADING_LOTTIE_UPDATE(
+      PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE, ResourceType.ILLUSTRATION),
 
   // The transition type to decide the transition between activities or fragments.
   CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER);
