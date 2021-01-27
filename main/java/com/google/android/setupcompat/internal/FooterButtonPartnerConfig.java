@@ -27,6 +27,7 @@ public class FooterButtonPartnerConfig {
   private final PartnerConfig buttonIconConfig;
   private final PartnerConfig buttonTextColorConfig;
   private final PartnerConfig buttonTextSizeConfig;
+  private final PartnerConfig buttonMinHeightConfig;
   private final PartnerConfig buttonTextTypeFaceConfig;
   private final PartnerConfig buttonRadiusConfig;
   private final PartnerConfig buttonRippleColorAlphaConfig;
@@ -40,6 +41,7 @@ public class FooterButtonPartnerConfig {
       PartnerConfig buttonIconConfig,
       PartnerConfig buttonTextColorConfig,
       PartnerConfig buttonTextSizeConfig,
+      PartnerConfig buttonMinHeightConfig,
       PartnerConfig buttonTextTypeFaceConfig,
       PartnerConfig buttonRadiusConfig,
       PartnerConfig buttonRippleColorAlphaConfig) {
@@ -47,6 +49,7 @@ public class FooterButtonPartnerConfig {
 
     this.buttonTextColorConfig = buttonTextColorConfig;
     this.buttonTextSizeConfig = buttonTextSizeConfig;
+    this.buttonMinHeightConfig = buttonMinHeightConfig;
     this.buttonTextTypeFaceConfig = buttonTextTypeFaceConfig;
     this.buttonBackgroundConfig = buttonBackgroundConfig;
     this.buttonDisableAlphaConfig = buttonDisableAlphaConfig;
@@ -80,6 +83,10 @@ public class FooterButtonPartnerConfig {
     return buttonTextColorConfig;
   }
 
+  public PartnerConfig getButtonMinHeightConfig() {
+    return buttonMinHeightConfig;
+  }
+
   public PartnerConfig getButtonTextSizeConfig() {
     return buttonTextSizeConfig;
   }
@@ -105,6 +112,7 @@ public class FooterButtonPartnerConfig {
     private PartnerConfig buttonIconConfig = null;
     private PartnerConfig buttonTextColorConfig = null;
     private PartnerConfig buttonTextSizeConfig = null;
+    private PartnerConfig buttonMinHeight = null;
     private PartnerConfig buttonTextTypeFaceConfig = null;
     private PartnerConfig buttonRadiusConfig = null;
     private PartnerConfig buttonRippleColorAlphaConfig = null;
@@ -146,6 +154,11 @@ public class FooterButtonPartnerConfig {
       return this;
     }
 
+    public Builder setButtonMinHeight(PartnerConfig buttonMinHeightConfig) {
+      this.buttonMinHeight = buttonMinHeightConfig;
+      return this;
+    }
+
     public Builder setTextTypeFaceConfig(PartnerConfig buttonTextTypeFaceConfig) {
       this.buttonTextTypeFaceConfig = buttonTextTypeFaceConfig;
       return this;
@@ -175,6 +188,7 @@ public class FooterButtonPartnerConfig {
           buttonIconConfig,
           buttonTextColorConfig,
           buttonTextSizeConfig,
+          buttonMinHeight,
           buttonTextTypeFaceConfig,
           buttonRadiusConfig,
           buttonRippleColorAlphaConfig);
