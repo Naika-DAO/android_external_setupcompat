@@ -310,6 +310,7 @@ public class FooterBarMixin implements Mixin {
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
             .build();
 
@@ -366,6 +367,7 @@ public class FooterBarMixin implements Mixin {
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
             .build();
 
@@ -548,6 +550,8 @@ public class FooterBarMixin implements Mixin {
         button, footerButtonPartnerConfig.getButtonTextColorConfig());
     updateButtonTextSizeWithPartnerConfig(
         button, footerButtonPartnerConfig.getButtonTextSizeConfig());
+    updateButtonMinHeightWithPartnerConfig(
+        button, footerButtonPartnerConfig.getButtonMinHeightConfig());
     updateButtonTypeFaceWithPartnerConfig(
         button, footerButtonPartnerConfig.getButtonTextTypeFaceConfig());
     updateButtonBackgroundWithPartnerConfig(
@@ -580,6 +584,16 @@ public class FooterBarMixin implements Mixin {
     float size = PartnerConfigHelper.get(context).getDimension(context, buttonTextSizeConfig);
     if (size > 0) {
       button.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    }
+  }
+
+  private void updateButtonMinHeightWithPartnerConfig(
+      Button button, PartnerConfig buttonMinHeightConfig) {
+    if (PartnerConfigHelper.get(context).isPartnerConfigAvailable(buttonMinHeightConfig)) {
+      float size = PartnerConfigHelper.get(context).getDimension(context, buttonMinHeightConfig);
+      if (size > 0) {
+        button.setMinHeight((int) size);
+      }
     }
   }
 
