@@ -44,6 +44,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
@@ -92,6 +93,10 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS,
+  PartnerConfigKey.KEY_LOADING_LOTTIE_ACCOUNT,
+  PartnerConfigKey.KEY_LOADING_LOTTIE_CONNECTION,
+  PartnerConfigKey.KEY_LOADING_LOTTIE_DEFAULT,
+  PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE,
   PartnerConfigKey.KEY_TRANSITION_TYPE,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
@@ -154,11 +159,14 @@ public @interface PartnerConfigKey {
   // Corner radius of the footer buttons
   String KEY_FOOTER_BUTTON_RADIUS = "setup_compat_footer_button_radius";
 
-  // Ripple color alpha of the footer button
+  // Ripple color alpha of the footer buttons
   String KEY_FOOTER_BUTTON_RIPPLE_ALPHA = "setup_compat_footer_button_ripple_alpha";
 
-  // Text size of the footer button
+  // Text size of the footer buttons
   String KEY_FOOTER_BUTTON_TEXT_SIZE = "setup_compat_footer_button_text_size";
+
+  // The min height of the footer buttons
+  String KEY_FOOTER_BUTTON_MIN_HEIGHT = "setup_compat_footer_button_min_height";
 
   // Disabled background alpha of the footer buttons
   String KEY_FOOTER_BUTTON_DISABLED_ALPHA = "setup_compat_footer_button_disabled_alpha";
@@ -309,6 +317,22 @@ public @interface PartnerConfigKey {
 
   // The minimum illustration display time, set to 0 may cause the illustration stuck
   String KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS = "progress_illustration_display_minimum_ms";
+
+  // The animation for S+ devices used in those screens waiting for non of below type.
+  String KEY_LOADING_LOTTIE_DEFAULT = "loading_animation_custom_default";
+
+  // The animation for S+ devices used in those screens which is processing account info or related
+  // functions.
+  // For example:com.google.android.setupwizard.LOAD_ADD_ACCOUNT_INTENT
+  String KEY_LOADING_LOTTIE_ACCOUNT = "loading_animation_custom_account";
+
+  // The animation for S+ devices used in those screens which is processing data connection.
+  // For example:com.android.setupwizard.CAPTIVE_PORTAL
+  String KEY_LOADING_LOTTIE_CONNECTION = "loading_animation_custom_connection";
+
+  // The animation for S+ devices used in those screens which is updating devices.
+  // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
+  String KEY_LOADING_LOTTIE_UPDATE = "loading_animation_custom_update";
 
   // The transition type between activities
   String KEY_TRANSITION_TYPE = "setup_design_transition_type";
