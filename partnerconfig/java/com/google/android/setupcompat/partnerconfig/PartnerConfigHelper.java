@@ -36,7 +36,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig.ResourceType;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 
 /** The helper reads and caches the partner configurations from SUW. */
 public class PartnerConfigHelper {
@@ -214,6 +217,38 @@ public class PartnerConfigHelper {
       // fall through
     }
     return result;
+  }
+
+  /**
+   * Returns the string array of the given {@code resourceConfig}, or {@code null} if the given
+   * {@code resourceConfig} is not found. If the {@code ResourceType} of the given {@code
+   * resourceConfig} is not string, IllegalArgumentException will be thrown.
+   *
+   * @param context The context of client activity
+   * @param resourceConfig The {@code PartnerConfig} of target resource
+   */
+  @NonNull
+  public List<String> getStringArray(@NonNull Context context, PartnerConfig resourceConfig) {
+    if (resourceConfig.getResourceType() != ResourceType.STRING_ARRAY) {
+      throw new IllegalArgumentException("Not a string array resource");
+    }
+
+    String[] result;
+    List<String> listResult = new ArrayList<>();
+
+    try {
+      ResourceEntry resourceEntry =
+          getResourceEntryFromKey(context, resourceConfig.getResourceName());
+      Resources resource = resourceEntry.getResources();
+      int resId = resourceEntry.getResourceId();
+
+      result = resource.getStringArray(resId);
+      Collections.addAll(listResult, result);
+    } catch (NullPointerException exception) {
+      // fall through
+    }
+
+    return listResult;
   }
 
   /**
