@@ -97,6 +97,10 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LOADING_LOTTIE_CONNECTION,
   PartnerConfigKey.KEY_LOADING_LOTTIE_DEFAULT,
   PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE,
+  PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT,
+  PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_ACCOUNT,
+  PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_CONNECTION,
+  PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE,
   PartnerConfigKey.KEY_TRANSITION_TYPE,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
@@ -333,6 +337,23 @@ public @interface PartnerConfigKey {
   // The animation for S+ devices used in those screens which is updating devices.
   // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
   String KEY_LOADING_LOTTIE_UPDATE = "loading_animation_custom_update";
+
+  // A string-array to list all the key path and color map for default animation for dark theme.
+  // For example: background:FFFFFF
+  String KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT = "loading_dark_theme_customization_default";
+
+  // A string-array to list all the key path and color map for account animation for dark theme.
+  // For example: background:FFFFFF
+  String KEY_LOADING_DARK_THEME_CUSTOMIZATION_ACCOUNT = "loading_dark_theme_customization_account";
+
+  // A string-array to list all the key path and color map for connection animation for dark theme.
+  // For example: background:FFFFFF
+  String KEY_LOADING_DARK_THEME_CUSTOMIZATION_CONNECTION =
+      "loading_dark_theme_customization_connection";
+
+  // A string-array to list all the key path and color map for update animation for dark theme.
+  // For example: background:FFFFFF
+  String KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE = "loading_dark_theme_customization_update";
 
   // The transition type between activities
   String KEY_TRANSITION_TYPE = "setup_design_transition_type";

@@ -294,7 +294,23 @@ public enum PartnerConfig {
       PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE, ResourceType.ILLUSTRATION),
 
   // The transition type to decide the transition between activities or fragments.
-  CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER);
+  CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER),
+
+  // The list of keypath and color map, applied to default animation when dark theme.
+  CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_DEFAULT(
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to account animation when dark theme.
+  CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_ACCOUNT(
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_ACCOUNT, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to connection animation when dark theme.
+  CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_CONNECTION(
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_CONNECTION, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to update animation when dark theme.
+  CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_UPDATE(
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE, ResourceType.STRING_ARRAY);
 
   /** Resource type of the partner resources type. */
   public enum ResourceType {
@@ -305,7 +321,8 @@ public enum PartnerConfig {
     STRING,
     DIMENSION,
     FRACTION,
-    ILLUSTRATION;
+    ILLUSTRATION,
+    STRING_ARRAY
   }
 
   private final String resourceName;
