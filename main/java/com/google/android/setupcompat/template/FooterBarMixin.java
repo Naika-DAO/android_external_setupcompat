@@ -312,6 +312,7 @@ public class FooterBarMixin implements Mixin {
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .setTextStyleConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_STYLE)
             .build();
 
     FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
@@ -369,6 +370,7 @@ public class FooterBarMixin implements Mixin {
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .setTextStyleConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_STYLE)
             .build();
 
     FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
@@ -553,7 +555,9 @@ public class FooterBarMixin implements Mixin {
     updateButtonMinHeightWithPartnerConfig(
         button, footerButtonPartnerConfig.getButtonMinHeightConfig());
     updateButtonTypeFaceWithPartnerConfig(
-        button, footerButtonPartnerConfig.getButtonTextTypeFaceConfig());
+        button,
+        footerButtonPartnerConfig.getButtonTextTypeFaceConfig(),
+        footerButtonPartnerConfig.getButtonTextStyleConfig());
     updateButtonBackgroundWithPartnerConfig(
         button,
         footerButtonPartnerConfig.getButtonBackgroundConfig(),
@@ -598,10 +602,17 @@ public class FooterBarMixin implements Mixin {
   }
 
   private void updateButtonTypeFaceWithPartnerConfig(
-      Button button, PartnerConfig buttonTextTypeFaceConfig) {
+      Button button, PartnerConfig buttonTextTypeFaceConfig, PartnerConfig buttonTextStyleConfig) {
     String fontFamilyName =
         PartnerConfigHelper.get(context).getString(context, buttonTextTypeFaceConfig);
-    Typeface font = Typeface.create(fontFamilyName, Typeface.NORMAL);
+
+    int textStyleValue = Typeface.NORMAL;
+    if (PartnerConfigHelper.get(context).isPartnerConfigAvailable(buttonTextStyleConfig)) {
+      textStyleValue =
+          PartnerConfigHelper.get(context)
+              .getInteger(context, buttonTextStyleConfig, Typeface.NORMAL);
+    }
+    Typeface font = Typeface.create(fontFamilyName, textStyleValue);
     if (font != null) {
       button.setTypeface(font);
     }
