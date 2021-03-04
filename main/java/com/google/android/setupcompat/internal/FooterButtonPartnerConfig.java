@@ -29,6 +29,7 @@ public class FooterButtonPartnerConfig {
   private final PartnerConfig buttonTextSizeConfig;
   private final PartnerConfig buttonMinHeightConfig;
   private final PartnerConfig buttonTextTypeFaceConfig;
+  private final PartnerConfig buttonTextStyleConfig;
   private final PartnerConfig buttonRadiusConfig;
   private final PartnerConfig buttonRippleColorAlphaConfig;
   private final int partnerTheme;
@@ -43,6 +44,7 @@ public class FooterButtonPartnerConfig {
       PartnerConfig buttonTextSizeConfig,
       PartnerConfig buttonMinHeightConfig,
       PartnerConfig buttonTextTypeFaceConfig,
+      PartnerConfig buttonTextStyleConfig,
       PartnerConfig buttonRadiusConfig,
       PartnerConfig buttonRippleColorAlphaConfig) {
     this.partnerTheme = partnerTheme;
@@ -51,6 +53,7 @@ public class FooterButtonPartnerConfig {
     this.buttonTextSizeConfig = buttonTextSizeConfig;
     this.buttonMinHeightConfig = buttonMinHeightConfig;
     this.buttonTextTypeFaceConfig = buttonTextTypeFaceConfig;
+    this.buttonTextStyleConfig = buttonTextStyleConfig;
     this.buttonBackgroundConfig = buttonBackgroundConfig;
     this.buttonDisableAlphaConfig = buttonDisableAlphaConfig;
     this.buttonDisableBackgroundConfig = buttonDisableBackgroundConfig;
@@ -95,6 +98,10 @@ public class FooterButtonPartnerConfig {
     return buttonTextTypeFaceConfig;
   }
 
+  public PartnerConfig getButtonTextStyleConfig() {
+    return buttonTextStyleConfig;
+  }
+
   public PartnerConfig getButtonRadiusConfig() {
     return buttonRadiusConfig;
   }
@@ -114,6 +121,7 @@ public class FooterButtonPartnerConfig {
     private PartnerConfig buttonTextSizeConfig = null;
     private PartnerConfig buttonMinHeight = null;
     private PartnerConfig buttonTextTypeFaceConfig = null;
+    private PartnerConfig buttonTextStyleConfig = null;
     private PartnerConfig buttonRadiusConfig = null;
     private PartnerConfig buttonRippleColorAlphaConfig = null;
     private int partnerTheme;
@@ -164,6 +172,11 @@ public class FooterButtonPartnerConfig {
       return this;
     }
 
+    public Builder setTextStyleConfig(PartnerConfig buttonTextStyleConfig) {
+      this.buttonTextStyleConfig = buttonTextStyleConfig;
+      return this;
+    }
+
     public Builder setButtonRadiusConfig(PartnerConfig buttonRadiusConfig) {
       this.buttonRadiusConfig = buttonRadiusConfig;
       return this;
@@ -190,6 +203,7 @@ public class FooterButtonPartnerConfig {
           buttonTextSizeConfig,
           buttonMinHeight,
           buttonTextTypeFaceConfig,
+          buttonTextStyleConfig,
           buttonRadiusConfig,
           buttonRippleColorAlphaConfig);
     }
