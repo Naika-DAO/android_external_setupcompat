@@ -83,6 +83,9 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   }
 
   private void init(AttributeSet attrs, int defStyleAttr) {
+    if (isInEditMode()) {
+      return;
+    }
 
     TypedArray a =
         getContext()

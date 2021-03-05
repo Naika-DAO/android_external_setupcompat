@@ -44,6 +44,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_RADIUS,
   PartnerConfigKey.KEY_FOOTER_BUTTON_RIPPLE_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_STYLE,
   PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR,
@@ -88,6 +89,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_ITEMS_PADDING_TOP,
   PartnerConfigKey.KEY_ITEMS_PADDING_BOTTOM,
   PartnerConfigKey.KEY_ITEMS_MIN_HEIGHT,
+  PartnerConfigKey.KEY_ITEMS_DIVIDER_SHOWN,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DEFAULT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_ACCOUNT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION,
@@ -168,6 +170,9 @@ public @interface PartnerConfigKey {
 
   // Text size of the footer buttons
   String KEY_FOOTER_BUTTON_TEXT_SIZE = "setup_compat_footer_button_text_size";
+
+  // The font face used in footer buttons {0 = NORMAL}, {1 = BOLD}, {2 = ITALIC}, {3 = BOLD_ITALIC}
+  String KEY_FOOTER_BUTTON_TEXT_STYLE = "setup_compat_footer_button_text_style";
 
   // The min height of the footer buttons
   String KEY_FOOTER_BUTTON_MIN_HEIGHT = "setup_compat_footer_button_min_height";
@@ -302,6 +307,9 @@ public @interface PartnerConfigKey {
 
   // The minimum height of list items.
   String KEY_ITEMS_MIN_HEIGHT = "setup_design_items_min_height";
+
+  // The divider of list items are showing.
+  String KEY_ITEMS_DIVIDER_SHOWN = "setup_design_items_divider_shown";
 
   // The animation of loading screen used in those activities which is non of below type.
   String KEY_PROGRESS_ILLUSTRATION_DEFAULT = "progress_illustration_custom_default";
