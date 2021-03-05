@@ -97,6 +97,10 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_TEXT_SIZE(
       PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE, ResourceType.DIMENSION),
 
+  // The text style of footer buttons {0 = NORMAL}, {1 = BOLD}, {2 = ITALIC}, {3 = BOLD_ITALIC}
+  CONFIG_FOOTER_BUTTON_TEXT_STYLE(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_STYLE, ResourceType.INTEGER),
+
   // The min height of the footer buttons
   CONFIG_FOOTER_BUTTON_MIN_HEIGHT(
       PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT, ResourceType.DIMENSION),
@@ -248,6 +252,9 @@ public enum PartnerConfig {
 
   // The minimum height of list items.
   CONFIG_ITEMS_MIN_HEIGHT(PartnerConfigKey.KEY_ITEMS_MIN_HEIGHT, ResourceType.DIMENSION),
+
+  // The divider of list items are showing on the pages.
+  CONFIG_ITEMS_DIVIDER_SHOWN(PartnerConfigKey.KEY_ITEMS_DIVIDER_SHOWN, ResourceType.BOOL),
 
   // The animation of loading screen used in those activities which is non of below type.
   CONFIG_PROGRESS_ILLUSTRATION_DEFAULT(

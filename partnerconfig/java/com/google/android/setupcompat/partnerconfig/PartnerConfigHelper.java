@@ -62,7 +62,7 @@ public class PartnerConfigHelper {
 
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
-  @VisibleForTesting static Bundle applyExtendedPartnerConfigBundle = null;
+  @VisibleForTesting public static Bundle applyExtendedPartnerConfigBundle = null;
 
   private static PartnerConfigHelper instance = null;
 
@@ -73,11 +73,36 @@ public class PartnerConfigHelper {
 
   private static ContentObserver contentObserver;
 
+  private static int savedConfigUiMode;
+
+  private static int savedOrientation = Configuration.ORIENTATION_PORTRAIT;
+
   public static synchronized PartnerConfigHelper get(@NonNull Context context) {
-    if (instance == null) {
+    if (!isValidInstance(context)) {
       instance = new PartnerConfigHelper(context);
     }
     return instance;
+  }
+
+  private static boolean isValidInstance(@NonNull Context context) {
+    Configuration currentConfig = context.getResources().getConfiguration();
+    if (instance == null) {
+      savedConfigUiMode = currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+      savedOrientation = currentConfig.orientation;
+      return false;
+    } else {
+      if (isSetupWizardDayNightEnabled(context)
+          && (currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) != savedConfigUiMode) {
+        savedConfigUiMode = currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        resetInstance();
+        return false;
+      } else if (currentConfig.orientation != savedOrientation) {
+        savedOrientation = currentConfig.orientation;
+        resetInstance();
+        return false;
+      }
+    }
+    return true;
   }
 
   private PartnerConfigHelper(Context context) {
