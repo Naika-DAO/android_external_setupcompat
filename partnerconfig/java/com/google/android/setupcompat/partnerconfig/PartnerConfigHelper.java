@@ -16,7 +16,6 @@
 
 package com.google.android.setupcompat.partnerconfig;
 
-import android.app.UiModeManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -517,13 +516,13 @@ public class PartnerConfigHelper {
    */
   private static ResourceEntry adjustResourceEntryDayNightMode(
       Context context, ResourceEntry resourceEntry) {
-    if (!isSetupWizardDayNightEnabled(context) && isNightMode(context)) {
+    Resources resource = resourceEntry.getResources();
+    Configuration configuration = resource.getConfiguration();
+    if (!isSetupWizardDayNightEnabled(context) && Util.isNightMode(configuration)) {
       if (resourceEntry == null) {
         Log.w(TAG, "resourceEntry is null, skip to force day mode.");
         return resourceEntry;
       }
-      Resources resource = resourceEntry.getResources();
-      Configuration configuration = resource.getConfiguration();
       configuration.uiMode =
           Configuration.UI_MODE_NIGHT_NO
               | (configuration.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
@@ -531,11 +530,6 @@ public class PartnerConfigHelper {
     }
 
     return resourceEntry;
-  }
-
-  private static boolean isNightMode(Context context) {
-    UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
-    return uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
   }
 
   @VisibleForTesting
