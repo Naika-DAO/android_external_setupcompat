@@ -273,6 +273,17 @@ public class FooterBarMixin implements Mixin {
         footerBarPaddingTop,
         buttonContainer.getPaddingRight(),
         footerBarPaddingBottom);
+
+    if (PartnerConfigHelper.get(context)
+        .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BAR_MIN_HEIGHT)) {
+      int minHeight =
+          (int)
+              PartnerConfigHelper.get(context)
+                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BAR_MIN_HEIGHT);
+      if (minHeight > 0) {
+        buttonContainer.setMinimumHeight(minHeight);
+      }
+    }
   }
 
   /**
