@@ -244,8 +244,12 @@ public enum PartnerConfig {
   CONFIG_ITEMS_SUMMARY_MARGIN_TOP(
       PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP, ResourceType.DIMENSION),
 
-  // The font family of list items.
-  CONFIG_ITEMS_FONT_FAMILY(PartnerConfigKey.KEY_ITEMS_FONT_FAMILY, ResourceType.STRING),
+  // The title font family of list items.
+  CONFIG_ITEMS_TITLE_FONT_FAMILY(PartnerConfigKey.KEY_ITEMS_TITLE_FONT_FAMILY, ResourceType.STRING),
+
+  // The summary font family of list items.
+  CONFIG_ITEMS_SUMMARY_FONT_FAMILY(
+      PartnerConfigKey.KEY_ITEMS_SUMMARY_FONT_FAMILY, ResourceType.STRING),
 
   // The padding top of list items.
   CONFIG_ITEMS_PADDING_TOP(PartnerConfigKey.KEY_ITEMS_PADDING_TOP, ResourceType.DIMENSION),
