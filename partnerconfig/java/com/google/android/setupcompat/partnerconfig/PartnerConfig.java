@@ -37,6 +37,9 @@ public enum PartnerConfig {
   // Background color of the footer bar.
   CONFIG_FOOTER_BAR_BG_COLOR(PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR, ResourceType.COLOR),
 
+  // The min height of the footer buttons
+  CONFIG_FOOTER_BAR_MIN_HEIGHT(PartnerConfigKey.KEY_FOOTER_BAR_MIN_HEIGHT, ResourceType.DIMENSION),
+
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
   CONFIG_LIGHT_NAVIGATION_BAR(PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR, ResourceType.BOOL),
@@ -302,6 +305,22 @@ public enum PartnerConfig {
 
   // The transition type to decide the transition between activities or fragments.
   CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER),
+
+  // The list of keypath and color map, applied to default animation when light theme.
+  CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_DEFAULT(
+      PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_DEFAULT, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to account animation when light theme.
+  CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_ACCOUNT(
+      PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_ACCOUNT, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to connection animation when light theme.
+  CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_CONNECTION(
+      PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_CONNECTION, ResourceType.STRING_ARRAY),
+
+  // The list of keypath and color map, applied to update animation when light theme.
+  CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_UPDATE(
+      PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_UPDATE, ResourceType.STRING_ARRAY),
 
   // The list of keypath and color map, applied to default animation when dark theme.
   CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_DEFAULT(
