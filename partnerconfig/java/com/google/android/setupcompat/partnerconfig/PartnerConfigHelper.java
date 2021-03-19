@@ -59,9 +59,14 @@ public class PartnerConfigHelper {
   public static final String IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD =
       "isExtendedPartnerConfigEnabled";
 
+  @VisibleForTesting
+  public static final String IS_DYNAMIC_COLOR_ENABLED_METHOD = "isDynamicColorEnabled";
+
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
   @VisibleForTesting public static Bundle applyExtendedPartnerConfigBundle = null;
+
+  @VisibleForTesting static Bundle applyDynamicColorBundle = null;
 
   private static PartnerConfigHelper instance = null;
 
@@ -537,6 +542,7 @@ public class PartnerConfigHelper {
     instance = null;
     suwDayNightEnabledBundle = null;
     applyExtendedPartnerConfigBundle = null;
+    applyDynamicColorBundle = null;
   }
 
   /**
@@ -591,6 +597,29 @@ public class PartnerConfigHelper {
     return (applyExtendedPartnerConfigBundle != null
         && applyExtendedPartnerConfigBundle.getBoolean(
             IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD, false));
+  }
+
+  /** Returns true if the SetupWizard supports the dynamic color during setup flow. */
+  public static boolean shouldApplyDynamicColor(@NonNull Context context) {
+    if (applyDynamicColorBundle == null) {
+      try {
+        applyDynamicColorBundle =
+            context
+                .getContentResolver()
+                .call(
+                    getContentUri(),
+                    IS_DYNAMIC_COLOR_ENABLED_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
+      } catch (IllegalArgumentException | SecurityException exception) {
+        Log.w(TAG, "SetupWizard dynamic color supporting status unknown; return as false.");
+        applyDynamicColorBundle = null;
+        return false;
+      }
+    }
+
+    return (applyDynamicColorBundle != null
+        && applyDynamicColorBundle.getBoolean(IS_DYNAMIC_COLOR_ENABLED_METHOD, false));
   }
 
   @VisibleForTesting

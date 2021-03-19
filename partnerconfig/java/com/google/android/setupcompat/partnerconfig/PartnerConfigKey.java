@@ -86,7 +86,8 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP,
-  PartnerConfigKey.KEY_ITEMS_FONT_FAMILY,
+  PartnerConfigKey.KEY_ITEMS_TITLE_FONT_FAMILY,
+  PartnerConfigKey.KEY_ITEMS_SUMMARY_FONT_FAMILY,
   PartnerConfigKey.KEY_ITEMS_PADDING_TOP,
   PartnerConfigKey.KEY_ITEMS_PADDING_BOTTOM,
   PartnerConfigKey.KEY_ITEMS_MIN_HEIGHT,
@@ -304,8 +305,11 @@ public @interface PartnerConfigKey {
   // The summary margin top of list items.
   String KEY_ITEMS_SUMMARY_MARGIN_TOP = "setup_design_items_summary_margin_top";
 
-  // The font family of list items.
-  String KEY_ITEMS_FONT_FAMILY = "setup_design_items_font_family";
+  // The title font family of list items.
+  String KEY_ITEMS_TITLE_FONT_FAMILY = "setup_design_items_title_font_family";
+
+  // The summary font family of list items.
+  String KEY_ITEMS_SUMMARY_FONT_FAMILY = "setup_design_items_summary_font_family";
 
   // The padding top of list items.
   String KEY_ITEMS_PADDING_TOP = "setup_design_items_padding_top";
