@@ -53,6 +53,9 @@ public final class WizardManagerHelper {
   /** Extra for notifying an Activity that it is inside the "Pre-Deferred Setup" flow. */
   public static final String EXTRA_IS_PRE_DEFERRED_SETUP = "preDeferredSetup";
 
+  /** Extra for notifying an Activity that it is inside the "Portal Setup" flow. */
+  public static final String EXTRA_IS_PORTAL_SETUP = "portalSetup";
+
   /**
    * Extra for notifying an Activity that it is inside the any setup flow.
    *
@@ -118,6 +121,7 @@ public final class WizardManagerHelper {
             EXTRA_IS_FIRST_RUN,
             EXTRA_IS_DEFERRED_SETUP,
             EXTRA_IS_PRE_DEFERRED_SETUP,
+            EXTRA_IS_PORTAL_SETUP,
             EXTRA_IS_SETUP_FLOW)) {
       dstIntent.putExtra(key, srcIntent.getBooleanExtra(key, false));
     }
