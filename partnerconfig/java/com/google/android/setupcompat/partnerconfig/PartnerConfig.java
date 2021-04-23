@@ -120,10 +120,6 @@ public enum PartnerConfig {
   CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR, ResourceType.COLOR),
 
-  // Dynamic background color of the primary footer button
-  CONFIG_FOOTER_PRIMARY_BUTTON_BG_DYNAMIC_COLOR(
-      PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_DYNAMIC_COLOR, ResourceType.COLOR),
-
   // Text color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
@@ -135,10 +131,6 @@ public enum PartnerConfig {
   // Text color of the secondary footer button
   CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
-
-  // Dynamic text color of the secondary footer button
-  CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_DYNAMIC_COLOR(
-      PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_DYNAMIC_COLOR, ResourceType.COLOR),
 
   // Background color of layout
   CONFIG_LAYOUT_BACKGROUND_COLOR(PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR, ResourceType.COLOR),
@@ -241,34 +233,6 @@ public enum PartnerConfig {
   // The padding top of the content
   CONFIG_CONTENT_PADDING_TOP(PartnerConfigKey.KEY_CONTENT_PADDING_TOP, ResourceType.DIMENSION),
 
-  // The text size of the content info.
-  CONFIG_CONTENT_INFO_TEXT_SIZE(
-      PartnerConfigKey.KEY_CONTENT_INFO_TEXT_SIZE, ResourceType.DIMENSION),
-
-  // The font family of the content info.
-  CONFIG_CONTENT_INFO_FONT_FAMILY(
-      PartnerConfigKey.KEY_CONTENT_INFO_FONT_FAMILY, ResourceType.STRING),
-
-  // The text line spacing extra of the content info.
-  CONFIG_CONTENT_INFO_LINE_SPACING_EXTRA(
-      PartnerConfigKey.KEY_CONTENT_INFO_LINE_SPACING_EXTRA, ResourceType.DIMENSION),
-
-  // The icon size of the content info.
-  CONFIG_CONTENT_INFO_ICON_SIZE(
-      PartnerConfigKey.KEY_CONTENT_INFO_ICON_SIZE, ResourceType.DIMENSION),
-
-  // The icon margin end of the content info.
-  CONFIG_CONTENT_INFO_ICON_MARGIN_END(
-      PartnerConfigKey.KEY_CONTENT_INFO_ICON_MARGIN_END, ResourceType.DIMENSION),
-
-  // The padding top of the content info.
-  CONFIG_CONTENT_INFO_PADDING_TOP(
-      PartnerConfigKey.KEY_CONTENT_INFO_PADDING_TOP, ResourceType.DIMENSION),
-
-  // The padding bottom of the content info.
-  CONFIG_CONTENT_INFO_PADDING_BOTTOM(
-      PartnerConfigKey.KEY_CONTENT_INFO_PADDING_BOTTOM, ResourceType.DIMENSION),
-
   // The title text size of list items.
   CONFIG_ITEMS_TITLE_TEXT_SIZE(PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE, ResourceType.DIMENSION),
 
@@ -319,11 +283,6 @@ public enum PartnerConfig {
   CONFIG_PROGRESS_ILLUSTRATION_UPDATE(
       PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE, ResourceType.ILLUSTRATION),
 
-  // The animation of loading screen used in those activities which is finishing setup.
-  // For example:com.google.android.setupwizard.FINAL_HOLD
-  CONFIG_PROGRESS_ILLUSTRATION_FINAL_HOLD(
-      PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_FINAL_HOLD, ResourceType.ILLUSTRATION),
-
   // The animation of loading screen to define how long showing on the pages.
   CONFIG_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS(
       PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS, ResourceType.INTEGER),
@@ -348,11 +307,6 @@ public enum PartnerConfig {
   CONFIG_LOADING_LOTTIE_UPDATE(
       PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE, ResourceType.ILLUSTRATION),
 
-  // The animation for S+ devices used in those screens which is updating devices.
-  // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
-  CONFIG_LOADING_LOTTIE_FINAL_HOLD(
-      PartnerConfigKey.KEY_LOADING_LOTTIE_FINAL_HOLD, ResourceType.ILLUSTRATION),
-
   // The transition type to decide the transition between activities or fragments.
   CONFIG_TRANSITION_TYPE(PartnerConfigKey.KEY_TRANSITION_TYPE, ResourceType.INTEGER),
 
@@ -372,10 +326,6 @@ public enum PartnerConfig {
   CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_UPDATE(
       PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_UPDATE, ResourceType.STRING_ARRAY),
 
-  // The list of keypath and color map, applied to update animation when light theme.
-  CONFIG_LOTTIE_LIGHT_THEME_CUSTOMIZATION_FINAL_HOLD(
-      PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_FINAL_HOLD, ResourceType.STRING_ARRAY),
-
   // The list of keypath and color map, applied to default animation when dark theme.
   CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_DEFAULT(
       PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT, ResourceType.STRING_ARRAY),
@@ -390,11 +340,7 @@ public enum PartnerConfig {
 
   // The list of keypath and color map, applied to update animation when dark theme.
   CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_UPDATE(
-      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE, ResourceType.STRING_ARRAY),
-
-  // The list of keypath and color map, applied to final hold animation when dark theme.
-  CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_FINAL_HOLD(
-      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_FINAL_HOLD, ResourceType.STRING_ARRAY);
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE, ResourceType.STRING_ARRAY);
 
   /** Resource type of the partner resources type. */
   public enum ResourceType {

@@ -42,7 +42,6 @@ import com.google.android.setupcompat.template.FooterBarMixin;
 import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
-import com.google.android.setupcompat.util.BuildCompatUtils;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
@@ -56,18 +55,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
    * this is always overridden to true.
    */
   private boolean usePartnerResourceAttr;
-
-  /**
-   * Attribute indicating whether using full dynamic colors or not. This corresponds to the {@code
-   * app:sucFullDynamicColor} XML attribute.
-   */
-  private boolean useFullDynamicColorAttr;
-
-  /**
-   * Attribute indicating whether usage of dynamic is allowed. This corresponds to the existence of
-   * {@code app:sucFullDynamicColor} XML attribute.
-   */
-  private boolean useDynamicColor;
 
   private Activity activity;
 
@@ -170,10 +157,6 @@ public class PartnerCustomizationLayout extends TemplateLayout {
         isSetupFlow
             || a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource, true);
 
-    useDynamicColor = a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucFullDynamicColor);
-    useFullDynamicColorAttr =
-        a.getBoolean(R.styleable.SucPartnerCustomizationLayout_sucFullDynamicColor, false);
-
     a.recycle();
 
     if (Log.isLoggable(TAG, Log.DEBUG)) {
@@ -186,11 +169,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
               + " enablePartnerResourceLoading="
               + enablePartnerResourceLoading()
               + " usePartnerResourceAttr="
-              + usePartnerResourceAttr
-              + " useDynamicColor="
-              + useDynamicColor
-              + " useFullDynamicColorAttr="
-              + useFullDynamicColorAttr);
+              + usePartnerResourceAttr);
     }
   }
 
@@ -273,30 +252,5 @@ public class PartnerCustomizationLayout extends TemplateLayout {
       return false;
     }
     return true;
-  }
-
-  /**
-   * Returns {@code true} if the current layout/activity applies dynamic color. Otherwise, returns
-   * {@code false}.
-   */
-  public boolean shouldApplyDynamicColor() {
-    if (!enablePartnerResourceLoading()) {
-      return false;
-    }
-    if (!useDynamicColor) {
-      return false;
-    }
-    if (!BuildCompatUtils.isAtLeastS()) {
-      return false;
-    }
-    if (!PartnerConfigHelper.get(getContext()).isAvailable()) {
-      return false;
-    }
-    return true;
-  }
-
-  /** Returns boolean value of the {@code app:sucFullDynamicColor}. */
-  public boolean useFullDynamicColor() {
-    return shouldApplyDynamicColor() && useFullDynamicColorAttr;
   }
 }
