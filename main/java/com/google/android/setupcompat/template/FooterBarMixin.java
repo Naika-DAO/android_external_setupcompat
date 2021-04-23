@@ -63,6 +63,7 @@ import com.google.android.setupcompat.logging.internal.FooterBarMixinMetrics;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig;
 import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 import com.google.android.setupcompat.template.FooterButton.ButtonType;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -77,6 +78,8 @@ public class FooterBarMixin implements Mixin {
   @Nullable private final ViewStub footerStub;
 
   @VisibleForTesting final boolean applyPartnerResources;
+  @VisibleForTesting final boolean applyDynamicColor;
+  final boolean useFullDynamicColor;
 
   private LinearLayout buttonContainer;
   private FooterButton primaryButton;
@@ -141,6 +144,25 @@ public class FooterBarMixin implements Mixin {
           }
         }
       }
+
+      @Override
+      @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
+      public void onLocaleChanged(Locale locale) {
+        if (buttonContainer != null) {
+          Button button = buttonContainer.findViewById(id);
+          if (button != null && locale != null) {
+            button.setTextLocale(locale);
+          }
+        }
+      }
+
+      @Override
+      @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
+      public void onDirectionChanged(int direction) {
+        if (buttonContainer != null && direction != -1) {
+          buttonContainer.setLayoutDirection(direction);
+        }
+      }
     };
   }
 
@@ -158,6 +180,14 @@ public class FooterBarMixin implements Mixin {
     this.applyPartnerResources =
         layout instanceof PartnerCustomizationLayout
             && ((PartnerCustomizationLayout) layout).shouldApplyPartnerResource();
+
+    applyDynamicColor =
+        layout instanceof PartnerCustomizationLayout
+            && ((PartnerCustomizationLayout) layout).shouldApplyDynamicColor();
+
+    useFullDynamicColor =
+        layout instanceof PartnerCustomizationLayout
+            && ((PartnerCustomizationLayout) layout).useFullDynamicColor();
 
     TypedArray a =
         context.obtainStyledAttributes(attrs, R.styleable.SucFooterBarMixin, defStyleAttr, 0);
@@ -259,6 +289,8 @@ public class FooterBarMixin implements Mixin {
             .getColor(context, PartnerConfig.CONFIG_FOOTER_BAR_BG_COLOR);
     buttonContainer.setBackgroundColor(color);
 
+    // TODO: Apply dynamic color on footer bar background if useFullDynamicColor is true
+
     footerBarPaddingTop =
         (int)
             PartnerConfigHelper.get(context)
@@ -313,7 +345,13 @@ public class FooterBarMixin implements Mixin {
                     /* defaultPartnerTheme= */ R.style.SucPartnerCustomizationButton_Primary,
                     /* buttonBackgroundColorConfig= */ PartnerConfig
                         .CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR))
-            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
+            .setButtonBackgroundConfig(
+                (applyDynamicColor
+                        && PartnerConfigHelper.get(context)
+                            .isPartnerConfigAvailable(
+                                PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_DYNAMIC_COLOR))
+                    ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_DYNAMIC_COLOR
+                    : PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
             .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
@@ -377,7 +415,13 @@ public class FooterBarMixin implements Mixin {
             .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
-            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
+            .setTextColorConfig(
+                (applyDynamicColor
+                        && PartnerConfigHelper.get(context)
+                            .isPartnerConfigAvailable(
+                                PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_DYNAMIC_COLOR))
+                    ? PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_DYNAMIC_COLOR
+                    : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
@@ -557,6 +601,20 @@ public class FooterBarMixin implements Mixin {
   private void onFooterButtonApplyPartnerResource(
       Button button, FooterButtonPartnerConfig footerButtonPartnerConfig) {
     if (!applyPartnerResources) {
+      // dynamic color should still work if not applying partner resource
+      if (applyDynamicColor) {
+        // override config related to dynamic color
+        updateButtonTextColorWithPartnerConfig(
+            button, footerButtonPartnerConfig.getButtonTextColorConfig());
+        updateButtonBackgroundWithPartnerConfig(
+            button,
+            footerButtonPartnerConfig.getButtonBackgroundConfig(),
+            footerButtonPartnerConfig.getButtonDisableAlphaConfig(),
+            footerButtonPartnerConfig.getButtonDisableBackgroundConfig());
+        updateButtonRippleColorWithPartnerConfig(button, footerButtonPartnerConfig);
+
+        // TODO: Apply full dynamic color if useFullDynamicColor is true
+      }
       return;
     }
     updateButtonTextColorWithPartnerConfig(
