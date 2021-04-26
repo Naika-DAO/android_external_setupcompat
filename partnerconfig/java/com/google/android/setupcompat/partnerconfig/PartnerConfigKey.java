@@ -83,6 +83,13 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_CONTENT_FONT_FAMILY,
   PartnerConfigKey.KEY_CONTENT_LAYOUT_GRAVITY,
   PartnerConfigKey.KEY_CONTENT_PADDING_TOP,
+  PartnerConfigKey.KEY_CONTENT_INFO_TEXT_SIZE,
+  PartnerConfigKey.KEY_CONTENT_INFO_FONT_FAMILY,
+  PartnerConfigKey.KEY_CONTENT_INFO_LINE_SPACING_EXTRA,
+  PartnerConfigKey.KEY_CONTENT_INFO_ICON_SIZE,
+  PartnerConfigKey.KEY_CONTENT_INFO_ICON_MARGIN_END,
+  PartnerConfigKey.KEY_CONTENT_INFO_PADDING_TOP,
+  PartnerConfigKey.KEY_CONTENT_INFO_PADDING_BOTTOM,
   PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP,
@@ -96,19 +103,23 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_ACCOUNT,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_CONNECTION,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_UPDATE,
+  PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_FINAL_HOLD,
   PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS,
   PartnerConfigKey.KEY_LOADING_LOTTIE_ACCOUNT,
   PartnerConfigKey.KEY_LOADING_LOTTIE_CONNECTION,
   PartnerConfigKey.KEY_LOADING_LOTTIE_DEFAULT,
   PartnerConfigKey.KEY_LOADING_LOTTIE_UPDATE,
+  PartnerConfigKey.KEY_LOADING_LOTTIE_FINAL_HOLD,
   PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_DEFAULT,
   PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_ACCOUNT,
   PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_CONNECTION,
   PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_UPDATE,
+  PartnerConfigKey.KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_FINAL_HOLD,
   PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT,
   PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_ACCOUNT,
   PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_CONNECTION,
   PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE,
+  PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_FINAL_HOLD,
   PartnerConfigKey.KEY_TRANSITION_TYPE,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
@@ -296,6 +307,27 @@ public @interface PartnerConfigKey {
   // The padding top of the content
   String KEY_CONTENT_PADDING_TOP = "setup_design_content_padding_top";
 
+  // The text size of the content info.
+  String KEY_CONTENT_INFO_TEXT_SIZE = "setup_design_content_info_text_size";
+
+  // The font family of the content info.
+  String KEY_CONTENT_INFO_FONT_FAMILY = "setup_design_content_info_font_family";
+
+  // The text line spacing extra of the content info.
+  String KEY_CONTENT_INFO_LINE_SPACING_EXTRA = "setup_design_content_info_line_spacing_extra";
+
+  // The icon size of the content info.
+  String KEY_CONTENT_INFO_ICON_SIZE = "setup_design_content_info_icon_size";
+
+  // The icon margin end of the content info.
+  String KEY_CONTENT_INFO_ICON_MARGIN_END = "setup_design_content_info_icon_margin_end";
+
+  // The padding top of the content info.
+  String KEY_CONTENT_INFO_PADDING_TOP = "setup_design_content_info_padding_top";
+
+  // The padding bottom of the content info.
+  String KEY_CONTENT_INFO_PADDING_BOTTOM = "setup_design_content_info_padding_bottom";
+
   // The title text size of list items.
   String KEY_ITEMS_TITLE_TEXT_SIZE = "setup_design_items_title_text_size";
 
@@ -339,6 +371,10 @@ public @interface PartnerConfigKey {
   // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
   String KEY_PROGRESS_ILLUSTRATION_UPDATE = "progress_illustration_custom_update";
 
+  // The animation of loading screen used in those activities which is updating device.
+  // For example:com.google.android.setupwizard.FINAL_HOLD
+  String KEY_PROGRESS_ILLUSTRATION_FINAL_HOLD = "final_hold_custom_illustration";
+
   // The minimum illustration display time, set to 0 may cause the illustration stuck
   String KEY_PROGRESS_ILLUSTRATION_DISPLAY_MINIMUM_MS = "progress_illustration_display_minimum_ms";
 
@@ -357,6 +393,10 @@ public @interface PartnerConfigKey {
   // The animation for S+ devices used in those screens which is updating devices.
   // For example:com.google.android.setupwizard.COMPAT_EARLY_UPDATE
   String KEY_LOADING_LOTTIE_UPDATE = "loading_animation_custom_update";
+
+  // The animation for S+ devices used in those screens which is updating devices.
+  // For example:com.google.android.setupwizard.FINAL_HOLD
+  String KEY_LOADING_LOTTIE_FINAL_HOLD = "loading_animation_custom_final_hold";
 
   // A string-array to list all the key path and color map for default animation for light theme.
   // For example: background:#FFFFFF
@@ -377,6 +417,11 @@ public @interface PartnerConfigKey {
   // For example: background:#FFFFFF
   String KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_UPDATE = "loading_light_theme_customization_update";
 
+  // A string-array to list all the key path and color map for final hold animation for light theme.
+  // For example: background:#FFFFFF
+  String KEY_LOADING_LIGHT_THEME_CUSTOMIZATION_FINAL_HOLD =
+      "loading_light_theme_customization_final_hold";
+
   // A string-array to list all the key path and color map for default animation for dark theme.
   // For example: background:#000000
   String KEY_LOADING_DARK_THEME_CUSTOMIZATION_DEFAULT = "loading_dark_theme_customization_default";
@@ -393,6 +438,11 @@ public @interface PartnerConfigKey {
   // A string-array to list all the key path and color map for update animation for dark theme.
   // For example: background:#000000
   String KEY_LOADING_DARK_THEME_CUSTOMIZATION_UPDATE = "loading_dark_theme_customization_update";
+
+  // A string-array to list all the key path and color map for final hold animation for dark theme.
+  // For example: background:#000000
+  String KEY_LOADING_DARK_THEME_CUSTOMIZATION_FINAL_HOLD =
+      "loading_dark_theme_customization_final_hold";
 
   // The transition type between activities
   String KEY_TRANSITION_TYPE = "setup_design_transition_type";
