@@ -32,6 +32,7 @@
              This attribute will be ignored and use partner resource when inside setup wizard flow.
              The default value is true. -->
         <attr name="sucUsePartnerResource" format="boolean" />
+        <attr name="sucFullDynamicColor" format="boolean" />
     </declare-styleable>
 
     <!-- Status bar attributes; only takes effect on M or above -->
