@@ -386,7 +386,23 @@ public enum PartnerConfig {
 
   // The list of keypath and color map, applied to final hold animation when dark theme.
   CONFIG_LOTTIE_DARK_THEME_CUSTOMIZATION_FINAL_HOLD(
-      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_FINAL_HOLD, ResourceType.STRING_ARRAY);
+      PartnerConfigKey.KEY_LOADING_DARK_THEME_CUSTOMIZATION_FINAL_HOLD, ResourceType.STRING_ARRAY),
+
+  // The padding top of the content frame of loading layout.
+  CONFIG_LOADING_LAYOUT_PADDING_TOP(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_TOP, ResourceType.DIMENSION),
+
+  // The padding start of the content frame of loading layout.
+  CONFIG_LOADING_LAYOUT_PADDING_START(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_START, ResourceType.DIMENSION),
+
+  // The padding end of the content frame of loading layout.
+  CONFIG_LOADING_LAYOUT_PADDING_END(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_END, ResourceType.DIMENSION),
+
+  // The padding bottom of the content frame of loading layout.
+  CONFIG_LOADING_LAYOUT_PADDING_BOTTOM(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM, ResourceType.DIMENSION);
 
   /** Resource type of the partner resources type. */
   public enum ResourceType {
