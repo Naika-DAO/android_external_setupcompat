@@ -402,7 +402,11 @@ public enum PartnerConfig {
 
   // The padding bottom of the content frame of loading layout.
   CONFIG_LOADING_LAYOUT_PADDING_BOTTOM(
-      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM, ResourceType.DIMENSION);
+      PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM, ResourceType.DIMENSION),
+
+  // The height of the header of the loading layout.
+  CONFIG_LOADING_LAYOUT_HEADER_HEIGHT(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT, ResourceType.DIMENSION);
 
   /** Resource type of the partner resources type. */
   public enum ResourceType {
