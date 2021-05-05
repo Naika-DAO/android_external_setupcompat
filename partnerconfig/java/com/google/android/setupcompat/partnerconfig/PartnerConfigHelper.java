@@ -607,7 +607,7 @@ public class PartnerConfigHelper {
   }
 
   /** Returns true if the SetupWizard supports the dynamic color during setup flow. */
-  public static boolean shouldApplyDynamicColor(@NonNull Context context) {
+  public static boolean isSetupWizardDynamicColorEnabled(@NonNull Context context) {
     if (applyDynamicColorBundle == null) {
       try {
         applyDynamicColorBundle =
