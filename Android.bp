@@ -19,6 +19,52 @@ license {
     ],
 }
 
+filegroup {
+    name: "Aidls",
+    srcs: [
+        "main/aidl/com/google/android/setupcompat/ISetupCompatService.aidl",
+    ],
+    path: "main/aidl",
+}
+
+filegroup {
+    name: "AidlsPortal",
+    srcs: [
+        "main/aidl/com/google/android/setupcompat/portal/*.aidl",
+    ],
+    path: "main/aidl",
+}
+
+filegroup {
+    name: "Srcs",
+    srcs: [
+        "main/java/com/google/android/setupcompat/*.java",
+        "main/java/com/google/android/setupcompat/internal/*.java",
+        "main/java/com/google/android/setupcompat/logging/*.java",
+        "main/java/com/google/android/setupcompat/logging/internal/*.java",
+        "main/java/com/google/android/setupcompat/template/*.java",
+        "main/java/com/google/android/setupcompat/util/*.java",
+        "main/java/com/google/android/setupcompat/view/*.java",
+    ],
+    path: "main/java",
+}
+
+filegroup {
+    name: "SrcsPartnerConfig",
+    srcs: [
+        "partnerconfig/java/**/*.java",
+    ],
+    path: "partnerconfig/java",
+}
+
+filegroup {
+    name: "SrcsPortal",
+    srcs: [
+        "main/java/com/google/android/setupcompat/portal/*.java",
+    ],
+    path: "main/java",
+}
+
 android_library {
     name: "setupcompat",
     manifest: "AndroidManifest.xml",
@@ -26,9 +72,11 @@ android_library {
         "main/res",
     ],
     srcs: [
-        "main/java/**/*.java",
-        "partnerconfig/java/**/*.java",
-        "main/aidl/**/*.aidl",
+        ":Aidls",
+        ":AidlsPortal",
+        ":Srcs",
+        ":SrcsPartnerConfig",
+        ":SrcsPortal",
     ],
     static_libs: [
         "androidx.annotation_annotation",
