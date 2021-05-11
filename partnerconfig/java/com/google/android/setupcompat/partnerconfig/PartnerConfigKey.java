@@ -125,6 +125,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_START,
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_END,
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM,
+  PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -462,4 +463,7 @@ public @interface PartnerConfigKey {
 
   // A padding bottom of the content frame of loading layout.
   String KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM = "loading_layout_content_padding_bottom";
+
+  // A height of the header of loading layout.
+  String KEY_LOADING_LAYOUT_HEADER_HEIGHT = "loading_layout_header_height";
 }
