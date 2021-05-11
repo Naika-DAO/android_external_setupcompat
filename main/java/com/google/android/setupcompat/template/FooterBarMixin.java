@@ -96,6 +96,7 @@ public class FooterBarMixin implements Mixin {
   @ColorInt private final int footerBarPrimaryBackgroundColor;
   @ColorInt private final int footerBarSecondaryBackgroundColor;
   private boolean removeFooterBarWhenEmpty = true;
+  private boolean isSecondaryButtonInPrimaryStyle = false;
 
   private static final float DEFAULT_DISABLED_ALPHA = 0.26f;
   private static final AtomicInteger nextGeneratedId = new AtomicInteger(1);
@@ -115,7 +116,7 @@ public class FooterBarMixin implements Mixin {
             if (applyPartnerResources) {
               updateButtonTextColorWithPartnerConfig(
                   button,
-                  (id == primaryButtonId)
+                  (id == primaryButtonId || isSecondaryButtonInPrimaryStyle)
                       ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR
                       : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR);
             }
@@ -384,7 +385,14 @@ public class FooterBarMixin implements Mixin {
   /** Sets secondary button for footer. */
   @MainThread
   public void setSecondaryButton(FooterButton footerButton) {
+    setSecondaryButton(footerButton, /*usePrimaryStyle= */ false);
+  }
+
+  /** Sets secondary button for footer. Allow to use the primary button style. */
+  @MainThread
+  public void setSecondaryButton(FooterButton footerButton, boolean usePrimaryStyle) {
     ensureOnMainThread("setSecondaryButton");
+    isSecondaryButtonInPrimaryStyle = usePrimaryStyle;
     ensureFooterInflated();
 
     // Setup button partner config
@@ -393,16 +401,25 @@ public class FooterBarMixin implements Mixin {
             .setPartnerTheme(
                 getPartnerTheme(
                     footerButton,
-                    /* defaultPartnerTheme= */ R.style.SucPartnerCustomizationButton_Secondary,
-                    /* buttonBackgroundColorConfig= */ PartnerConfig
-                        .CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR))
-            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
+                    /* defaultPartnerTheme= */ usePrimaryStyle
+                        ? R.style.SucPartnerCustomizationButton_Primary
+                        : R.style.SucPartnerCustomizationButton_Secondary,
+                    /* buttonBackgroundColorConfig= */ usePrimaryStyle
+                        ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR
+                        : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR))
+            .setButtonBackgroundConfig(
+                usePrimaryStyle
+                    ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR
+                    : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
             .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
-            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
+            .setTextColorConfig(
+                usePrimaryStyle
+                    ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR
+                    : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
@@ -435,6 +452,16 @@ public class FooterBarMixin implements Mixin {
     buttonContainer.removeAllViews();
 
     if (tempSecondaryButton != null) {
+      if (isSecondaryButtonInPrimaryStyle) {
+        // Since the secondary button has the same style (with background) as the primary button,
+        // we need to have the left padding equal to the right padding.
+        updateFooterBarPadding(
+            buttonContainer,
+            buttonContainer.getPaddingRight(),
+            buttonContainer.getPaddingTop(),
+            buttonContainer.getPaddingRight(),
+            buttonContainer.getPaddingBottom());
+      }
       buttonContainer.addView(tempSecondaryButton);
     }
     addSpace();
