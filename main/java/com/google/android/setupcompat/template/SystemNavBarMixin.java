@@ -47,6 +47,7 @@ public class SystemNavBarMixin implements Mixin {
   private final TemplateLayout templateLayout;
   @Nullable private final Window windowOfActivity;
   @VisibleForTesting final boolean applyPartnerResources;
+  @VisibleForTesting final boolean useFullDynamicColor;
   private int sucSystemNavBarBackgroundColor = 0;
 
   /**
@@ -61,6 +62,10 @@ public class SystemNavBarMixin implements Mixin {
     this.applyPartnerResources =
         layout instanceof PartnerCustomizationLayout
             && ((PartnerCustomizationLayout) layout).shouldApplyPartnerResource();
+
+    this.useFullDynamicColor =
+        layout instanceof PartnerCustomizationLayout
+            && ((PartnerCustomizationLayout) layout).useFullDynamicColor();
   }
 
   /**
@@ -109,10 +114,14 @@ public class SystemNavBarMixin implements Mixin {
   public void setSystemNavBarBackground(int color) {
     if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && windowOfActivity != null) {
       if (applyPartnerResources) {
-        Context context = templateLayout.getContext();
-        color =
-            PartnerConfigHelper.get(context)
-                .getColor(context, PartnerConfig.CONFIG_NAVIGATION_BAR_BG_COLOR);
+        // If full dynamic color enabled which means this activity is running outside of setup
+        // flow, the colors should refer to R.style.SudFullDynamicColorThemeGlifV3.
+        if (!useFullDynamicColor) {
+          Context context = templateLayout.getContext();
+          color =
+              PartnerConfigHelper.get(context)
+                  .getColor(context, PartnerConfig.CONFIG_NAVIGATION_BAR_BG_COLOR);
+        }
       }
       windowOfActivity.setNavigationBarColor(color);
     }
