@@ -128,8 +128,10 @@ public class FooterButtonPartnerConfig {
 
     public Builder(FooterButton footerButton) {
       this.footerButton = footerButton;
-      // default partnerTheme should be the same as footerButton.getTheme();
-      this.partnerTheme = this.footerButton.getTheme();
+      if (this.footerButton != null) {
+        // default partnerTheme should be the same as footerButton.getTheme();
+        this.partnerTheme = this.footerButton.getTheme();
+      }
     }
 
     public Builder setButtonBackgroundConfig(PartnerConfig buttonBackgroundConfig) {

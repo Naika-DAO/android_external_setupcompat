@@ -35,6 +35,7 @@ import android.util.TypedValue;
 import android.widget.Button;
 import androidx.annotation.ColorInt;
 import androidx.annotation.VisibleForTesting;
+import com.google.android.setupcompat.R;
 import com.google.android.setupcompat.internal.FooterButtonPartnerConfig;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig;
@@ -43,6 +44,109 @@ import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
 /** Utils for updating the button style. */
 public class FooterButtonStyleUtils {
   private static final float DEFAULT_DISABLED_ALPHA = 0.26f;
+
+  /** Apply the partner primary button style to given {@code button}. */
+  public static void applyPrimaryButtonPartnerResource(
+      Context context, Button button, boolean applyDynamicColor) {
+
+    FooterButtonPartnerConfig footerButtonPartnerConfig =
+        new FooterButtonPartnerConfig.Builder(null)
+            .setPartnerTheme(R.style.SucPartnerCustomizationButton_Primary)
+            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
+            .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
+            .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
+            .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
+            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR)
+            .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
+            .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .setTextStyleConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_STYLE)
+            .build();
+    applyButtonPartnerResources(
+        context,
+        button,
+        applyDynamicColor,
+        /* isButtonIconAtEnd= */ true,
+        footerButtonPartnerConfig);
+  }
+
+  /** Apply the partner secondary button style to given {@code button}. */
+  public static void applySecondaryButtonPartnerResource(
+      Context context, Button button, boolean applyDynamicColor) {
+
+    int defaultTheme = R.style.SucPartnerCustomizationButton_Secondary;
+    int color =
+        PartnerConfigHelper.get(context)
+            .getColor(context, PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR);
+    if (color != Color.TRANSPARENT) {
+      defaultTheme = R.style.SucPartnerCustomizationButton_Primary;
+    }
+    // Setup button partner config
+    FooterButtonPartnerConfig footerButtonPartnerConfig =
+        new FooterButtonPartnerConfig.Builder(null)
+            .setPartnerTheme(defaultTheme)
+            .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
+            .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
+            .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
+            .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
+            .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
+            .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
+            .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
+            .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
+            .setTextStyleConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_STYLE)
+            .build();
+    applyButtonPartnerResources(
+        context,
+        button,
+        applyDynamicColor,
+        /* isButtonIconAtEnd= */ false,
+        footerButtonPartnerConfig);
+  }
+
+  static void applyButtonPartnerResources(
+      Context context,
+      Button button,
+      boolean applyDynamicColor,
+      boolean isButtonIconAtEnd,
+      FooterButtonPartnerConfig footerButtonPartnerConfig) {
+
+    // If dynamic color enabled, these colors won't be overrode by partner config.
+    // Instead, these colors align with the current theme colors.
+    if (!applyDynamicColor) {
+      // use default disable color util we support the partner disable text color
+      if (button.isEnabled()) {
+        FooterButtonStyleUtils.updateButtonTextEnabledColorWithPartnerConfig(
+            context, button, footerButtonPartnerConfig.getButtonTextColorConfig());
+      }
+      FooterButtonStyleUtils.updateButtonBackgroundWithPartnerConfig(
+          context,
+          button,
+          footerButtonPartnerConfig.getButtonBackgroundConfig(),
+          footerButtonPartnerConfig.getButtonDisableAlphaConfig(),
+          footerButtonPartnerConfig.getButtonDisableBackgroundConfig());
+      FooterButtonStyleUtils.updateButtonRippleColorWithPartnerConfig(
+          context,
+          button,
+          footerButtonPartnerConfig.getButtonTextColorConfig(),
+          footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
+    }
+
+    FooterButtonStyleUtils.updateButtonTextSizeWithPartnerConfig(
+        context, button, footerButtonPartnerConfig.getButtonTextSizeConfig());
+    FooterButtonStyleUtils.updateButtonMinHeightWithPartnerConfig(
+        context, button, footerButtonPartnerConfig.getButtonMinHeightConfig());
+    FooterButtonStyleUtils.updateButtonTypeFaceWithPartnerConfig(
+        context,
+        button,
+        footerButtonPartnerConfig.getButtonTextTypeFaceConfig(),
+        footerButtonPartnerConfig.getButtonTextStyleConfig());
+    FooterButtonStyleUtils.updateButtonRadiusWithPartnerConfig(
+        context, button, footerButtonPartnerConfig.getButtonRadiusConfig());
+    FooterButtonStyleUtils.updateButtonIconWithPartnerConfig(
+        context, button, footerButtonPartnerConfig.getButtonIconConfig(), isButtonIconAtEnd);
+  }
 
   static void updateButtonTextEnabledColorWithPartnerConfig(
       Context context, Button button, PartnerConfig buttonEnableTextColorConfig) {
@@ -53,11 +157,11 @@ public class FooterButtonStyleUtils {
     }
   }
 
-  static void updateButtonTextDisableColor(Button button, ColorStateList defaultTextColor) {
+  static void updateButtonTextDisableColor(Button button, ColorStateList disabledTextColor) {
     // TODO : add disable footer button text color partner config
 
     // disable state will use the default disable state color
-    button.setTextColor(defaultTextColor);
+    button.setTextColor(disabledTextColor);
   }
 
   @TargetApi(VERSION_CODES.Q)
@@ -113,7 +217,10 @@ public class FooterButtonStyleUtils {
   }
 
   static void updateButtonRippleColorWithPartnerConfig(
-      Context context, Button button, FooterButtonPartnerConfig footerButtonPartnerConfig) {
+      Context context,
+      Button button,
+      PartnerConfig buttonTextColorConfig,
+      PartnerConfig buttonRippleColorAlphaConfig) {
     // RippleDrawable is available after sdk 21. And because on lower sdk the RippleDrawable is
     // unavailable. Since Stencil customization provider only works on Q+, there is no need to
     // perform any customization for versions 21.
@@ -126,13 +233,10 @@ public class FooterButtonStyleUtils {
       int[] pressedState = {android.R.attr.state_pressed};
       // Get partner text color.
       @ColorInt
-      int color =
-          PartnerConfigHelper.get(context)
-              .getColor(context, footerButtonPartnerConfig.getButtonTextColorConfig());
+      int color = PartnerConfigHelper.get(context).getColor(context, buttonTextColorConfig);
 
       float alpha =
-          PartnerConfigHelper.get(context)
-              .getFraction(context, footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
+          PartnerConfigHelper.get(context).getFraction(context, buttonRippleColorAlphaConfig);
 
       // Set text color for ripple.
       ColorStateList colorStateList =
@@ -193,7 +297,7 @@ public class FooterButtonStyleUtils {
   }
 
   static void updateButtonIconWithPartnerConfig(
-      Context context, Button button, PartnerConfig buttonIconConfig, boolean isPrimary) {
+      Context context, Button button, PartnerConfig buttonIconConfig, boolean isButtonIconAtEnd) {
     if (button == null) {
       return;
     }
@@ -201,10 +305,10 @@ public class FooterButtonStyleUtils {
     if (buttonIconConfig != null) {
       icon = PartnerConfigHelper.get(context).getDrawable(context, buttonIconConfig);
     }
-    setButtonIcon(button, icon, isPrimary);
+    setButtonIcon(button, icon, isButtonIconAtEnd);
   }
 
-  private static void setButtonIcon(Button button, Drawable icon, boolean isPrimary) {
+  private static void setButtonIcon(Button button, Drawable icon, boolean isButtonIconAtEnd) {
     if (button == null) {
       return;
     }
@@ -218,7 +322,7 @@ public class FooterButtonStyleUtils {
 
     Drawable iconStart = null;
     Drawable iconEnd = null;
-    if (isPrimary) {
+    if (isButtonIconAtEnd) {
       iconEnd = icon;
     } else {
       iconStart = icon;
