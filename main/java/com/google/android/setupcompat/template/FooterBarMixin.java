@@ -103,7 +103,7 @@ public class FooterBarMixin implements Mixin {
           Button button = buttonContainer.findViewById(id);
           if (button != null) {
             button.setEnabled(enabled);
-            if (applyPartnerResources) {
+            if (applyPartnerResources && !applyDynamicColor) {
               updateButtonTextColorWithEnabledState(
                   button,
                   (id == primaryButtonId || isSecondaryButtonInPrimaryStyle)
@@ -358,6 +358,10 @@ public class FooterBarMixin implements Mixin {
 
     onFooterButtonInflated(button, footerBarPrimaryBackgroundColor);
     onFooterButtonApplyPartnerResource(button, footerButtonPartnerConfig);
+    // Sets the primary button background to a light accent color
+    if (applyDynamicColor) {
+      FooterButtonStyleUtils.applyDynamicColorOnPrimaryButton(context, button);
+    }
 
     // Make sure the position of buttons are correctly and prevent primary button create twice or
     // more.
