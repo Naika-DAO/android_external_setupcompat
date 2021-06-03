@@ -148,12 +148,33 @@ public class FooterButtonStyleUtils {
         context, button, footerButtonPartnerConfig.getButtonIconConfig(), isButtonIconAtEnd);
   }
 
+  @TargetApi(VERSION_CODES.S)
+  static void applyDynamicColorOnPrimaryButton(Context context, Button button) {
+    // only update the text color of enable state
+    if (button.isEnabled()) {
+      FooterButtonStyleUtils.updateButtonTextEnabledColor(
+          button, context.getResources().getColor(R.color.suc_system_neutral1_900));
+    }
+    FooterButtonStyleUtils.updateButtonBackgroundTintList(
+        context,
+        button,
+        context.getResources().getColor(R.color.suc_system_accent1_100),
+        /* disabledAlpha=*/ 0f,
+        /* disabledColor=*/ 0);
+    FooterButtonStyleUtils.updateButtonRippleColor(
+        button, context.getResources().getColor(R.color.suc_system_neutral1_900));
+  }
+
   static void updateButtonTextEnabledColorWithPartnerConfig(
       Context context, Button button, PartnerConfig buttonEnableTextColorConfig) {
     @ColorInt
     int color = PartnerConfigHelper.get(context).getColor(context, buttonEnableTextColorConfig);
-    if (color != Color.TRANSPARENT) {
-      button.setTextColor(ColorStateList.valueOf(color));
+    updateButtonTextEnabledColor(button, color);
+  }
+
+  static void updateButtonTextEnabledColor(Button button, @ColorInt int textColor) {
+    if (textColor != Color.TRANSPARENT) {
+      button.setTextColor(ColorStateList.valueOf(textColor));
     }
   }
 
@@ -174,16 +195,26 @@ public class FooterButtonStyleUtils {
     Preconditions.checkArgument(
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,
         "Update button background only support on sdk Q or higher");
-    @ColorInt int disabledColor;
-    float disabledAlpha;
-    int[] DISABLED_STATE_SET = {-android.R.attr.state_enabled};
-    int[] ENABLED_STATE_SET = {};
     @ColorInt
     int color = PartnerConfigHelper.get(context).getColor(context, buttonBackgroundConfig);
-    disabledAlpha =
+    float disabledAlpha =
         PartnerConfigHelper.get(context).getFraction(context, buttonDisableAlphaConfig, 0f);
-    disabledColor =
+    @ColorInt
+    int disabledColor =
         PartnerConfigHelper.get(context).getColor(context, buttonDisableBackgroundConfig);
+
+    updateButtonBackgroundTintList(context, button, color, disabledAlpha, disabledColor);
+  }
+
+  @TargetApi(VERSION_CODES.Q)
+  static void updateButtonBackgroundTintList(
+      Context context,
+      Button button,
+      @ColorInt int color,
+      float disabledAlpha,
+      @ColorInt int disabledColor) {
+    int[] DISABLED_STATE_SET = {-android.R.attr.state_enabled};
+    int[] ENABLED_STATE_SET = {};
 
     if (color != Color.TRANSPARENT) {
       if (disabledAlpha <= 0f) {
@@ -243,6 +274,27 @@ public class FooterButtonStyleUtils {
           new ColorStateList(
               new int[][] {pressedState, StateSet.NOTHING},
               new int[] {convertRgbToArgb(color, alpha), Color.TRANSPARENT});
+      rippleDrawable.setColor(colorStateList);
+    }
+  }
+
+  static void updateButtonRippleColor(Button button, @ColorInt int rippleColor) {
+    // RippleDrawable is available after sdk 21. And because on lower sdk the RippleDrawable is
+    // unavailable. Since Stencil customization provider only works on Q+, there is no need to
+    // perform any customization for versions 21.
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      RippleDrawable rippleDrawable = getRippleDrawable(button);
+      if (rippleDrawable == null) {
+        return;
+      }
+
+      int[] pressedState = {android.R.attr.state_pressed};
+
+      // Set text color for ripple.
+      ColorStateList colorStateList =
+          new ColorStateList(
+              new int[][] {pressedState, StateSet.NOTHING},
+              new int[] {rippleColor, Color.TRANSPARENT});
       rippleDrawable.setColor(colorStateList);
     }
   }
@@ -349,6 +401,9 @@ public class FooterButtonStyleUtils {
         LayerDrawable layerDrawable = (LayerDrawable) ((InsetDrawable) drawable).getDrawable();
         return (GradientDrawable) layerDrawable.getDrawable(0);
       } else if (drawable instanceof RippleDrawable) {
+        if (((RippleDrawable) drawable).getDrawable(0) instanceof GradientDrawable) {
+          return (GradientDrawable) ((RippleDrawable) drawable).getDrawable(0);
+        }
         InsetDrawable insetDrawable = (InsetDrawable) ((RippleDrawable) drawable).getDrawable(0);
         return (GradientDrawable) insetDrawable.getDrawable();
       }
