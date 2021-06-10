@@ -126,13 +126,13 @@ public class FooterButtonStyleUtils {
           footerButtonPartnerConfig.getButtonBackgroundConfig(),
           footerButtonPartnerConfig.getButtonDisableAlphaConfig(),
           footerButtonPartnerConfig.getButtonDisableBackgroundConfig());
-      FooterButtonStyleUtils.updateButtonRippleColorWithPartnerConfig(
-          context,
-          button,
-          footerButtonPartnerConfig.getButtonTextColorConfig(),
-          footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
     }
-
+    FooterButtonStyleUtils.updateButtonRippleColorWithPartnerConfig(
+        context,
+        button,
+        applyDynamicColor,
+        footerButtonPartnerConfig.getButtonTextColorConfig(),
+        footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
     FooterButtonStyleUtils.updateButtonTextSizeWithPartnerConfig(
         context, button, footerButtonPartnerConfig.getButtonTextSizeConfig());
     FooterButtonStyleUtils.updateButtonMinHeightWithPartnerConfig(
@@ -146,23 +146,6 @@ public class FooterButtonStyleUtils {
         context, button, footerButtonPartnerConfig.getButtonRadiusConfig());
     FooterButtonStyleUtils.updateButtonIconWithPartnerConfig(
         context, button, footerButtonPartnerConfig.getButtonIconConfig(), isButtonIconAtEnd);
-  }
-
-  @TargetApi(VERSION_CODES.S)
-  static void applyDynamicColorOnPrimaryButton(Context context, Button button) {
-    // only update the text color of enable state
-    if (button.isEnabled()) {
-      FooterButtonStyleUtils.updateButtonTextEnabledColor(
-          button, context.getResources().getColor(R.color.suc_system_neutral1_900));
-    }
-    FooterButtonStyleUtils.updateButtonBackgroundTintList(
-        context,
-        button,
-        context.getResources().getColor(R.color.suc_system_accent1_100),
-        /* disabledAlpha=*/ 0f,
-        /* disabledColor=*/ 0);
-    FooterButtonStyleUtils.updateButtonRippleColor(
-        button, context.getResources().getColor(R.color.suc_system_neutral1_900));
   }
 
   static void updateButtonTextEnabledColorWithPartnerConfig(
@@ -247,38 +230,32 @@ public class FooterButtonStyleUtils {
     }
   }
 
+  @TargetApi(VERSION_CODES.Q)
   static void updateButtonRippleColorWithPartnerConfig(
       Context context,
       Button button,
+      boolean applyDynamicColor,
       PartnerConfig buttonTextColorConfig,
       PartnerConfig buttonRippleColorAlphaConfig) {
-    // RippleDrawable is available after sdk 21. And because on lower sdk the RippleDrawable is
-    // unavailable. Since Stencil customization provider only works on Q+, there is no need to
-    // perform any customization for versions 21.
     if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-      RippleDrawable rippleDrawable = getRippleDrawable(button);
-      if (rippleDrawable == null) {
-        return;
+
+      @ColorInt int textDefaultColor;
+      if (applyDynamicColor) {
+        // Get dynamic text color
+        textDefaultColor = button.getTextColors().getDefaultColor();
+      } else {
+        // Get partner text color.
+        textDefaultColor =
+            PartnerConfigHelper.get(context).getColor(context, buttonTextColorConfig);
       }
-
-      int[] pressedState = {android.R.attr.state_pressed};
-      // Get partner text color.
-      @ColorInt
-      int color = PartnerConfigHelper.get(context).getColor(context, buttonTextColorConfig);
-
       float alpha =
           PartnerConfigHelper.get(context).getFraction(context, buttonRippleColorAlphaConfig);
-
-      // Set text color for ripple.
-      ColorStateList colorStateList =
-          new ColorStateList(
-              new int[][] {pressedState, StateSet.NOTHING},
-              new int[] {convertRgbToArgb(color, alpha), Color.TRANSPARENT});
-      rippleDrawable.setColor(colorStateList);
+      updateButtonRippleColor(button, textDefaultColor, alpha);
     }
   }
 
-  static void updateButtonRippleColor(Button button, @ColorInt int rippleColor) {
+  private static void updateButtonRippleColor(
+      Button button, @ColorInt int textColor, float rippleAlpha) {
     // RippleDrawable is available after sdk 21. And because on lower sdk the RippleDrawable is
     // unavailable. Since Stencil customization provider only works on Q+, there is no need to
     // perform any customization for versions 21.
@@ -294,7 +271,7 @@ public class FooterButtonStyleUtils {
       ColorStateList colorStateList =
           new ColorStateList(
               new int[][] {pressedState, StateSet.NOTHING},
-              new int[] {rippleColor, Color.TRANSPARENT});
+              new int[] {convertRgbToArgb(textColor, rippleAlpha), Color.TRANSPARENT});
       rippleDrawable.setColor(colorStateList);
     }
   }
