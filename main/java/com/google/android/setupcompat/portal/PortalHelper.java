@@ -27,15 +27,15 @@ import android.os.IBinder;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.portal.PortalConstants.RemainingValues;
+import com.google.android.setupcompat.util.Logger;
 
 /** This class is responsible for safely executing methods on SetupNotificationService. */
 public class PortalHelper {
 
-  private static final String TAG = "PortalHelper";
+  private static final Logger LOG = new Logger("PortalHelper");
 
   public static final String EXTRA_KEY_IS_SETUP_WIZARD = "isSetupWizard";
 
@@ -62,7 +62,7 @@ public class PortalHelper {
     try {
       return context.bindService(NOTIFICATION_SERVICE_INTENT, connection, Context.BIND_AUTO_CREATE);
     } catch (SecurityException e) {
-      Log.e(TAG, "Exception occurred while binding SetupNotificationService", e);
+      LOG.e("Exception occurred while binding SetupNotificationService", e);
       return false;
     }
   }
@@ -136,7 +136,7 @@ public class PortalHelper {
         };
 
     if (!bindSetupNotificationService(context, connection)) {
-      Log.e(TAG, "Failed to bind SetupNotificationService.");
+      LOG.e("Failed to bind SetupNotificationService.");
       callback.onFailure(new SecurityException("Failed to bind SetupNotificationService."));
     }
   }
@@ -154,7 +154,7 @@ public class PortalHelper {
               try {
                 listener.onResult(service.isPortalAvailable());
               } catch (RemoteException e) {
-                Log.w(TAG, "Failed to invoke SetupNotificationService#isPortalAvailable");
+                LOG.e("Failed to invoke SetupNotificationService#isPortalAvailable");
                 listener.onResult(false);
               }
             }
@@ -166,8 +166,7 @@ public class PortalHelper {
         };
 
     if (!bindSetupNotificationService(context, connection)) {
-      Log.e(
-          TAG,
+      LOG.e(
           "Failed to bind SetupNotificationService. Do you have permission"
               + " \"com.google.android.setupwizard.SETUP_PROGRESS_SERVICE\"");
       listener.onResult(false);
@@ -199,7 +198,7 @@ public class PortalHelper {
                 }
 
               } catch (RemoteException e) {
-                Log.w(TAG, "Failed to invoke SetupNotificationService#isProgressServiceAlive");
+                LOG.w("Failed to invoke SetupNotificationService#isProgressServiceAlive");
                 listener.onResult(false);
               }
             }
@@ -211,8 +210,7 @@ public class PortalHelper {
         };
 
     if (!bindSetupNotificationService(context, connection)) {
-      Log.e(
-          TAG,
+      LOG.e(
           "Failed to bind SetupNotificationService. Do you have permission"
               + " \"com.google.android.setupwizard.SETUP_PROGRESS_SERVICE\"");
       listener.onResult(false);
