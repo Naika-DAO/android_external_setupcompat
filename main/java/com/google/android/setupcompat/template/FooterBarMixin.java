@@ -358,10 +358,6 @@ public class FooterBarMixin implements Mixin {
 
     onFooterButtonInflated(button, footerBarPrimaryBackgroundColor);
     onFooterButtonApplyPartnerResource(button, footerButtonPartnerConfig);
-    // Sets the primary button background to a light accent color
-    if (applyDynamicColor) {
-      FooterButtonStyleUtils.applyDynamicColorOnPrimaryButton(context, button);
-    }
 
     // Make sure the position of buttons are correctly and prevent primary button create twice or
     // more.
