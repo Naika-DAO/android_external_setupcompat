@@ -26,7 +26,6 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.PersistableBundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +42,13 @@ import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupcompat.template.StatusBarMixin;
 import com.google.android.setupcompat.template.SystemNavBarMixin;
 import com.google.android.setupcompat.util.BuildCompatUtils;
+import com.google.android.setupcompat.util.Logger;
 import com.google.android.setupcompat.util.WizardManagerHelper;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
 public class PartnerCustomizationLayout extends TemplateLayout {
-  // Log tags can have at most 23 characters on N or before.
-  private static final String TAG = "PartnerCustomizedLayout";
+
+  private static final Logger LOG = new Logger("PartnerCustomizationLayout");
 
   /**
    * Attribute indicating whether usage of partner theme resources is allowed. This corresponds to
@@ -163,7 +163,7 @@ public class PartnerCustomizationLayout extends TemplateLayout {
 
     if (!a.hasValue(R.styleable.SucPartnerCustomizationLayout_sucUsePartnerResource)) {
       // TODO: Enable Log.WTF after other client already set sucUsePartnerResource.
-      Log.e(TAG, "Attribute sucUsePartnerResource not found in " + activity.getComponentName());
+      LOG.e("Attribute sucUsePartnerResource not found in " + activity.getComponentName());
     }
 
     usePartnerResourceAttr =
@@ -176,22 +176,19 @@ public class PartnerCustomizationLayout extends TemplateLayout {
 
     a.recycle();
 
-    if (Log.isLoggable(TAG, Log.DEBUG)) {
-      Log.d(
-          TAG,
-          "activity="
-              + activity.getClass().getSimpleName()
-              + " isSetupFlow="
-              + isSetupFlow
-              + " enablePartnerResourceLoading="
-              + enablePartnerResourceLoading()
-              + " usePartnerResourceAttr="
-              + usePartnerResourceAttr
-              + " useDynamicColor="
-              + useDynamicColor
-              + " useFullDynamicColorAttr="
-              + useFullDynamicColorAttr);
-    }
+    LOG.atDebug(
+        "activity="
+            + activity.getClass().getSimpleName()
+            + " isSetupFlow="
+            + isSetupFlow
+            + " enablePartnerResourceLoading="
+            + enablePartnerResourceLoading()
+            + " usePartnerResourceAttr="
+            + usePartnerResourceAttr
+            + " useDynamicColor="
+            + useDynamicColor
+            + " useFullDynamicColorAttr="
+            + useFullDynamicColorAttr);
   }
 
   @Override
