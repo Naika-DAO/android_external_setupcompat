@@ -291,6 +291,14 @@ public enum PartnerConfig {
   // The divider of list items are showing on the pages.
   CONFIG_ITEMS_DIVIDER_SHOWN(PartnerConfigKey.KEY_ITEMS_DIVIDER_SHOWN, ResourceType.BOOL),
 
+  // The intrinsic width of the card view for foldabe/tablet.
+  CONFIG_CARD_VIEW_INTRINSIC_WIDTH(
+      PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_WIDTH, ResourceType.DIMENSION),
+
+  // The intrinsic height of the card view for foldabe/tablet.
+  CONFIG_CARD_VIEW_INTRINSIC_HEIGHT(
+      PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_HEIGHT, ResourceType.DIMENSION),
+
   // The animation of loading screen used in those activities which is non of below type.
   CONFIG_PROGRESS_ILLUSTRATION_DEFAULT(
       PartnerConfigKey.KEY_PROGRESS_ILLUSTRATION_DEFAULT, ResourceType.ILLUSTRATION),
