@@ -90,6 +90,8 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_CONTENT_INFO_ICON_MARGIN_END,
   PartnerConfigKey.KEY_CONTENT_INFO_PADDING_TOP,
   PartnerConfigKey.KEY_CONTENT_INFO_PADDING_BOTTOM,
+  PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_WIDTH,
+  PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_HEIGHT,
   PartnerConfigKey.KEY_ITEMS_TITLE_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_TEXT_SIZE,
   PartnerConfigKey.KEY_ITEMS_SUMMARY_MARGIN_TOP,
@@ -359,6 +361,12 @@ public @interface PartnerConfigKey {
 
   // The divider of list items are showing.
   String KEY_ITEMS_DIVIDER_SHOWN = "setup_design_items_divider_shown";
+
+  // The intrinsic width of the card view for foldabe/tablet.
+  String KEY_CARD_VIEW_INTRINSIC_WIDTH = "setup_design_card_view_intrinsic_width";
+
+  // The intrinsic height of the card view for foldabe/tablet.
+  String KEY_CARD_VIEW_INTRINSIC_HEIGHT = "setup_design_card_view_intrinsic_height";
 
   // The animation of loading screen used in those activities which is non of below type.
   String KEY_PROGRESS_ILLUSTRATION_DEFAULT = "progress_illustration_custom_default";
