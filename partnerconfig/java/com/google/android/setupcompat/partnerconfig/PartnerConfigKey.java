@@ -47,12 +47,15 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_SIZE,
   PartnerConfigKey.KEY_FOOTER_BUTTON_TEXT_STYLE,
   PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT,
+  PartnerConfigKey.KEY_FOOTER_BUTTON_ALIGNED_END,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA,
   PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR,
+  PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_MARGIN_START,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
+  PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_MARGIN_START,
   PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_START,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_END,
@@ -204,6 +207,9 @@ public @interface PartnerConfigKey {
   // The min height of the footer buttons
   String KEY_FOOTER_BUTTON_MIN_HEIGHT = "setup_compat_footer_button_min_height";
 
+  // Make the footer buttons all aligned the end
+  String KEY_FOOTER_BUTTON_ALIGNED_END = "setup_compat_footer_button_aligned_end";
+
   // Disabled background alpha of the footer buttons
   String KEY_FOOTER_BUTTON_DISABLED_ALPHA = "setup_compat_footer_button_disabled_alpha";
 
@@ -216,11 +222,18 @@ public @interface PartnerConfigKey {
   // Text color of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR = "setup_compat_footer_primary_button_text_color";
 
+  // Margin start of the primary footer button
+  String KEY_FOOTER_PRIMARY_BUTTON_MARGIN_START = "setup_compat_footer_primary_button_margin_start";
+
   // Background color of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR = "setup_compat_footer_secondary_button_bg_color";
 
   // Text color of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR = "setup_compat_footer_secondary_button_text_color";
+
+  // Margin start of the secondary footer button
+  String KEY_FOOTER_SECONDARY_BUTTON_MARGIN_START =
+      "setup_compat_footer_secondary_button_margin_start";
 
   // Background color of layout
   String KEY_LAYOUT_BACKGROUND_COLOR = "setup_design_layout_bg_color";
