@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.util.StateSet;
 import android.util.TypedValue;
+import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.ColorInt;
 import androidx.annotation.VisibleForTesting;
@@ -58,6 +59,7 @@ public class FooterButtonStyleUtils {
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR)
+            .setMarginStartConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_MARGIN_START)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
@@ -92,6 +94,7 @@ public class FooterButtonStyleUtils {
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
+            .setMarginStartConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_MARGIN_START)
             .setTextSizeConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_TEXT_SIZE)
             .setButtonMinHeight(PartnerConfig.CONFIG_FOOTER_BUTTON_MIN_HEIGHT)
             .setTextTypeFaceConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_FONT_FAMILY)
@@ -133,6 +136,8 @@ public class FooterButtonStyleUtils {
         applyDynamicColor,
         footerButtonPartnerConfig.getButtonTextColorConfig(),
         footerButtonPartnerConfig.getButtonRippleColorAlphaConfig());
+    FooterButtonStyleUtils.updateButtonMarginStartWithPartnerConfig(
+        context, button, footerButtonPartnerConfig.getButtonMarginStartConfig());
     FooterButtonStyleUtils.updateButtonTextSizeWithPartnerConfig(
         context, button, footerButtonPartnerConfig.getButtonTextSizeConfig());
     FooterButtonStyleUtils.updateButtonMinHeightWithPartnerConfig(
@@ -273,6 +278,19 @@ public class FooterButtonStyleUtils {
               new int[][] {pressedState, StateSet.NOTHING},
               new int[] {convertRgbToArgb(textColor, rippleAlpha), Color.TRANSPARENT});
       rippleDrawable.setColor(colorStateList);
+    }
+  }
+
+  static void updateButtonMarginStartWithPartnerConfig(
+      Context context, Button button, PartnerConfig buttonMarginStartConfig) {
+    ViewGroup.LayoutParams lp = button.getLayoutParams();
+    boolean partnerConfigAvailable =
+        PartnerConfigHelper.get(context).isPartnerConfigAvailable(buttonMarginStartConfig);
+    if (partnerConfigAvailable && lp instanceof ViewGroup.MarginLayoutParams) {
+      final ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
+      int startMargin =
+          (int) PartnerConfigHelper.get(context).getDimension(context, buttonMarginStartConfig);
+      mlp.setMargins(startMargin, mlp.topMargin, mlp.rightMargin, mlp.bottomMargin);
     }
   }
 
