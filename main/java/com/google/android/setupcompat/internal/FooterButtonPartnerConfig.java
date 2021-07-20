@@ -26,6 +26,7 @@ public class FooterButtonPartnerConfig {
   private final PartnerConfig buttonDisableBackgroundConfig;
   private final PartnerConfig buttonIconConfig;
   private final PartnerConfig buttonTextColorConfig;
+  private final PartnerConfig buttonMarginStartConfig;
   private final PartnerConfig buttonTextSizeConfig;
   private final PartnerConfig buttonMinHeightConfig;
   private final PartnerConfig buttonTextTypeFaceConfig;
@@ -41,6 +42,7 @@ public class FooterButtonPartnerConfig {
       PartnerConfig buttonDisableBackgroundConfig,
       PartnerConfig buttonIconConfig,
       PartnerConfig buttonTextColorConfig,
+      PartnerConfig buttonMarginStartConfig,
       PartnerConfig buttonTextSizeConfig,
       PartnerConfig buttonMinHeightConfig,
       PartnerConfig buttonTextTypeFaceConfig,
@@ -50,6 +52,7 @@ public class FooterButtonPartnerConfig {
     this.partnerTheme = partnerTheme;
 
     this.buttonTextColorConfig = buttonTextColorConfig;
+    this.buttonMarginStartConfig = buttonMarginStartConfig;
     this.buttonTextSizeConfig = buttonTextSizeConfig;
     this.buttonMinHeightConfig = buttonMinHeightConfig;
     this.buttonTextTypeFaceConfig = buttonTextTypeFaceConfig;
@@ -86,6 +89,10 @@ public class FooterButtonPartnerConfig {
     return buttonTextColorConfig;
   }
 
+  public PartnerConfig getButtonMarginStartConfig() {
+    return buttonMarginStartConfig;
+  }
+
   public PartnerConfig getButtonMinHeightConfig() {
     return buttonMinHeightConfig;
   }
@@ -118,6 +125,7 @@ public class FooterButtonPartnerConfig {
     private PartnerConfig buttonDisableBackgroundConfig = null;
     private PartnerConfig buttonIconConfig = null;
     private PartnerConfig buttonTextColorConfig = null;
+    private PartnerConfig buttonMarginStartConfig = null;
     private PartnerConfig buttonTextSizeConfig = null;
     private PartnerConfig buttonMinHeight = null;
     private PartnerConfig buttonTextTypeFaceConfig = null;
@@ -151,6 +159,11 @@ public class FooterButtonPartnerConfig {
 
     public Builder setButtonIconConfig(PartnerConfig buttonIconConfig) {
       this.buttonIconConfig = buttonIconConfig;
+      return this;
+    }
+
+    public Builder setMarginStartConfig(PartnerConfig buttonMarginStartConfig) {
+      this.buttonMarginStartConfig = buttonMarginStartConfig;
       return this;
     }
 
@@ -202,6 +215,7 @@ public class FooterButtonPartnerConfig {
           buttonDisableBackgroundConfig,
           buttonIconConfig,
           buttonTextColorConfig,
+          buttonMarginStartConfig,
           buttonTextSizeConfig,
           buttonMinHeight,
           buttonTextTypeFaceConfig,

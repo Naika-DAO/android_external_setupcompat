@@ -108,6 +108,10 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_MIN_HEIGHT(
       PartnerConfigKey.KEY_FOOTER_BUTTON_MIN_HEIGHT, ResourceType.DIMENSION),
 
+  // Make the footer buttons all aligned the end
+  CONFIG_FOOTER_BUTTON_ALIGNED_END(
+      PartnerConfigKey.KEY_FOOTER_BUTTON_ALIGNED_END, ResourceType.BOOL),
+
   // Disabled background alpha of the footer buttons
   CONFIG_FOOTER_BUTTON_DISABLED_ALPHA(
       PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_ALPHA, ResourceType.FRACTION),
@@ -124,6 +128,10 @@ public enum PartnerConfig {
   CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
 
+  // Margin start of the primary footer button
+  CONFIG_FOOTER_PRIMARY_BUTTON_MARGIN_START(
+      PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_MARGIN_START, ResourceType.DIMENSION),
+
   // Background color of the secondary footer button
   CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR, ResourceType.COLOR),
@@ -131,6 +139,10 @@ public enum PartnerConfig {
   // Text color of the secondary footer button
   CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR(
       PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR, ResourceType.COLOR),
+
+  // Margin start of the secondary footer button
+  CONFIG_FOOTER_SECONDARY_BUTTON_MARGIN_START(
+      PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_MARGIN_START, ResourceType.DIMENSION),
 
   // Background color of layout
   CONFIG_LAYOUT_BACKGROUND_COLOR(PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR, ResourceType.COLOR),
