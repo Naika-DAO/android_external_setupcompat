@@ -31,6 +31,8 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_NAVIGATION_BAR_DIVIDER_COLOR,
   PartnerConfigKey.KEY_FOOTER_BAR_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_BAR_MIN_HEIGHT,
+  PartnerConfigKey.KEY_FOOTER_BAR_PADDING_START,
+  PartnerConfigKey.KEY_FOOTER_BAR_PADDING_END,
   PartnerConfigKey.KEY_FOOTER_BUTTON_FONT_FAMILY,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_ADD_ANOTHER,
   PartnerConfigKey.KEY_FOOTER_BUTTON_ICON_CANCEL,
@@ -157,6 +159,12 @@ public @interface PartnerConfigKey {
 
   // The min height of the footer bar
   String KEY_FOOTER_BAR_MIN_HEIGHT = "setup_compat_footer_bar_min_height";
+
+  // The padding start of the footer bar
+  String KEY_FOOTER_BAR_PADDING_START = "setup_compat_footer_bar_padding_start";
+
+  // The padding end of the footer bar
+  String KEY_FOOTER_BAR_PADDING_END = "setup_compat_footer_bar_padding_end";
 
   // The font face used in footer buttons. This must be a string reference to a font that is
   // available in the system. Font references (@font or @xml) are not allowed.
