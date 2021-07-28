@@ -40,6 +40,14 @@ public enum PartnerConfig {
   // The min height of the footer buttons
   CONFIG_FOOTER_BAR_MIN_HEIGHT(PartnerConfigKey.KEY_FOOTER_BAR_MIN_HEIGHT, ResourceType.DIMENSION),
 
+  // The padding start of the footer bar
+  CONFIG_FOOTER_BAR_PADDING_START(
+      PartnerConfigKey.KEY_FOOTER_BAR_PADDING_START, ResourceType.DIMENSION),
+
+  // The padding end of the footer bar
+  CONFIG_FOOTER_BAR_PADDING_END(
+      PartnerConfigKey.KEY_FOOTER_BAR_PADDING_END, ResourceType.DIMENSION),
+
   // The same as "windowLightNavigationBar". If set true, the navigation bar icons will be drawn
   // such that it is compatible with a light navigation bar background.
   CONFIG_LIGHT_NAVIGATION_BAR(PartnerConfigKey.KEY_LIGHT_NAVIGATION_BAR, ResourceType.BOOL),
