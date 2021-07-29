@@ -84,6 +84,8 @@ public class FooterBarMixin implements Mixin {
 
   private int footerBarPaddingTop;
   private int footerBarPaddingBottom;
+  @VisibleForTesting int footerBarPaddingStart;
+  @VisibleForTesting int footerBarPaddingEnd;
   @VisibleForTesting int defaultPadding;
   @ColorInt private final int footerBarPrimaryBackgroundColor;
   @ColorInt private final int footerBarSecondaryBackgroundColor;
@@ -190,6 +192,10 @@ public class FooterBarMixin implements Mixin {
     footerBarPaddingBottom =
         a.getDimensionPixelSize(
             R.styleable.SucFooterBarMixin_sucFooterBarPaddingBottom, defaultPadding);
+    footerBarPaddingStart =
+        a.getDimensionPixelSize(R.styleable.SucFooterBarMixin_sucFooterBarPaddingStart, 0);
+    footerBarPaddingEnd =
+        a.getDimensionPixelSize(R.styleable.SucFooterBarMixin_sucFooterBarPaddingEnd, 0);
     footerBarPrimaryBackgroundColor =
         a.getColor(R.styleable.SucFooterBarMixin_sucFooterBarPrimaryFooterBackground, 0);
     footerBarSecondaryBackgroundColor =
@@ -267,9 +273,9 @@ public class FooterBarMixin implements Mixin {
     }
     updateFooterBarPadding(
         buttonContainer,
-        buttonContainer.getPaddingLeft(),
+        footerBarPaddingStart,
         footerBarPaddingTop,
-        buttonContainer.getPaddingRight(),
+        footerBarPaddingEnd,
         footerBarPaddingBottom);
     if (isFooterButtonAlignedEnd(buttonContainer.getContext())) {
       buttonContainer.setGravity(Gravity.END);
@@ -299,19 +305,39 @@ public class FooterBarMixin implements Mixin {
       buttonContainer.setBackgroundColor(color);
     }
 
-    footerBarPaddingTop =
-        (int)
-            PartnerConfigHelper.get(context)
-                .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_TOP);
-    footerBarPaddingBottom =
-        (int)
-            PartnerConfigHelper.get(context)
-                .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_BOTTOM);
+    if (PartnerConfigHelper.get(context)
+        .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_TOP)) {
+      footerBarPaddingTop =
+          (int)
+              PartnerConfigHelper.get(context)
+                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_TOP);
+    }
+    if (PartnerConfigHelper.get(context)
+        .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_BOTTOM)) {
+      footerBarPaddingBottom =
+          (int)
+              PartnerConfigHelper.get(context)
+                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BUTTON_PADDING_BOTTOM);
+    }
+    if (PartnerConfigHelper.get(context)
+        .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BAR_PADDING_START)) {
+      footerBarPaddingStart =
+          (int)
+              PartnerConfigHelper.get(context)
+                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BAR_PADDING_START);
+    }
+    if (PartnerConfigHelper.get(context)
+        .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BAR_PADDING_END)) {
+      footerBarPaddingEnd =
+          (int)
+              PartnerConfigHelper.get(context)
+                  .getDimension(context, PartnerConfig.CONFIG_FOOTER_BAR_PADDING_END);
+    }
     updateFooterBarPadding(
         buttonContainer,
-        buttonContainer.getPaddingLeft(),
+        footerBarPaddingStart,
         footerBarPaddingTop,
-        buttonContainer.getPaddingRight(),
+        footerBarPaddingEnd,
         footerBarPaddingBottom);
 
     if (PartnerConfigHelper.get(context)
