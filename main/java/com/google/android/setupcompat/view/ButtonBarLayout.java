@@ -18,6 +18,7 @@ package com.google.android.setupcompat.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import com.google.android.setupcompat.R;
@@ -86,6 +87,7 @@ public class ButtonBarLayout extends LinearLayout {
       if (stacked) {
         child.setTag(R.id.suc_customization_original_weight, childParams.weight);
         childParams.weight = 0;
+        childParams.leftMargin = 0;
       } else {
         Float weight = (Float) child.getTag(R.id.suc_customization_original_weight);
         if (weight != null) {
@@ -103,6 +105,8 @@ public class ButtonBarLayout extends LinearLayout {
     }
 
     if (stacked) {
+      // When stacked, the buttons need to be kept in the center of the button bar.
+      setHorizontalGravity(Gravity.CENTER);
       // HACK: In the default button bar style, the left and right paddings are not
       // balanced to compensate for different alignment for borderless (left) button and
       // the raised (right) button. When it's stacked, we want the buttons to be centered,
