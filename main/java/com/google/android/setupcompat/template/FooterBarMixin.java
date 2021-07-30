@@ -278,7 +278,7 @@ public class FooterBarMixin implements Mixin {
         footerBarPaddingEnd,
         footerBarPaddingBottom);
     if (isFooterButtonAlignedEnd(buttonContainer.getContext())) {
-      buttonContainer.setGravity(Gravity.END);
+      buttonContainer.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
     }
   }
 

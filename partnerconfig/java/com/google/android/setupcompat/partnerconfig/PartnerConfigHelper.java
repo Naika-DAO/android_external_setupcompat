@@ -315,7 +315,7 @@ public class PartnerConfigHelper {
 
       result = resource.getBoolean(resId);
       partnerResourceCache.put(resourceConfig, result);
-    } catch (NullPointerException exception) {
+    } catch (NullPointerException | NotFoundException exception) {
       // fall through
     }
     return result;
@@ -364,7 +364,7 @@ public class PartnerConfigHelper {
       result =
           getDimensionFromTypedValue(
               context, (TypedValue) partnerResourceCache.get(resourceConfig));
-    } catch (NullPointerException exception) {
+    } catch (NullPointerException | NotFoundException exception) {
       // fall through
     }
     return result;
@@ -408,7 +408,7 @@ public class PartnerConfigHelper {
 
       result = resource.getFraction(resId, 1, 1);
       partnerResourceCache.put(resourceConfig, result);
-    } catch (NullPointerException exception) {
+    } catch (NullPointerException | NotFoundException exception) {
       // fall through
     }
     return result;
@@ -441,7 +441,7 @@ public class PartnerConfigHelper {
 
       result = resource.getInteger(resId);
       partnerResourceCache.put(resourceConfig, result);
-    } catch (NullPointerException exception) {
+    } catch (NullPointerException | NotFoundException exception) {
       // fall through
     }
     return result;
