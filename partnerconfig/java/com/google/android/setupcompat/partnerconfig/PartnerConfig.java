@@ -434,7 +434,15 @@ public enum PartnerConfig {
 
   // The height of the header of the loading layout.
   CONFIG_LOADING_LAYOUT_HEADER_HEIGHT(
-      PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT, ResourceType.DIMENSION);
+      PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT, ResourceType.DIMENSION),
+
+  // The margin top of progress bar.
+  CONFIG_PROGRESS_BAR_MARGIN_TOP(
+      PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_TOP, ResourceType.DIMENSION),
+
+  // The margin bottom of progress bar.
+  CONFIG_PROGRESS_BAR_MARGIN_BOTTOM(
+      PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_BOTTOM, ResourceType.DIMENSION);
 
   /** Resource type of the partner resources type. */
   public enum ResourceType {
