@@ -133,6 +133,8 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_END,
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM,
   PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT,
+  PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_TOP,
+  PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_BOTTOM,
 })
 // TODO: can be removed and always reference PartnerConfig.getResourceName()?
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -495,4 +497,10 @@ public @interface PartnerConfigKey {
 
   // A height of the header of loading layout.
   String KEY_LOADING_LAYOUT_HEADER_HEIGHT = "loading_layout_header_height";
+
+  // A margin top of the content frame of progress bar.
+  String KEY_PROGRESS_BAR_MARGIN_TOP = "progress_bar_margin_top";
+
+  // A margin bottom of the content frame of progress bar.
+  String KEY_PROGRESS_BAR_MARGIN_BOTTOM = "progress_bar_margin_bottom";
 }
