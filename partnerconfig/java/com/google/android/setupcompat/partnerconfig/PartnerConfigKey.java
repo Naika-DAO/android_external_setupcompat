@@ -499,8 +499,8 @@ public @interface PartnerConfigKey {
   String KEY_LOADING_LAYOUT_HEADER_HEIGHT = "loading_layout_header_height";
 
   // A margin top of the content frame of progress bar.
-  String KEY_PROGRESS_BAR_MARGIN_TOP = "progress_bar_margin_top";
+  String KEY_PROGRESS_BAR_MARGIN_TOP = "setup_design_progress_bar_margin_top";
 
   // A margin bottom of the content frame of progress bar.
-  String KEY_PROGRESS_BAR_MARGIN_BOTTOM = "progress_bar_margin_bottom";
+  String KEY_PROGRESS_BAR_MARGIN_BOTTOM = "setup_design_progress_bar_margin_bottom";
 }
