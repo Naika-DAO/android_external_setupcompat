@@ -30,7 +30,7 @@
         errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="external/setupcompat/main/res/values/styles.xml"
-            line="52"
+            line="54"
             column="15"/>
     </issue>
 
@@ -41,7 +41,7 @@
         errorLine2="                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="external/setupcompat/main/res/values/styles.xml"
-            line="58"
+            line="60"
             column="59"/>
     </issue>
 
@@ -52,7 +52,7 @@
         errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="external/setupcompat/main/res/values/styles.xml"
-            line="66"
+            line="68"
             column="15"/>
     </issue>
 
