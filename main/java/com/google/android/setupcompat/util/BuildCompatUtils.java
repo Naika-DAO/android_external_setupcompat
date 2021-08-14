@@ -17,12 +17,23 @@
 package com.google.android.setupcompat.util;
 
 import android.os.Build;
+import androidx.annotation.ChecksSdkIntAtLeast;
 
 /**
  * An util class to check whether the current OS version is higher or equal to sdk version of
  * device.
  */
 public final class BuildCompatUtils {
+
+  /**
+   * Implementation of BuildCompat.isAtLeastS() suitable for use in Setup
+   *
+   * @return Whether the current OS version is higher or equal to S.
+   */
+  @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
+  public static boolean isAtLeastS() {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+  }
 
   /**
    * Implementation of BuildCompat.isAtLeast*() suitable for use in Setup
@@ -40,10 +51,10 @@ public final class BuildCompatUtils {
    * <p>Supported configurations:
    *
    * <ul>
-   *   <li>For current Android release: while new API is not finalized yet (CODENAME = "S", SDK_INT
-   *       = 30|31)
-   *   <li>For current Android release: when new API is finalized (CODENAME = "REL", SDK_INT = 31)
-   *   <li>For next Android release (CODENAME = "T", SDK_INT = 30+)
+   *   <li>For current Android release: while new API is not finalized yet (CODENAME = "T", SDK_INT
+   *       = 31|32)
+   *   <li>For current Android release: when new API is finalized (CODENAME = "REL", SDK_INT = 32)
+   *   <li>For next Android release (CODENAME = "U", SDK_INT = 33+)
    * </ul>
    *
    * <p>Note that Build.VERSION_CODES.S cannot be used here until final SDK is available in all
@@ -52,13 +63,13 @@ public final class BuildCompatUtils {
    *
    * @return Whether the current OS version is higher or equal to S.
    */
-  public static boolean isAtLeastS() {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+  public static boolean isAtLeastT() {
+    if (!isAtLeastS()) {
       return false;
     }
-    return (Build.VERSION.CODENAME.equals("REL") && Build.VERSION.SDK_INT >= 31)
+    return (Build.VERSION.CODENAME.equals("REL") && Build.VERSION.SDK_INT >= 32)
         || (Build.VERSION.CODENAME.length() == 1
-            && Build.VERSION.CODENAME.charAt(0) >= 'S'
+            && Build.VERSION.CODENAME.charAt(0) >= 'T'
             && Build.VERSION.CODENAME.charAt(0) <= 'Z');
   }
 
