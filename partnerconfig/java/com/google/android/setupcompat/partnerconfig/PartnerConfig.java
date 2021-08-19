@@ -227,6 +227,10 @@ public enum PartnerConfig {
   // Font family of the description
   CONFIG_DESCRIPTION_FONT_FAMILY(PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY, ResourceType.STRING),
 
+  // Font family of the link text
+  CONFIG_DESCRIPTION_LINK_FONT_FAMILY(
+      PartnerConfigKey.KEY_DESCRIPTION_LINK_FONT_FAMILY, ResourceType.STRING),
+
   // Margin top of the description text
   CONFIG_DESCRIPTION_TEXT_MARGIN_TOP(
       PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_TOP, ResourceType.DIMENSION),
