@@ -22,6 +22,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import com.google.android.setupcompat.R;
+import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
+import com.google.android.setupcompat.template.FooterActionButton;
 
 /**
  * An extension of LinearLayout that automatically switches to vertical orientation when it can't
@@ -63,7 +65,7 @@ public class ButtonBarLayout extends LinearLayout {
 
     super.onMeasure(initialWidthMeasureSpec, heightMeasureSpec);
 
-    if (getMeasuredWidth() > widthSize) {
+    if (!isFooterButtonsEventlyWeighted(getContext()) && (getMeasuredWidth() > widthSize)) {
       setStacked(true);
 
       // Measure again in the new orientation.
@@ -117,6 +119,30 @@ public class ButtonBarLayout extends LinearLayout {
       setPadding(paddingHorizontal, getPaddingTop(), paddingHorizontal, getPaddingBottom());
     } else {
       setPadding(originalPaddingLeft, getPaddingTop(), originalPaddingRight, getPaddingBottom());
+    }
+  }
+
+  private boolean isFooterButtonsEventlyWeighted(Context context) {
+    int childCount = getChildCount();
+    int primayButtonCount = 0;
+    for (int i = 0; i < childCount; i++) {
+      View child = getChildAt(i);
+      if (child instanceof FooterActionButton) {
+        if (((FooterActionButton) child).isPrimaryButtonStyle()) {
+          primayButtonCount += 1;
+        }
+      }
+    }
+    if (primayButtonCount != 2) {
+      return false;
+    }
+
+    // TODO: Support neutral button style in glif layout for phone and tablet
+    if (context.getResources().getConfiguration().smallestScreenWidthDp >= 600
+        && PartnerConfigHelper.shouldApplyExtendedPartnerConfig(context)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
