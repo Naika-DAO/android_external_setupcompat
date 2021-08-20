@@ -80,6 +80,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_LINK_TEXT_COLOR,
   PartnerConfigKey.KEY_DESCRIPTION_FONT_FAMILY,
+  PartnerConfigKey.KEY_DESCRIPTION_LINK_FONT_FAMILY,
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_TOP,
   PartnerConfigKey.KEY_DESCRIPTION_TEXT_MARGIN_BOTTOM,
   PartnerConfigKey.KEY_CONTENT_TEXT_SIZE,
@@ -312,6 +313,9 @@ public @interface PartnerConfigKey {
 
   // Font family of the description
   String KEY_DESCRIPTION_FONT_FAMILY = "setup_design_description_font_family";
+
+  // Font family of the link text
+  String KEY_DESCRIPTION_LINK_FONT_FAMILY = "setup_design_description_link_font_family";
 
   // Margin top of the header text
   String KEY_DESCRIPTION_TEXT_MARGIN_TOP = "setup_design_description_text_margin_top";
