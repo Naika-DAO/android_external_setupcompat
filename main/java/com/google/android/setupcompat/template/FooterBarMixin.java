@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
@@ -32,6 +33,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -221,7 +223,7 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
-  private boolean isFooterButtonAlignedEnd(Context context) {
+  private boolean isFooterButtonAlignedEnd() {
     if (PartnerConfigHelper.get(context)
         .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BUTTON_ALIGNED_END)) {
       return PartnerConfigHelper.get(context)
@@ -231,12 +233,18 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
+  private boolean isFooterButtonsEvenlyWeighted() {
+    if (!isSecondaryButtonInPrimaryStyle) {
+      return false;
+    }
+    // TODO: Support neutral button style in glif layout for phone and tablet
+    return context.getResources().getConfiguration().smallestScreenWidthDp >= 600
+        && PartnerConfigHelper.shouldApplyExtendedPartnerConfig(context);
+  }
+
   private View addSpace() {
     LinearLayout buttonContainer = ensureFooterInflated();
-    if (isFooterButtonAlignedEnd(buttonContainer.getContext())) {
-      return null;
-    }
-    View space = new View(buttonContainer.getContext());
+    View space = new View(context);
     space.setLayoutParams(new LayoutParams(0, 0, 1.0f));
     space.setVisibility(View.INVISIBLE);
     buttonContainer.addView(space);
@@ -277,7 +285,7 @@ public class FooterBarMixin implements Mixin {
         footerBarPaddingTop,
         footerBarPaddingEnd,
         footerBarPaddingBottom);
-    if (isFooterButtonAlignedEnd(buttonContainer.getContext())) {
+    if (isFooterButtonAlignedEnd()) {
       buttonContainer.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
     }
   }
@@ -397,6 +405,7 @@ public class FooterBarMixin implements Mixin {
     // update information for primary button. Need to update as long as the button inflated.
     primaryButtonId = button.getId();
     primaryDefaultTextColor = button.getTextColors();
+    button.setPrimaryButtonStyle(/* isPrimaryButtonStyle= */ true);
     primaryButton = footerButton;
     primaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
 
@@ -472,6 +481,7 @@ public class FooterBarMixin implements Mixin {
     // update information for secondary button. Need to update as long as the button inflated.
     secondaryButtonId = button.getId();
     secondaryDefaultTextColor = button.getTextColors();
+    button.setPrimaryButtonStyle(usePrimaryStyle);
     secondaryButton = footerButton;
     secondaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
 
@@ -493,6 +503,14 @@ public class FooterBarMixin implements Mixin {
     Button tempSecondaryButton = getSecondaryButtonView();
     buttonContainer.removeAllViews();
 
+    boolean isEvenlyWeightedButtons = isFooterButtonsEvenlyWeighted();
+    boolean isLandscape =
+        context.getResources().getConfiguration().orientation
+            == Configuration.ORIENTATION_LANDSCAPE;
+    if (isLandscape && isEvenlyWeightedButtons) {
+      addSpace();
+    }
+
     if (tempSecondaryButton != null) {
       if (isSecondaryButtonInPrimaryStyle) {
         // Since the secondary button has the same style (with background) as the primary button,
@@ -506,9 +524,53 @@ public class FooterBarMixin implements Mixin {
       }
       buttonContainer.addView(tempSecondaryButton);
     }
-    addSpace();
+    if (!isFooterButtonAlignedEnd() && !isEvenlyWeightedButtons) {
+      addSpace();
+    }
     if (tempPrimaryButton != null) {
       buttonContainer.addView(tempPrimaryButton);
+    }
+
+    setEvenlyWeightedButtons(tempPrimaryButton, tempSecondaryButton, isEvenlyWeightedButtons);
+  }
+
+  private void setEvenlyWeightedButtons(
+      Button primaryButton, Button secondaryButton, boolean isEvenlyWeighted) {
+    if (primaryButton != null && secondaryButton != null && isEvenlyWeighted) {
+      LinearLayout.LayoutParams primaryLayoutParams =
+          (LinearLayout.LayoutParams) primaryButton.getLayoutParams();
+      if (null != primaryLayoutParams) {
+        primaryLayoutParams.width = 0;
+        primaryLayoutParams.weight = 1.0f;
+        primaryButton.setLayoutParams(primaryLayoutParams);
+      }
+
+      LinearLayout.LayoutParams secondaryLayoutParams =
+          (LinearLayout.LayoutParams) secondaryButton.getLayoutParams();
+      if (null != secondaryLayoutParams) {
+        secondaryLayoutParams.width = 0;
+        secondaryLayoutParams.weight = 1.0f;
+        secondaryButton.setLayoutParams(secondaryLayoutParams);
+      }
+    } else {
+      if (primaryButton != null) {
+        LinearLayout.LayoutParams primaryLayoutParams =
+            (LinearLayout.LayoutParams) primaryButton.getLayoutParams();
+        if (null != primaryLayoutParams) {
+          primaryLayoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+          primaryLayoutParams.weight = 0;
+          primaryButton.setLayoutParams(primaryLayoutParams);
+        }
+      }
+      if (secondaryButton != null) {
+        LinearLayout.LayoutParams secondaryLayoutParams =
+            (LinearLayout.LayoutParams) secondaryButton.getLayoutParams();
+        if (null != secondaryLayoutParams) {
+          secondaryLayoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+          secondaryLayoutParams.weight = 0;
+          secondaryButton.setLayoutParams(secondaryLayoutParams);
+        }
+      }
     }
   }
 
