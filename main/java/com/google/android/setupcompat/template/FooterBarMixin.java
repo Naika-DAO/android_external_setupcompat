@@ -233,7 +233,7 @@ public class FooterBarMixin implements Mixin {
     }
   }
 
-  private boolean isFooterButtonsEvenlyWeighted() {
+  protected boolean isFooterButtonsEvenlyWeighted() {
     if (!isSecondaryButtonInPrimaryStyle) {
       return false;
     }

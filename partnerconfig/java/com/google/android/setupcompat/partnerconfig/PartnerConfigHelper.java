@@ -81,6 +81,14 @@ public class PartnerConfigHelper {
 
   private static int savedOrientation = Configuration.ORIENTATION_PORTRAIT;
 
+  /**
+   * When testing related to fake PartnerConfigHelper instance, should sync the following saved
+   * config with testing environment.
+   */
+  @VisibleForTesting public static int savedScreenHeight = Configuration.SCREEN_HEIGHT_DP_UNDEFINED;
+
+  @VisibleForTesting public static int savedScreenWidth = Configuration.SCREEN_WIDTH_DP_UNDEFINED;
+
   public static synchronized PartnerConfigHelper get(@NonNull Context context) {
     if (!isValidInstance(context)) {
       instance = new PartnerConfigHelper(context);
@@ -93,15 +101,21 @@ public class PartnerConfigHelper {
     if (instance == null) {
       savedConfigUiMode = currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
       savedOrientation = currentConfig.orientation;
+      savedScreenWidth = currentConfig.screenWidthDp;
+      savedScreenHeight = currentConfig.screenHeightDp;
       return false;
     } else {
-      if (isSetupWizardDayNightEnabled(context)
-          && (currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) != savedConfigUiMode) {
+      boolean uiModeChanged =
+          isSetupWizardDayNightEnabled(context)
+              && (currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) != savedConfigUiMode;
+      if (uiModeChanged
+          || currentConfig.orientation != savedOrientation
+          || currentConfig.screenWidthDp != savedScreenWidth
+          || currentConfig.screenHeightDp != savedScreenHeight) {
         savedConfigUiMode = currentConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        resetInstance();
-        return false;
-      } else if (currentConfig.orientation != savedOrientation) {
         savedOrientation = currentConfig.orientation;
+        savedScreenHeight = currentConfig.screenHeightDp;
+        savedScreenWidth = currentConfig.screenWidthDp;
         resetInstance();
         return false;
       }
