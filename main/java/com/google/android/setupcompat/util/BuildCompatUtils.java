@@ -26,6 +26,15 @@ import androidx.annotation.ChecksSdkIntAtLeast;
 public final class BuildCompatUtils {
 
   /**
+   * Implementation of BuildCompat.isAtLeastR() suitable for use in Setup
+   *
+   * @return Whether the current OS version is higher or equal to R.
+   */
+  @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.R)
+  public static boolean isAtLeastR() {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+  }
+  /**
    * Implementation of BuildCompat.isAtLeastS() suitable for use in Setup
    *
    * @return Whether the current OS version is higher or equal to S.
