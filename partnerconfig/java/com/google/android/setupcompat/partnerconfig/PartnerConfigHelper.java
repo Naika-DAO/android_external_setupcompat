@@ -517,6 +517,8 @@ public class PartnerConfigHelper {
                     /* arg= */ null,
                     /* extras= */ null);
         partnerResourceCache.clear();
+        Log.i(
+            TAG, "PartnerConfigsBundle=" + (resultBundle != null ? resultBundle.size() : "(null)"));
       } catch (IllegalArgumentException | SecurityException exception) {
         Log.w(TAG, "Fail to get config from suw provider");
       }

@@ -128,6 +128,14 @@ public enum PartnerConfig {
   CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_BUTTON_DISABLED_BG_COLOR, ResourceType.COLOR),
 
+  // Disabled text color of the primary footer button
+  CONFIG_FOOTER_PRIMARY_BUTTON_DISABLED_TEXT_COLOR(
+      PartnerConfigKey.KEY_PRIMARY_BUTTON_DISABLED_TEXT_COLOR, ResourceType.COLOR),
+
+  // Disabled text color of the secondary footer button
+  CONFIG_FOOTER_SECONDARY_BUTTON_DISABLED_TEXT_COLOR(
+      PartnerConfigKey.KEY_SECONDARY_BUTTON_DISABLED_TEXT_COLOR, ResourceType.COLOR),
+
   // Background color of the primary footer button
   CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR(
       PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR, ResourceType.COLOR),
@@ -315,11 +323,11 @@ public enum PartnerConfig {
   // The divider of list items are showing on the pages.
   CONFIG_ITEMS_DIVIDER_SHOWN(PartnerConfigKey.KEY_ITEMS_DIVIDER_SHOWN, ResourceType.BOOL),
 
-  // The intrinsic width of the card view for foldabe/tablet.
+  // The intrinsic width of the card view for foldable/tablet.
   CONFIG_CARD_VIEW_INTRINSIC_WIDTH(
       PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_WIDTH, ResourceType.DIMENSION),
 
-  // The intrinsic height of the card view for foldabe/tablet.
+  // The intrinsic height of the card view for foldable/tablet.
   CONFIG_CARD_VIEW_INTRINSIC_HEIGHT(
       PartnerConfigKey.KEY_CARD_VIEW_INTRINSIC_HEIGHT, ResourceType.DIMENSION),
 
@@ -439,6 +447,10 @@ public enum PartnerConfig {
   // The height of the header of the loading layout.
   CONFIG_LOADING_LAYOUT_HEADER_HEIGHT(
       PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT, ResourceType.DIMENSION),
+
+  // Use the fullscreen style lottie animation.
+  CONFIG_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED(
+      PartnerConfigKey.KEY_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED, ResourceType.BOOL),
 
   // The margin top of progress bar.
   CONFIG_PROGRESS_BAR_MARGIN_TOP(
