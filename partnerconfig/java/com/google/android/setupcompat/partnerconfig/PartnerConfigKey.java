@@ -55,9 +55,11 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_PRIMARY_BUTTON_MARGIN_START,
+  PartnerConfigKey.KEY_PRIMARY_BUTTON_DISABLED_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
   PartnerConfigKey.KEY_FOOTER_SECONDARY_BUTTON_MARGIN_START,
+  PartnerConfigKey.KEY_SECONDARY_BUTTON_DISABLED_TEXT_COLOR,
   PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_START,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_END,
@@ -134,6 +136,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_END,
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM,
   PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT,
+  PartnerConfigKey.KEY_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED,
   PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_TOP,
   PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_BOTTOM,
 })
@@ -236,6 +239,9 @@ public @interface PartnerConfigKey {
   // Margin start of the primary footer button
   String KEY_FOOTER_PRIMARY_BUTTON_MARGIN_START = "setup_compat_footer_primary_button_margin_start";
 
+  // Disabled text color of the primary footer button
+  String KEY_PRIMARY_BUTTON_DISABLED_TEXT_COLOR = "setup_compat_primary_button_disabled_text_color";
+
   // Background color of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_BG_COLOR = "setup_compat_footer_secondary_button_bg_color";
 
@@ -245,6 +251,10 @@ public @interface PartnerConfigKey {
   // Margin start of the secondary footer button
   String KEY_FOOTER_SECONDARY_BUTTON_MARGIN_START =
       "setup_compat_footer_secondary_button_margin_start";
+
+  // Disabled text color of the secondary footer button
+  String KEY_SECONDARY_BUTTON_DISABLED_TEXT_COLOR =
+      "setup_compat_secondary_button_disabled_text_color";
 
   // Background color of layout
   String KEY_LAYOUT_BACKGROUND_COLOR = "setup_design_layout_bg_color";
@@ -501,6 +511,10 @@ public @interface PartnerConfigKey {
 
   // A height of the header of loading layout.
   String KEY_LOADING_LAYOUT_HEADER_HEIGHT = "loading_layout_header_height";
+
+  // Use the fullscreen style lottie animation.
+  String KEY_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED =
+      "loading_layout_full_screen_illustration_enabled";
 
   // A margin top of the content frame of progress bar.
   String KEY_PROGRESS_BAR_MARGIN_TOP = "setup_design_progress_bar_margin_top";

@@ -21,7 +21,6 @@ import static com.google.android.setupcompat.internal.Preconditions.ensureOnMain
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -79,8 +78,6 @@ public class FooterBarMixin implements Mixin {
   private FooterButton secondaryButton;
   @IdRes private int primaryButtonId;
   @IdRes private int secondaryButtonId;
-  ColorStateList primaryDefaultTextColor = null;
-  ColorStateList secondaryDefaultTextColor = null;
   @VisibleForTesting public FooterButtonPartnerConfig primaryButtonPartnerConfigForTesting;
   @VisibleForTesting public FooterButtonPartnerConfig secondaryButtonPartnerConfigForTesting;
 
@@ -109,11 +106,15 @@ public class FooterBarMixin implements Mixin {
           if (button != null) {
             button.setEnabled(enabled);
             if (applyPartnerResources && !applyDynamicColor) {
-              updateButtonTextColorWithEnabledState(
+
+              updateButtonTextColorWithStates(
                   button,
                   (id == primaryButtonId || isSecondaryButtonInPrimaryStyle)
                       ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR
-                      : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR);
+                      : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR,
+                  (id == primaryButtonId || isSecondaryButtonInPrimaryStyle)
+                      ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_DISABLED_TEXT_COLOR
+                      : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_DISABLED_TEXT_COLOR);
             }
           }
         }
@@ -221,6 +222,8 @@ public class FooterBarMixin implements Mixin {
       metrics.logSecondaryButtonInitialStateVisibility(
           /* isVisible= */ true, /* isUsingXml= */ true);
     }
+
+    FooterButtonStyleUtils.clearSavedDefaultTextColor();
   }
 
   private boolean isFooterButtonAlignedEnd() {
@@ -390,6 +393,8 @@ public class FooterBarMixin implements Mixin {
             .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonDisableTextColorConfig(
+                PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_DISABLED_TEXT_COLOR)
             .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
@@ -404,11 +409,9 @@ public class FooterBarMixin implements Mixin {
     FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
     // update information for primary button. Need to update as long as the button inflated.
     primaryButtonId = button.getId();
-    primaryDefaultTextColor = button.getTextColors();
     button.setPrimaryButtonStyle(/* isPrimaryButtonStyle= */ true);
     primaryButton = footerButton;
     primaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
-
     onFooterButtonInflated(button, footerBarPrimaryBackgroundColor);
     onFooterButtonApplyPartnerResource(button, footerButtonPartnerConfig);
 
@@ -463,6 +466,10 @@ public class FooterBarMixin implements Mixin {
                     : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonDisableTextColorConfig(
+                usePrimaryStyle
+                    ? PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_DISABLED_TEXT_COLOR
+                    : PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_DISABLED_TEXT_COLOR)
             .setButtonIconConfig(getDrawablePartnerConfig(footerButton.getButtonType()))
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
@@ -480,7 +487,6 @@ public class FooterBarMixin implements Mixin {
     FooterActionButton button = inflateButton(footerButton, footerButtonPartnerConfig);
     // update information for secondary button. Need to update as long as the button inflated.
     secondaryButtonId = button.getId();
-    secondaryDefaultTextColor = button.getTextColors();
     button.setPrimaryButtonStyle(usePrimaryStyle);
     secondaryButton = footerButton;
     secondaryButtonPartnerConfigForTesting = footerButtonPartnerConfig;
@@ -723,22 +729,23 @@ public class FooterBarMixin implements Mixin {
         footerButtonPartnerConfig);
     if (!applyDynamicColor) {
       // adjust text color based on enabled state
-      updateButtonTextColorWithEnabledState(
-          button, footerButtonPartnerConfig.getButtonTextColorConfig());
+      updateButtonTextColorWithStates(
+          button,
+          footerButtonPartnerConfig.getButtonTextColorConfig(),
+          footerButtonPartnerConfig.getButtonDisableTextColorConfig());
     }
   }
 
-  private void updateButtonTextColorWithEnabledState(
-      Button button, PartnerConfig buttonTextColorConfig) {
+  private void updateButtonTextColorWithStates(
+      Button button,
+      PartnerConfig buttonTextColorConfig,
+      PartnerConfig buttonTextDisabledColorConfig) {
     if (button.isEnabled()) {
       FooterButtonStyleUtils.updateButtonTextEnabledColorWithPartnerConfig(
           context, button, buttonTextColorConfig);
     } else {
-      FooterButtonStyleUtils.updateButtonTextDisableColor(
-          button,
-          /* is Primary= */ (primaryButtonId == button.getId() || isSecondaryButtonInPrimaryStyle)
-              ? primaryDefaultTextColor
-              : secondaryDefaultTextColor);
+      FooterButtonStyleUtils.updateButtonTextDisabledColorWithPartnerConfig(
+          context, button, buttonTextDisabledColorConfig);
     }
   }
 
