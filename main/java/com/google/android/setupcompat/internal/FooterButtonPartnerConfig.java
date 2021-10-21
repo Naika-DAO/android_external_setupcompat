@@ -24,6 +24,7 @@ public class FooterButtonPartnerConfig {
   private final PartnerConfig buttonBackgroundConfig;
   private final PartnerConfig buttonDisableAlphaConfig;
   private final PartnerConfig buttonDisableBackgroundConfig;
+  private final PartnerConfig buttonDisableTextColorConfig;
   private final PartnerConfig buttonIconConfig;
   private final PartnerConfig buttonTextColorConfig;
   private final PartnerConfig buttonMarginStartConfig;
@@ -40,6 +41,7 @@ public class FooterButtonPartnerConfig {
       PartnerConfig buttonBackgroundConfig,
       PartnerConfig buttonDisableAlphaConfig,
       PartnerConfig buttonDisableBackgroundConfig,
+      PartnerConfig buttonDisableTextColorConfig,
       PartnerConfig buttonIconConfig,
       PartnerConfig buttonTextColorConfig,
       PartnerConfig buttonMarginStartConfig,
@@ -60,6 +62,7 @@ public class FooterButtonPartnerConfig {
     this.buttonBackgroundConfig = buttonBackgroundConfig;
     this.buttonDisableAlphaConfig = buttonDisableAlphaConfig;
     this.buttonDisableBackgroundConfig = buttonDisableBackgroundConfig;
+    this.buttonDisableTextColorConfig = buttonDisableTextColorConfig;
     this.buttonRadiusConfig = buttonRadiusConfig;
     this.buttonIconConfig = buttonIconConfig;
     this.buttonRippleColorAlphaConfig = buttonRippleColorAlphaConfig;
@@ -79,6 +82,10 @@ public class FooterButtonPartnerConfig {
 
   public PartnerConfig getButtonDisableBackgroundConfig() {
     return buttonDisableBackgroundConfig;
+  }
+
+  public PartnerConfig getButtonDisableTextColorConfig() {
+    return buttonDisableTextColorConfig;
   }
 
   public PartnerConfig getButtonIconConfig() {
@@ -123,6 +130,7 @@ public class FooterButtonPartnerConfig {
     private PartnerConfig buttonBackgroundConfig = null;
     private PartnerConfig buttonDisableAlphaConfig = null;
     private PartnerConfig buttonDisableBackgroundConfig = null;
+    private PartnerConfig buttonDisableTextColorConfig = null;
     private PartnerConfig buttonIconConfig = null;
     private PartnerConfig buttonTextColorConfig = null;
     private PartnerConfig buttonMarginStartConfig = null;
@@ -154,6 +162,11 @@ public class FooterButtonPartnerConfig {
 
     public Builder setButtonDisableBackgroundConfig(PartnerConfig buttonDisableBackgroundConfig) {
       this.buttonDisableBackgroundConfig = buttonDisableBackgroundConfig;
+      return this;
+    }
+
+    public Builder setButtonDisableTextColorConfig(PartnerConfig buttonDisableTextColorConfig) {
+      this.buttonDisableTextColorConfig = buttonDisableTextColorConfig;
       return this;
     }
 
@@ -213,6 +226,7 @@ public class FooterButtonPartnerConfig {
           buttonBackgroundConfig,
           buttonDisableAlphaConfig,
           buttonDisableBackgroundConfig,
+          buttonDisableTextColorConfig,
           buttonIconConfig,
           buttonTextColorConfig,
           buttonMarginStartConfig,

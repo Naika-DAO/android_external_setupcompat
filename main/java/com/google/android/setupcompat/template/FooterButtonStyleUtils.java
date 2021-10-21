@@ -41,10 +41,13 @@ import com.google.android.setupcompat.internal.FooterButtonPartnerConfig;
 import com.google.android.setupcompat.internal.Preconditions;
 import com.google.android.setupcompat.partnerconfig.PartnerConfig;
 import com.google.android.setupcompat.partnerconfig.PartnerConfigHelper;
+import java.util.HashMap;
 
 /** Utils for updating the button style. */
 public class FooterButtonStyleUtils {
   private static final float DEFAULT_DISABLED_ALPHA = 0.26f;
+
+  private static final HashMap<Integer, ColorStateList> defaultTextColor = new HashMap<>();
 
   /** Apply the partner primary button style to given {@code button}. */
   public static void applyPrimaryButtonPartnerResource(
@@ -56,6 +59,8 @@ public class FooterButtonStyleUtils {
             .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonDisableTextColorConfig(
+                PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_DISABLED_TEXT_COLOR)
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_PRIMARY_BUTTON_TEXT_COLOR)
@@ -91,6 +96,8 @@ public class FooterButtonStyleUtils {
             .setButtonBackgroundConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_BG_COLOR)
             .setButtonDisableAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_ALPHA)
             .setButtonDisableBackgroundConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_DISABLED_BG_COLOR)
+            .setButtonDisableTextColorConfig(
+                PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_DISABLED_TEXT_COLOR)
             .setButtonRadiusConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RADIUS)
             .setButtonRippleColorAlphaConfig(PartnerConfig.CONFIG_FOOTER_BUTTON_RIPPLE_COLOR_ALPHA)
             .setTextColorConfig(PartnerConfig.CONFIG_FOOTER_SECONDARY_BUTTON_TEXT_COLOR)
@@ -115,6 +122,9 @@ public class FooterButtonStyleUtils {
       boolean isButtonIconAtEnd,
       FooterButtonPartnerConfig footerButtonPartnerConfig) {
 
+    // Save defualt text color for the partner config disable button text color not available.
+    saveButtonDefaultTextColor(button);
+
     // If dynamic color enabled, these colors won't be overrode by partner config.
     // Instead, these colors align with the current theme colors.
     if (!applyDynamicColor) {
@@ -122,6 +132,9 @@ public class FooterButtonStyleUtils {
       if (button.isEnabled()) {
         FooterButtonStyleUtils.updateButtonTextEnabledColorWithPartnerConfig(
             context, button, footerButtonPartnerConfig.getButtonTextColorConfig());
+      } else {
+        FooterButtonStyleUtils.updateButtonTextDisabledColorWithPartnerConfig(
+            context, button, footerButtonPartnerConfig.getButtonDisableTextColorConfig());
       }
       FooterButtonStyleUtils.updateButtonBackgroundWithPartnerConfig(
           context,
@@ -166,10 +179,24 @@ public class FooterButtonStyleUtils {
     }
   }
 
-  static void updateButtonTextDisableColor(Button button, ColorStateList disabledTextColor) {
-    // TODO : add disable footer button text color partner config
+  static void updateButtonTextDisabledColorWithPartnerConfig(
+      Context context, Button button, PartnerConfig buttonDisableTextColorConfig) {
+    if (PartnerConfigHelper.get(context).isPartnerConfigAvailable(buttonDisableTextColorConfig)) {
+      @ColorInt
+      int color = PartnerConfigHelper.get(context).getColor(context, buttonDisableTextColorConfig);
+      updateButtonTextDisabledColor(button, color);
+    } else {
+      updateButtonTextDisableDefaultColor(button, getButtonDefaultTextCorlor(button));
+    }
+  }
 
-    // disable state will use the default disable state color
+  static void updateButtonTextDisabledColor(Button button, @ColorInt int textColor) {
+    if (textColor != Color.TRANSPARENT) {
+      button.setTextColor(ColorStateList.valueOf(textColor));
+    }
+  }
+
+  static void updateButtonTextDisableDefaultColor(Button button, ColorStateList disabledTextColor) {
     button.setTextColor(disabledTextColor);
   }
 
@@ -383,6 +410,21 @@ public class FooterButtonStyleUtils {
 
   static void updateButtonBackground(Button button, @ColorInt int color) {
     button.getBackground().mutate().setColorFilter(color, Mode.SRC_ATOP);
+  }
+
+  private static void saveButtonDefaultTextColor(Button button) {
+    defaultTextColor.put(button.getId(), button.getTextColors());
+  }
+
+  private static ColorStateList getButtonDefaultTextCorlor(Button button) {
+    if (!defaultTextColor.containsKey(button.getId())) {
+      throw new IllegalStateException("There is no saved default color for button");
+    }
+    return defaultTextColor.get(button.getId());
+  }
+
+  static void clearSavedDefaultTextColor() {
+    defaultTextColor.clear();
   }
 
   @VisibleForTesting
