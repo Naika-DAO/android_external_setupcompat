@@ -241,8 +241,9 @@ public class FooterBarMixin implements Mixin {
       return false;
     }
     // TODO: Support neutral button style in glif layout for phone and tablet
+    PartnerConfigHelper.get(context);
     return context.getResources().getConfiguration().smallestScreenWidthDp >= 600
-        && PartnerConfigHelper.shouldApplyExtendedPartnerConfig(context);
+        && PartnerConfigHelper.isNeutralButtonStyleEnabled(context);
   }
 
   private View addSpace() {
@@ -513,7 +514,7 @@ public class FooterBarMixin implements Mixin {
     boolean isLandscape =
         context.getResources().getConfiguration().orientation
             == Configuration.ORIENTATION_LANDSCAPE;
-    if (isLandscape && isEvenlyWeightedButtons) {
+    if (isLandscape && isEvenlyWeightedButtons && isFooterButtonAlignedEnd()) {
       addSpace();
     }
 
@@ -530,7 +531,8 @@ public class FooterBarMixin implements Mixin {
       }
       buttonContainer.addView(tempSecondaryButton);
     }
-    if (!isFooterButtonAlignedEnd() && !isEvenlyWeightedButtons) {
+    if (!isFooterButtonAlignedEnd()
+        && (!isEvenlyWeightedButtons || (isEvenlyWeightedButtons && isLandscape))) {
       addSpace();
     }
     if (tempPrimaryButton != null) {
