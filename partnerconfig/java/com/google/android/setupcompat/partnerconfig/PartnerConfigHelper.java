@@ -62,11 +62,16 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   public static final String IS_DYNAMIC_COLOR_ENABLED_METHOD = "isDynamicColorEnabled";
 
+  @VisibleForTesting
+  public static final String IS_NEUTRAL_BUTTON_STYLE_ENABLED_METHOD = "isNeutralButtonStyleEnabled";
+
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
   @VisibleForTesting public static Bundle applyExtendedPartnerConfigBundle = null;
 
   @VisibleForTesting public static Bundle applyDynamicColorBundle = null;
+
+  @VisibleForTesting public static Bundle applyNeutralButtonStyleBundle = null;
 
   private static PartnerConfigHelper instance = null;
 
@@ -566,6 +571,7 @@ public class PartnerConfigHelper {
     suwDayNightEnabledBundle = null;
     applyExtendedPartnerConfigBundle = null;
     applyDynamicColorBundle = null;
+    applyNeutralButtonStyleBundle = null;
   }
 
   /**
@@ -643,6 +649,29 @@ public class PartnerConfigHelper {
 
     return (applyDynamicColorBundle != null
         && applyDynamicColorBundle.getBoolean(IS_DYNAMIC_COLOR_ENABLED_METHOD, false));
+  }
+
+  /** Returns true if the SetupWizard supports the neutral button style during setup flow. */
+  public static boolean isNeutralButtonStyleEnabled(@NonNull Context context) {
+    if (applyNeutralButtonStyleBundle == null) {
+      try {
+        applyNeutralButtonStyleBundle =
+            context
+                .getContentResolver()
+                .call(
+                    getContentUri(),
+                    IS_NEUTRAL_BUTTON_STYLE_ENABLED_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
+      } catch (IllegalArgumentException | SecurityException exception) {
+        Log.w(TAG, "Neutral button style supporting status unknown; return as false.");
+        applyNeutralButtonStyleBundle = null;
+        return false;
+      }
+    }
+
+    return (applyNeutralButtonStyleBundle != null
+        && applyNeutralButtonStyleBundle.getBoolean(IS_NEUTRAL_BUTTON_STYLE_ENABLED_METHOD, false));
   }
 
   @VisibleForTesting
