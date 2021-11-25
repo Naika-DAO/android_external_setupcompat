@@ -298,12 +298,14 @@ public class FooterButtonStyleUtils {
       }
 
       int[] pressedState = {android.R.attr.state_pressed};
+      int[] focusState = {android.R.attr.state_focused};
+      int argbColor = convertRgbToArgb(textColor, rippleAlpha);
 
       // Set text color for ripple.
       ColorStateList colorStateList =
           new ColorStateList(
-              new int[][] {pressedState, StateSet.NOTHING},
-              new int[] {convertRgbToArgb(textColor, rippleAlpha), Color.TRANSPARENT});
+              new int[][] {pressedState, focusState, StateSet.NOTHING},
+              new int[] {argbColor, argbColor, Color.TRANSPARENT});
       rippleDrawable.setColor(colorStateList);
     }
   }
