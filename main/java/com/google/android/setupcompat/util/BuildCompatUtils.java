@@ -66,11 +66,11 @@ public final class BuildCompatUtils {
    *   <li>For next Android release (CODENAME = "U", SDK_INT = 34+)
    * </ul>
    *
-   * <p>Note that Build.VERSION_CODES.S cannot be used here until final SDK is available in all
-   * Google3 channels, because it is equal to Build.VERSION_CODES.CUR_DEVELOPMENT before API
+   * <p>Note that Build.VERSION_CODES.T cannot be used here until final SDK is available in all
+   * channels, because it is equal to Build.VERSION_CODES.CUR_DEVELOPMENT before API
    * finalization.
    *
-   * @return Whether the current OS version is higher or equal to S.
+   * @return Whether the current OS version is higher or equal to T.
    */
   public static boolean isAtLeastT() {
     if (!isAtLeastS()) {
