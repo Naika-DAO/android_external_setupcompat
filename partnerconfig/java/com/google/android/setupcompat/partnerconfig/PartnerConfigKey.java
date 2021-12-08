@@ -63,6 +63,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LAYOUT_BACKGROUND_COLOR,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_START,
   PartnerConfigKey.KEY_LAYOUT_MARGIN_END,
+  PartnerConfigKey.KEY_LAND_MIDDLE_HORIZONTAL_SPACING,
   PartnerConfigKey.KEY_HEADER_TEXT_SIZE,
   PartnerConfigKey.KEY_HEADER_TEXT_COLOR,
   PartnerConfigKey.KEY_HEADER_FONT_FAMILY,
@@ -264,6 +265,9 @@ public @interface PartnerConfigKey {
 
   // Margin end of the layout
   String KEY_LAYOUT_MARGIN_END = "setup_design_layout_margin_end";
+
+  // Middle horizontal spacing of the landscape layout
+  String KEY_LAND_MIDDLE_HORIZONTAL_SPACING = "setup_design_land_middle_horizontal_spacing";
 
   // Text size of the header
   String KEY_HEADER_TEXT_SIZE = "setup_design_header_text_size";

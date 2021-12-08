@@ -169,6 +169,10 @@ public enum PartnerConfig {
   // Margin end of the layout
   CONFIG_LAYOUT_MARGIN_END(PartnerConfigKey.KEY_LAYOUT_MARGIN_END, ResourceType.DIMENSION),
 
+  // Middle horizontal spacing of the landscape layout
+  CONFIG_LAND_MIDDLE_HORIZONTAL_SPACING(
+      PartnerConfigKey.KEY_LAND_MIDDLE_HORIZONTAL_SPACING, ResourceType.DIMENSION),
+
   // Text color of the header
   CONFIG_HEADER_TEXT_COLOR(PartnerConfigKey.KEY_HEADER_TEXT_COLOR, ResourceType.COLOR),
 
