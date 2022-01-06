@@ -60,6 +60,9 @@ public class PartnerConfigHelper {
       "isExtendedPartnerConfigEnabled";
 
   @VisibleForTesting
+  public static final String IS_MATERIAL_YOU_STYLE_ENABLED_METHOD = "IsMaterialYouStyleEnabled";
+
+  @VisibleForTesting
   public static final String IS_DYNAMIC_COLOR_ENABLED_METHOD = "isDynamicColorEnabled";
 
   @VisibleForTesting
@@ -68,6 +71,8 @@ public class PartnerConfigHelper {
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
   @VisibleForTesting public static Bundle applyExtendedPartnerConfigBundle = null;
+
+  @VisibleForTesting public static Bundle applyMaterialYouConfigBundle = null;
 
   @VisibleForTesting public static Bundle applyDynamicColorBundle = null;
 
@@ -570,6 +575,7 @@ public class PartnerConfigHelper {
     instance = null;
     suwDayNightEnabledBundle = null;
     applyExtendedPartnerConfigBundle = null;
+    applyMaterialYouConfigBundle = null;
     applyDynamicColorBundle = null;
     applyNeutralButtonStyleBundle = null;
   }
@@ -626,6 +632,29 @@ public class PartnerConfigHelper {
     return (applyExtendedPartnerConfigBundle != null
         && applyExtendedPartnerConfigBundle.getBoolean(
             IS_EXTENDED_PARTNER_CONFIG_ENABLED_METHOD, false));
+  }
+
+  /** Returns true if the SetupWizard is flow enabled "Material You(Glifv4)" style. */
+  public static boolean shouldApplyMaterialYouStyle(@NonNull Context context) {
+    if (applyMaterialYouConfigBundle == null) {
+      try {
+        applyMaterialYouConfigBundle =
+            context
+                .getContentResolver()
+                .call(
+                    getContentUri(),
+                    IS_MATERIAL_YOU_STYLE_ENABLED_METHOD,
+                    /* arg= */ null,
+                    /* extras= */ null);
+      } catch (IllegalArgumentException | SecurityException exception) {
+        Log.w(TAG, "SetupWizard Material You configs supporting status unknown; return as false.");
+        applyMaterialYouConfigBundle = null;
+        return false;
+      }
+    }
+
+    return (applyMaterialYouConfigBundle != null
+        && applyMaterialYouConfigBundle.getBoolean(IS_MATERIAL_YOU_STYLE_ENABLED_METHOD, false));
   }
 
   /** Returns true if the SetupWizard supports the dynamic color during setup flow. */
