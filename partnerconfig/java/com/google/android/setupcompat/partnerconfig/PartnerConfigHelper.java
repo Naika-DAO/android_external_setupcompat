@@ -89,7 +89,8 @@ public class PartnerConfigHelper {
 
   private static int savedConfigUiMode;
 
-  private static int savedOrientation = Configuration.ORIENTATION_PORTRAIT;
+  @VisibleForTesting
+  public static int savedOrientation = Configuration.ORIENTATION_PORTRAIT;
 
   /**
    * When testing related to fake PartnerConfigHelper instance, should sync the following saved
