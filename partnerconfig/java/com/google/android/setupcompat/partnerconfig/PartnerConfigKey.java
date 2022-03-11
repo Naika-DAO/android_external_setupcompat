@@ -138,6 +138,7 @@ import java.lang.annotation.RetentionPolicy;
   PartnerConfigKey.KEY_LOADING_LAYOUT_CONTENT_PADDING_BOTTOM,
   PartnerConfigKey.KEY_LOADING_LAYOUT_HEADER_HEIGHT,
   PartnerConfigKey.KEY_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED,
+  PartnerConfigKey.KEY_LOADING_LAYOUT_WAIT_FOR_ANIMATION_FINISHED,
   PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_TOP,
   PartnerConfigKey.KEY_PROGRESS_BAR_MARGIN_BOTTOM,
 })
@@ -519,6 +520,10 @@ public @interface PartnerConfigKey {
   // Use the fullscreen style lottie animation.
   String KEY_LOADING_LAYOUT_FULL_SCREEN_ILLUSTRATION_ENABLED =
       "loading_layout_full_screen_illustration_enabled";
+
+  // Waiting the animation finished before process to the next page/action.
+  String KEY_LOADING_LAYOUT_WAIT_FOR_ANIMATION_FINISHED =
+      "loading_layout_wait_for_animation_finished";
 
   // A margin top of the content frame of progress bar.
   String KEY_PROGRESS_BAR_MARGIN_TOP = "setup_design_progress_bar_margin_top";

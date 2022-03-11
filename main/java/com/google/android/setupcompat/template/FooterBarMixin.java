@@ -73,7 +73,7 @@ public class FooterBarMixin implements Mixin {
   @VisibleForTesting final boolean applyDynamicColor;
   @VisibleForTesting final boolean useFullDynamicColor;
 
-  @VisibleForTesting LinearLayout buttonContainer;
+  @VisibleForTesting public LinearLayout buttonContainer;
   private FooterButton primaryButton;
   private FooterButton secondaryButton;
   @IdRes private int primaryButtonId;
@@ -226,7 +226,7 @@ public class FooterBarMixin implements Mixin {
     FooterButtonStyleUtils.clearSavedDefaultTextColor();
   }
 
-  private boolean isFooterButtonAlignedEnd() {
+  protected boolean isFooterButtonAlignedEnd() {
     if (PartnerConfigHelper.get(context)
         .isPartnerConfigAvailable(PartnerConfig.CONFIG_FOOTER_BUTTON_ALIGNED_END)) {
       return PartnerConfigHelper.get(context)
@@ -247,11 +247,11 @@ public class FooterBarMixin implements Mixin {
   }
 
   private View addSpace() {
-    LinearLayout buttonContainer = ensureFooterInflated();
+    LinearLayout buttonContainerlayout = ensureFooterInflated();
     View space = new View(context);
     space.setLayoutParams(new LayoutParams(0, 0, 1.0f));
     space.setVisibility(View.INVISIBLE);
-    buttonContainer.addView(space);
+    buttonContainerlayout.addView(space);
     return space;
   }
 
@@ -615,10 +615,7 @@ public class FooterBarMixin implements Mixin {
       int color = PartnerConfigHelper.get(context).getColor(context, buttonBackgroundColorConfig);
       if (color == Color.TRANSPARENT) {
         overrideTheme = R.style.SucPartnerCustomizationButton_Secondary;
-      } else if (color != Color.TRANSPARENT) {
-        // TODO: remove the constrain (color != Color.WHITE), need to check all pages
-        // go well without customization. It should be fine since the default value of secondary bg
-        // color is set as transparent.
+      } else {
         overrideTheme = R.style.SucPartnerCustomizationButton_Primary;
       }
     }
