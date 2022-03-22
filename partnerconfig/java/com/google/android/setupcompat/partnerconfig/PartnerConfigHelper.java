@@ -68,6 +68,9 @@ public class PartnerConfigHelper {
   @VisibleForTesting
   public static final String IS_NEUTRAL_BUTTON_STYLE_ENABLED_METHOD = "isNeutralButtonStyleEnabled";
 
+  @VisibleForTesting public static final String SUW_PACKAGE_NAME = "com.google.android.setupwizard";
+  @VisibleForTesting public static final String MATERIAL_YOU_RESOURCE_SUFFIX = "_material_you";
+
   @VisibleForTesting static Bundle suwDayNightEnabledBundle = null;
 
   @VisibleForTesting public static Bundle applyExtendedPartnerConfigBundle = null;
@@ -544,9 +547,10 @@ public class PartnerConfigHelper {
     if (fallbackBundle != null) {
       resourceEntryBundle.putBundle(KEY_FALLBACK_CONFIG, fallbackBundle.getBundle(resourceName));
     }
-
-    return adjustResourceEntryDayNightMode(
-        context, ResourceEntry.fromBundle(context, resourceEntryBundle));
+    ResourceEntry tempResult =
+        adjustResourceEntryDefaultValue(
+            context, ResourceEntry.fromBundle(context, resourceEntryBundle));
+    return adjustResourceEntryDayNightMode(context, tempResult);
   }
 
   /**
@@ -569,6 +573,45 @@ public class PartnerConfigHelper {
     }
 
     return resourceEntry;
+  }
+
+  // Check the MNStyle flag and replace the inputResourceEntry.resourceName &
+  // inputResourceEntry.resourceId
+  private ResourceEntry adjustResourceEntryDefaultValue(
+      Context context, ResourceEntry inputResourceEntry) {
+    boolean useMaterialYouDefaultValue = shouldApplyMaterialYouStyle(context);
+    if (useMaterialYouDefaultValue) {
+      // If not overlay resource
+      try {
+        if (SUW_PACKAGE_NAME.equals(inputResourceEntry.getPackageName())) {
+          String resourceTypeName =
+              inputResourceEntry
+                  .getResources()
+                  .getResourceTypeName(inputResourceEntry.getResourceId());
+          // try to update resourceName & resourceId
+          String materialYouResourceName =
+              inputResourceEntry.getResourceName().concat(MATERIAL_YOU_RESOURCE_SUFFIX);
+          int materialYouResourceId =
+              inputResourceEntry
+                  .getResources()
+                  .getIdentifier(
+                      materialYouResourceName,
+                      resourceTypeName,
+                      inputResourceEntry.getPackageName());
+          if (materialYouResourceId != 0) {
+            Log.i(TAG, "use material you resource:" + materialYouResourceName);
+            return new ResourceEntry(
+                inputResourceEntry.getPackageName(),
+                materialYouResourceName,
+                materialYouResourceId,
+                inputResourceEntry.getResources());
+          }
+        }
+      } catch (NotFoundException ex) {
+        // fall through
+      }
+    }
+    return inputResourceEntry;
   }
 
   @VisibleForTesting
