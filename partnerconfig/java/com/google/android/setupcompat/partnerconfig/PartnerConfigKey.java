@@ -404,10 +404,10 @@ public @interface PartnerConfigKey {
   // The divider of list items are showing.
   String KEY_ITEMS_DIVIDER_SHOWN = "setup_design_items_divider_shown";
 
-  // The intrinsic width of the card view for foldabe/tablet.
+  // The intrinsic width of the card view for foldable/tablet.
   String KEY_CARD_VIEW_INTRINSIC_WIDTH = "setup_design_card_view_intrinsic_width";
 
-  // The intrinsic height of the card view for foldabe/tablet.
+  // The intrinsic height of the card view for foldable/tablet.
   String KEY_CARD_VIEW_INTRINSIC_HEIGHT = "setup_design_card_view_intrinsic_height";
 
   // The animation of loading screen used in those activities which is non of below type.

@@ -48,6 +48,7 @@ import com.google.android.setupcompat.template.SystemNavBarMixin;
 import com.google.android.setupcompat.util.BuildCompatUtils;
 import com.google.android.setupcompat.util.Logger;
 import com.google.android.setupcompat.util.WizardManagerHelper;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /** A templatization layout with consistent style used in Setup Wizard or app itself. */
 public class PartnerCustomizationLayout extends TemplateLayout {
@@ -75,14 +76,17 @@ public class PartnerCustomizationLayout extends TemplateLayout {
 
   private Activity activity;
 
+  @CanIgnoreReturnValue
   public PartnerCustomizationLayout(Context context) {
     this(context, 0, 0);
   }
 
+  @CanIgnoreReturnValue
   public PartnerCustomizationLayout(Context context, int template) {
     this(context, template, 0);
   }
 
+  @CanIgnoreReturnValue
   public PartnerCustomizationLayout(Context context, int template, int containerId) {
     super(context, template, containerId);
     init(null, R.attr.sucLayoutTheme);
@@ -92,11 +96,13 @@ public class PartnerCustomizationLayout extends TemplateLayout {
   final ViewTreeObserver.OnWindowFocusChangeListener windowFocusChangeListener =
       this::onFocusChanged;
 
+  @CanIgnoreReturnValue
   public PartnerCustomizationLayout(Context context, AttributeSet attrs) {
     super(context, attrs);
     init(attrs, R.attr.sucLayoutTheme);
   }
 
+  @CanIgnoreReturnValue
   @TargetApi(VERSION_CODES.HONEYCOMB)
   public PartnerCustomizationLayout(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
