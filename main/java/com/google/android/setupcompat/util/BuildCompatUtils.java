@@ -72,8 +72,8 @@ public final class BuildCompatUtils {
    * @return Whether the current OS version is higher or equal to T.
    */
   public static boolean isAtLeastT() {
-    if (!isAtLeastS()) {
-      return false;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      return true;
     }
     return (Build.VERSION.CODENAME.equals("REL") && Build.VERSION.SDK_INT >= 33)
         || (Build.VERSION.CODENAME.length() == 1
