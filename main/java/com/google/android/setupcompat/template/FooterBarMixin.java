@@ -33,6 +33,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -536,13 +537,12 @@ public class FooterBarMixin implements Mixin {
       buttonContainer.addView(tempPrimaryButton);
     }
 
-    if (isEvenlyWeightedButtons) {
-      setEvenlyWeightedButtons(tempPrimaryButton, tempSecondaryButton);
-    }
+    setEvenlyWeightedButtons(tempPrimaryButton, tempSecondaryButton, isEvenlyWeightedButtons);
   }
 
-  private void setEvenlyWeightedButtons(Button primaryButton, Button secondaryButton) {
-    if (primaryButton != null && secondaryButton != null) {
+  private void setEvenlyWeightedButtons(
+      Button primaryButton, Button secondaryButton, boolean isEvenlyWeighted) {
+    if (primaryButton != null && secondaryButton != null && isEvenlyWeighted) {
       primaryButton.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
       int primaryButtonMeasuredWidth = primaryButton.getMeasuredWidth();
       secondaryButton.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -552,6 +552,25 @@ public class FooterBarMixin implements Mixin {
 
       primaryButton.getLayoutParams().width = maxButtonMeasureWidth;
       secondaryButton.getLayoutParams().width = maxButtonMeasureWidth;
+    } else {
+      if (primaryButton != null) {
+        LinearLayout.LayoutParams primaryLayoutParams =
+            (LinearLayout.LayoutParams) primaryButton.getLayoutParams();
+        if (null != primaryLayoutParams) {
+          primaryLayoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+          primaryLayoutParams.weight = 0;
+          primaryButton.setLayoutParams(primaryLayoutParams);
+        }
+      }
+      if (secondaryButton != null) {
+        LinearLayout.LayoutParams secondaryLayoutParams =
+            (LinearLayout.LayoutParams) secondaryButton.getLayoutParams();
+        if (null != secondaryLayoutParams) {
+          secondaryLayoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+          secondaryLayoutParams.weight = 0;
+          secondaryButton.setLayoutParams(secondaryLayoutParams);
+        }
+      }
     }
   }
 
